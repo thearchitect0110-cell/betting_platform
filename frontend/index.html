@@ -206,6 +206,38 @@
     .add-match-card .section-title { color: var(--blue); }
     .add-match-card .section-title::after { background: rgba(59,130,246,.2); }
 
+    /* ── Wallet ── */
+    .wallet-balance-card { background: linear-gradient(135deg, #0d2137 0%, #0f2942 100%); border: 1px solid rgba(0,200,90,.25); border-radius: 14px; padding: 28px 32px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; }
+    .wbc-label  { font-size: .72rem; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
+    .wbc-amount { font-size: 2.4rem; font-weight: 700; color: var(--green); letter-spacing: -1px; }
+    .wbc-user   { font-size: .85rem; color: var(--text-sec); margin-top: 6px; }
+
+    .wallet-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+    @media (max-width: 640px) { .wallet-grid { grid-template-columns: 1fr; } }
+
+    .wallet-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 20px; }
+    .wallet-card-title { font-size: .72rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+
+    .quick-amounts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 12px; }
+    .qa-btn { background: rgba(255,255,255,.04); border: 1px solid var(--border); border-radius: 6px; padding: 7px 4px; font-size: .75rem; font-weight: 600; color: var(--text-sec); cursor: pointer; text-align: center; transition: all .15s; font-family: inherit; }
+    .qa-btn:hover { border-color: var(--blue); color: var(--text); }
+
+    .wallet-result { padding: 9px 12px; border-radius: 6px; font-size: .78rem; font-weight: 500; margin-top: 10px; line-height: 1.4; }
+    .wallet-result.success { color: var(--green);  background: rgba(0,200,90,.08);  border: 1px solid rgba(0,200,90,.2); }
+    .wallet-result.error   { color: var(--danger); background: rgba(239,68,68,.08); border: 1px solid rgba(239,68,68,.2); }
+
+    /* ── Transaction history ── */
+    .tx-table { width: 100%; border-collapse: collapse; }
+    .tx-table th { font-size: .65rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--border); }
+    .tx-table td { padding: 11px 12px; border-bottom: 1px solid rgba(30,50,72,.6); font-size: .82rem; vertical-align: middle; }
+    .tx-table tr:last-child td { border-bottom: none; }
+    .tx-table tr:hover td { background: rgba(255,255,255,.02); }
+    .tx-deposit    { color: var(--green);  }
+    .tx-withdrawal { color: var(--danger); }
+    .tx-type-badge { padding: 2px 8px; border-radius: 20px; font-size: .62rem; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; border: 1px solid; }
+    .tx-type-badge.deposit    { color: var(--green);  border-color: rgba(0,200,90,.3);   background: rgba(0,200,90,.08); }
+    .tx-type-badge.withdrawal { color: var(--danger); border-color: rgba(239,68,68,.3);  background: rgba(239,68,68,.08); }
+
     /* ── Misc ── */
     .loading-msg { text-align: center; padding: 48px; color: var(--text-muted); font-size: .85rem; }
     .bets-empty  { text-align: center; padding: 60px 20px; color: var(--text-muted); }
@@ -236,6 +268,9 @@ const state = {
   placing:   false,
   view:      'matches',     // 'matches' | 'my-bets' | 'admin'
   myBets:    [],
+  // Wallet
+  transactions:    [],
+  walletMsg:       null,
   // Admin
   adminMatches:    [],
   showAddMatch:    false,
@@ -375,6 +410,38 @@ async function placeAllBets() {
   render();
 }
 
+// ─── Wallet actions ──────────────────────────────────────────────────────────
+async function loadTransactions() {
+  try { state.transactions = await api('/api/transactions'); }
+  catch { state.transactions = []; }
+}
+
+async function deposit() {
+  const amount = parseFloat($('deposit-amount')?.value);
+  if (!amount || amount <= 0) { state.walletMsg = { section: 'deposit', type: 'error', text: 'Enter a valid amount.' }; renderWalletView(); return; }
+  try {
+    const res = await api('/api/deposit', { method: 'POST', body: JSON.stringify({ amount }) });
+    state.user = { ...state.user, balance: res.balance };
+    state.walletMsg = { section: 'deposit', type: 'success', text: `+€${parseFloat(res.deposited).toFixed(2)} deposited. New balance: €${parseFloat(res.balance).toFixed(2)}` };
+    await loadTransactions();
+    renderHeader();
+    renderWalletView();
+  } catch (err) { state.walletMsg = { section: 'deposit', type: 'error', text: err.message }; renderWalletView(); }
+}
+
+async function withdraw() {
+  const amount = parseFloat($('withdraw-amount')?.value);
+  if (!amount || amount <= 0) { state.walletMsg = { section: 'withdraw', type: 'error', text: 'Enter a valid amount.' }; renderWalletView(); return; }
+  try {
+    const res = await api('/api/withdraw', { method: 'POST', body: JSON.stringify({ amount }) });
+    state.user = { ...state.user, balance: res.balance };
+    state.walletMsg = { section: 'withdraw', type: 'success', text: `-€${parseFloat(res.withdrawn).toFixed(2)} withdrawn. New balance: €${parseFloat(res.balance).toFixed(2)}` };
+    await loadTransactions();
+    renderHeader();
+    renderWalletView();
+  } catch (err) { state.walletMsg = { section: 'withdraw', type: 'error', text: err.message }; renderWalletView(); }
+}
+
 // ─── Admin actions ───────────────────────────────────────────────────────────
 async function adminCreateMatch() {
   const body = {
@@ -447,6 +514,7 @@ function renderHeader() {
     <nav class="header-nav">
       <span class="nav-item ${state.view === 'matches' ? 'active' : ''}" data-action="view-matches">⚽ Football</span>
       ${state.user ? `<span class="nav-item ${state.view === 'my-bets' ? 'active' : ''}" data-action="view-my-bets">🎯 My Bets</span>` : ''}
+      ${state.user ? `<span class="nav-item ${state.view === 'wallet' ? 'active' : ''}" data-action="view-wallet">💳 Wallet</span>` : ''}
       ${state.user?.is_admin ? `<span class="nav-item admin-tab ${state.view === 'admin' ? 'active' : ''}" data-action="view-admin">⚙ Admin</span>` : ''}
     </nav>
     <div class="header-right">
@@ -467,6 +535,9 @@ function renderPage() {
   if (state.view === 'admin') {
     el.innerHTML = `<div class="container single"><div id="admin-panel"></div></div>`;
     renderAdminView();
+  } else if (state.view === 'wallet') {
+    el.innerHTML = `<div class="container single"><div><div class="section-title">Wallet &nbsp;·&nbsp; Deposit &amp; Withdraw</div><div id="wallet-panel"></div></div></div>`;
+    renderWalletView();
   } else if (state.view === 'my-bets') {
     el.innerHTML = `<div class="container single"><div><div class="section-title">🎯 &nbsp;My Bets &nbsp;·&nbsp; History</div><div id="bets-list"><div class="loading-msg">Loading…</div></div></div></div>`;
     renderBetsList();
@@ -531,6 +602,74 @@ function renderBetsList() {
         </div>
       </div>`;
   }).join('');
+}
+
+function renderWalletView() {
+  const el = $('wallet-panel'); if (!el) return;
+  const bal = parseFloat(state.user?.balance || 0);
+  const depMsg = state.walletMsg?.section === 'deposit'  ? state.walletMsg : null;
+  const wdMsg  = state.walletMsg?.section === 'withdraw' ? state.walletMsg : null;
+
+  el.innerHTML = `
+    <div class="wallet-balance-card">
+      <div>
+        <div class="wbc-label">Available Balance</div>
+        <div class="wbc-amount">${fmt(bal)}</div>
+        <div class="wbc-user">${esc(state.user?.username)}</div>
+      </div>
+    </div>
+
+    <div class="wallet-grid">
+      <div class="wallet-card">
+        <div class="wallet-card-title">Deposit</div>
+        <div class="quick-amounts">
+          ${[50,100,250,500].map(v => `<button class="qa-btn" data-action="wallet-quick-dep" data-val="${v}">€${v}</button>`).join('')}
+        </div>
+        <div class="form-group" style="margin-bottom:10px">
+          <label class="form-label">Amount (min €5)</label>
+          <div class="stake-wrap"><span class="stake-sym">€</span><input id="deposit-amount" class="stake-input" type="number" min="5" step="1" placeholder="0.00"></div>
+        </div>
+        <button class="btn btn-green btn-block" data-action="do-deposit">Deposit Funds</button>
+        ${depMsg ? `<div class="wallet-result ${depMsg.type}">${esc(depMsg.text)}</div>` : ''}
+      </div>
+
+      <div class="wallet-card">
+        <div class="wallet-card-title">Withdraw</div>
+        <div class="quick-amounts">
+          ${[25,50,75,100].map(pct => {
+            const v = (bal * pct / 100).toFixed(2);
+            return `<button class="qa-btn" data-action="wallet-quick-wd" data-val="${v}">${pct}%</button>`;
+          }).join('')}
+        </div>
+        <div class="form-group" style="margin-bottom:10px">
+          <label class="form-label">Amount (min €5, max ${fmt(bal)})</label>
+          <div class="stake-wrap"><span class="stake-sym">€</span><input id="withdraw-amount" class="stake-input" type="number" min="5" step="1" max="${bal}" placeholder="0.00"></div>
+        </div>
+        <button class="btn btn-red btn-block" data-action="do-withdraw">Withdraw Funds</button>
+        ${wdMsg ? `<div class="wallet-result ${wdMsg.type}">${esc(wdMsg.text)}</div>` : ''}
+      </div>
+    </div>
+
+    <div class="section-title">Transaction History</div>
+    ${state.transactions.length === 0 ? `<div class="loading-msg">No transactions yet.</div>` : `
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;overflow:hidden">
+        <table class="tx-table">
+          <thead><tr>
+            <th>Date</th><th>Type</th><th>Amount</th><th>Balance Before</th><th>Balance After</th>
+          </tr></thead>
+          <tbody>
+            ${state.transactions.map(t => `
+              <tr>
+                <td style="color:var(--text-muted)">${formatDate(t.created_at)}</td>
+                <td><span class="tx-type-badge ${t.type}">${t.type}</span></td>
+                <td class="tx-${t.type}" style="font-weight:700">${t.type === 'deposit' ? '+' : '-'}${fmt(t.amount)}</td>
+                <td style="color:var(--text-sec)">${fmt(t.balance_before)}</td>
+                <td style="font-weight:600">${fmt(t.balance_after)}</td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>`}
+  `;
 }
 
 function renderAdminView() {
@@ -713,10 +852,19 @@ document.addEventListener('click', e => {
     case 'logout':   logout();   break;
     case 'tab-login':    state.authTab = 'login';    state.authError = null; renderSidebar(); break;
     case 'tab-register': state.authTab = 'register'; state.authError = null; renderSidebar(); break;
-    case 'view-matches': state.view = 'matches'; render(); break;
+    case 'view-matches': state.view = 'matches'; state.walletMsg = null; render(); break;
     case 'view-my-bets':
       if (!state.token) { $('auth-username')?.focus(); return; }
       state.view = 'my-bets'; render(); loadMyBets(); break;
+    case 'view-wallet':
+      if (!state.token) return;
+      state.view = 'wallet'; state.walletMsg = null; render(); loadTransactions(); break;
+    case 'wallet-quick-dep':
+      if ($('deposit-amount'))  $('deposit-amount').value  = el.dataset.val; break;
+    case 'wallet-quick-wd':
+      if ($('withdraw-amount')) $('withdraw-amount').value = el.dataset.val; break;
+    case 'do-deposit':  deposit();  break;
+    case 'do-withdraw': withdraw(); break;
     case 'view-admin':
       if (!state.user?.is_admin) return;
       state.view = 'admin'; state.adminMsg = null; render(); loadAdminMatches(); break;

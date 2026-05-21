@@ -90,6 +90,85 @@ app.get('/api/me', auth, async (req, res) => {
   }
 });
 
+app.post('/api/deposit', auth, async (req, res) => {
+  const amount = parseFloat(req.body.amount);
+  if (isNaN(amount) || amount < 5)
+    return res.status(400).json({ error: 'Minimum deposit is €5.00' });
+  if (amount > 50000)
+    return res.status(400).json({ error: 'Maximum deposit is €50,000.00' });
+
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    const { rows } = await client.query(
+      'SELECT balance FROM users WHERE id = $1 FOR UPDATE', [req.user.id]
+    );
+    const before = parseFloat(rows[0].balance);
+    const after  = before + amount;
+    await client.query(
+      'UPDATE users SET balance = $1, updated_at = NOW() WHERE id = $2',
+      [after, req.user.id]
+    );
+    await client.query(
+      'INSERT INTO transactions (user_id, type, amount, balance_before, balance_after) VALUES ($1,$2,$3,$4,$5)',
+      [req.user.id, 'deposit', amount, before, after]
+    );
+    await client.query('COMMIT');
+    res.json({ balance: after.toFixed(2), deposited: amount.toFixed(2) });
+  } catch (err) {
+    await client.query('ROLLBACK');
+    res.status(500).json({ error: err.message });
+  } finally {
+    client.release();
+  }
+});
+
+app.post('/api/withdraw', auth, async (req, res) => {
+  const amount = parseFloat(req.body.amount);
+  if (isNaN(amount) || amount < 5)
+    return res.status(400).json({ error: 'Minimum withdrawal is €5.00' });
+
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    const { rows } = await client.query(
+      'SELECT balance FROM users WHERE id = $1 FOR UPDATE', [req.user.id]
+    );
+    const before = parseFloat(rows[0].balance);
+    if (before < amount)
+      throw Object.assign(new Error(`Insufficient balance (available: €${before.toFixed(2)})`), { status: 400 });
+    const after = before - amount;
+    await client.query(
+      'UPDATE users SET balance = $1, updated_at = NOW() WHERE id = $2',
+      [after, req.user.id]
+    );
+    await client.query(
+      'INSERT INTO transactions (user_id, type, amount, balance_before, balance_after) VALUES ($1,$2,$3,$4,$5)',
+      [req.user.id, 'withdrawal', amount, before, after]
+    );
+    await client.query('COMMIT');
+    res.json({ balance: after.toFixed(2), withdrawn: amount.toFixed(2) });
+  } catch (err) {
+    await client.query('ROLLBACK');
+    res.status(err.status || 500).json({ error: err.message });
+  } finally {
+    client.release();
+  }
+});
+
+app.get('/api/transactions', auth, async (req, res) => {
+  try {
+    const { rows } = await pool.query(
+      `SELECT id, type, amount, balance_before, balance_after, created_at
+       FROM transactions WHERE user_id = $1 ORDER BY created_at DESC LIMIT 50`,
+      [req.user.id]
+    );
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.get('/api/matches', async (req, res) => {
   try {
     const { rows } = await pool.query('SELECT * FROM matches ORDER BY match_date ASC');

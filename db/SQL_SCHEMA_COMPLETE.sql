@@ -23,6 +23,16 @@ CREATE TABLE IF NOT EXISTS matches (
   created_at  TIMESTAMPTZ  NOT NULL DEFAULT NOW()
 );
 
+CREATE TABLE IF NOT EXISTS transactions (
+  id             SERIAL PRIMARY KEY,
+  user_id        INTEGER        NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  type           VARCHAR(10)    NOT NULL CHECK (type IN ('deposit', 'withdrawal')),
+  amount         NUMERIC(10, 2) NOT NULL CHECK (amount > 0),
+  balance_before NUMERIC(12, 2) NOT NULL,
+  balance_after  NUMERIC(12, 2) NOT NULL,
+  created_at     TIMESTAMPTZ    NOT NULL DEFAULT NOW()
+);
+
 CREATE TABLE IF NOT EXISTS bets (
   id         SERIAL PRIMARY KEY,
   user_id    INTEGER        NOT NULL REFERENCES users(id) ON DELETE CASCADE,
