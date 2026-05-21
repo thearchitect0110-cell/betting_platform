@@ -242,43 +242,19 @@ app.post('/api/admin/matches/:id/settle', adminAuth, async (req, res) => {
   if (!['home', 'draw', 'away'].includes(result))
     return res.status(400).json({ error: 'result must be home, draw or away' });
 
-  const client = await pool.connect();
   try {
-    await client.query('BEGIN');
+    const { rows } = await pool.query('SELECT status FROM matches WHERE id = $1', [req.params.id]);
+    if (!rows[0]) return res.status(404).json({ error: 'Match not found' });
+    if (rows[0].status === 'finished')
+      return res.status(400).json({ error: 'Match already finished' });
 
-    const matchRes = await client.query('SELECT * FROM matches WHERE id = $1 FOR UPDATE', [req.params.id]);
-    if (!matchRes.rows[0]) throw Object.assign(new Error('Match not found'), { status: 404 });
-    if (matchRes.rows[0].status === 'finished')
-      throw Object.assign(new Error('Match already settled'), { status: 400 });
-
-    const betsRes = await client.query(
-      "SELECT * FROM bets WHERE match_id = $1 AND status = 'pending'", [req.params.id]
+    await pool.query(
+      "UPDATE matches SET status = 'finished', result = $1 WHERE id = $2",
+      [result, req.params.id]
     );
-
-    let won = 0, lost = 0;
-    for (const bet of betsRes.rows) {
-      if (bet.bet_type === result) {
-        await client.query(
-          'UPDATE users SET balance = balance + $1, updated_at = NOW() WHERE id = $2',
-          [parseFloat(bet.amount) * parseFloat(bet.odds), bet.user_id]
-        );
-        await client.query("UPDATE bets SET status = 'won'  WHERE id = $1", [bet.id]);
-        won++;
-      } else {
-        await client.query("UPDATE bets SET status = 'lost' WHERE id = $1", [bet.id]);
-        lost++;
-      }
-    }
-
-    await client.query("UPDATE matches SET status = 'finished' WHERE id = $1", [req.params.id]);
-    await client.query('COMMIT');
-
-    res.json({ result, won, lost, total: betsRes.rows.length });
+    res.json({ message: 'Result recorded — settlement engine will process bets shortly.' });
   } catch (err) {
-    await client.query('ROLLBACK');
-    res.status(err.status || 500).json({ error: err.message });
-  } finally {
-    client.release();
+    res.status(500).json({ error: err.message });
   }
 });
 

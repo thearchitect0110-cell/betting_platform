@@ -18,6 +18,8 @@ CREATE TABLE IF NOT EXISTS matches (
   home_odds   NUMERIC(6, 2),
   away_odds   NUMERIC(6, 2),
   draw_odds   NUMERIC(6, 2),
+  result      VARCHAR(10)  CHECK (result IN ('home', 'draw', 'away')),
+  settled_at  TIMESTAMPTZ,
   created_at  TIMESTAMPTZ  NOT NULL DEFAULT NOW()
 );
 

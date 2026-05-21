@@ -20,6 +20,17 @@ services:
       DB_PASSWORD: betting_pass
       DB_NAME: betting_db
 
+  settlement_engine:
+    build: ./services/settlement_engine
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_USER: betting_user
+      DB_PASSWORD: betting_pass
+      DB_NAME: betting_db
+      POLL_INTERVAL_MS: 10000
+
   nginx:
     image: nginx:alpine
     depends_on:

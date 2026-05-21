@@ -173,6 +173,12 @@
     .status-scheduled { color: var(--blue);   border-color: rgba(59,130,246,.3); background: rgba(59,130,246,.06); }
     .status-finished  { color: var(--text-muted); border-color: var(--border); background: transparent; }
 
+    .result-badge { padding: 3px 10px; border-radius: 20px; font-size: .65rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; border: 1px solid; }
+    .result-home  { color: var(--green);  border-color: rgba(0,200,90,.3);   background: rgba(0,200,90,.08); }
+    .result-draw  { color: var(--amber);  border-color: rgba(245,158,11,.3); background: rgba(245,158,11,.08); }
+    .result-away  { color: var(--blue);   border-color: rgba(59,130,246,.3); background: rgba(59,130,246,.06); }
+    .settle-status { font-size: .68rem; color: var(--text-muted); margin-top: 4px; }
+
     /* ── Admin panel ── */
     .admin-top-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
     .admin-msg { padding: 10px 14px; border-radius: var(--radius); font-size: .8rem; margin-bottom: 16px; line-height: 1.4; }
@@ -427,7 +433,7 @@ async function adminSettleMatch(id) {
   try {
     const res = await api(`/api/admin/matches/${id}/settle`, { method: 'POST', body: JSON.stringify({ result: state.settleResult }) });
     state.settlingMatchId = null; state.settleResult = null;
-    state.adminMsg = { type: 'success', text: `Settled: ${res.won} won, ${res.lost} lost out of ${res.total} bets.` };
+    state.adminMsg = { type: 'success', text: res.message };
     await loadAdminMatches();
     await loadMatches();
     renderAdminView();
@@ -587,12 +593,14 @@ function renderAdminMatchList() {
         </div>
       </div>`;
 
+    const resultLabel = m.result === 'home' ? '1 Home Win' : m.result === 'away' ? '2 Away Win' : m.result === 'draw' ? 'X Draw' : null;
     return `
       <div class="admin-card ${isSettling ? 'settling' : ''}">
         <div class="ac-header">
           <span class="league-tag">⚽ Super League</span>
           <span class="match-time">${formatDate(m.match_date)}</span>
           <span class="status-badge status-${esc(m.status)}">${esc(m.status)}</span>
+          ${resultLabel ? `<span class="result-badge result-${esc(m.result)}">${resultLabel}</span>` : ''}
         </div>
         <div class="ac-teams">${esc(m.home_team)} <span style="color:var(--text-muted);font-size:.8rem;margin:0 6px">vs</span> ${esc(m.away_team)}</div>
         <div class="ac-odds">
@@ -601,6 +609,13 @@ function renderAdminMatchList() {
           <span>2&nbsp;<b>${parseFloat(m.away_odds).toFixed(2)}</b></span>
         </div>
         <div class="ac-stats">${m.pending_bets} pending bet${m.pending_bets != 1 ? 's' : ''} &nbsp;·&nbsp; ${fmt(m.total_staked)} staked</div>
+        ${m.status === 'finished' ? `
+          <div class="settle-status">
+            ${m.settled_at
+              ? `Settlement engine processed at ${formatDate(m.settled_at)}`
+              : `<span style="color:var(--amber)">&#9679;</span> Settlement engine processing...`}
+          </div>
+        ` : ''}
         ${isSettling ? `
           <div class="settle-section">
             <div class="settle-label">Select result:</div>
