@@ -260,6 +260,16 @@
     .tx-type-badge { padding: 2px 8px; border-radius: 20px; font-size: .62rem; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; border: 1px solid; }
     .tx-type-badge.deposit    { color: var(--green);  border-color: rgba(0,200,90,.3);   background: rgba(0,200,90,.08); }
     .tx-type-badge.withdrawal { color: var(--danger); border-color: rgba(239,68,68,.3);  background: rgba(239,68,68,.08); }
+    .tx-type-badge.adjustment { color: #a78bfa;       border-color: rgba(167,139,250,.3);background: rgba(167,139,250,.08); }
+
+    .adjust-form-cell { background: rgba(167,139,250,.04); padding: 12px 14px !important; border-top: 1px solid rgba(167,139,250,.2) !important; }
+    .adjust-form { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .adjust-input { background: var(--bg-input); border: 1px solid var(--border); border-radius: var(--radius); padding: 7px 10px; color: var(--text); font-size: .82rem; font-family: inherit; outline: none; transition: border-color .15s; width: 130px; }
+    .adjust-input:focus { border-color: #a78bfa; }
+    .adjust-note  { flex: 1; min-width: 160px; }
+    .adjust-msg   { font-size: .75rem; padding: 5px 10px; border-radius: 5px; }
+    .adjust-msg.success { color: var(--green);  background: rgba(0,200,90,.08); }
+    .adjust-msg.error   { color: var(--danger); background: rgba(239,68,68,.08); }
 
     /* ── Misc ── */
     .loading-msg { text-align: center; padding: 48px; color: var(--text-muted); font-size: .85rem; }
@@ -296,6 +306,8 @@ const state = {
   walletMsg:       null,
   // Admin
   adminTab:        'matches',   // 'matches' | 'users' | 'transactions'
+  adjustingUserId: null,
+  adjustMsg:       null,
   adminMatches:    [],
   adminUsers:      [],
   adminTxs:        [],
@@ -479,6 +491,29 @@ async function withdraw() {
 }
 
 // ─── Admin actions ───────────────────────────────────────────────────────────
+async function adminAdjustBalance(id) {
+  const delta = parseFloat($('adjust-delta')?.value);
+  const note  = $('adjust-note')?.value?.trim();
+  if (isNaN(delta) || delta === 0) {
+    state.adjustMsg = { type: 'error', text: 'Enter a non-zero amount (e.g. +100 or -50).' };
+    renderAdminUsers(); return;
+  }
+  try {
+    const res = await api(`/api/admin/users/${id}/adjust`, { method: 'POST', body: JSON.stringify({ amount: delta, note }) });
+    state.adjustingUserId = null; state.adjustMsg = null;
+    const idx = state.adminUsers.findIndex(u => u.id === id);
+    if (idx > -1) state.adminUsers[idx].balance = res.balance;
+    state.adminMsg = {
+      type: 'success',
+      text: `${res.username}: balance ${delta > 0 ? '+' : ''}€${parseFloat(delta).toFixed(2)} → new balance €${parseFloat(res.balance).toFixed(2)}`
+    };
+    renderAdminView();
+  } catch (err) {
+    state.adjustMsg = { type: 'error', text: err.message };
+    renderAdminUsers();
+  }
+}
+
 async function adminCreateMatch() {
   const body = {
     home_team:  $('add-home')?.value?.trim(),
@@ -728,20 +763,39 @@ function renderAdminUsers() {
       <table class="data-table">
         <thead><tr>
           <th>User</th><th>Email</th><th>Balance</th>
-          <th>Bets</th><th>Deposited</th><th>Withdrawn</th><th>Role</th><th>Joined</th>
+          <th>Bets</th><th>Deposited</th><th>Withdrawn</th><th>Role</th><th>Joined</th><th></th>
         </tr></thead>
         <tbody>
-          ${users.map(u => `
-            <tr>
-              <td style="font-weight:600">${esc(u.username)}</td>
-              <td style="color:var(--text-muted)">${esc(u.email)}</td>
-              <td style="font-weight:700;color:var(--green)">${fmt(u.balance)}</td>
-              <td>${u.total_bets}</td>
-              <td style="color:var(--green)">+${fmt(u.total_deposited)}</td>
-              <td style="color:var(--danger)">-${fmt(u.total_withdrawn)}</td>
-              <td>${u.is_admin ? '<span class="admin-badge">Admin</span>' : '<span style="color:var(--text-muted);font-size:.75rem">User</span>'}</td>
-              <td style="color:var(--text-muted)">${new Date(u.created_at).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</td>
-            </tr>`).join('')}
+          ${users.map(u => {
+            const isAdjusting = state.adjustingUserId === u.id;
+            return `
+              <tr>
+                <td style="font-weight:600">${esc(u.username)}</td>
+                <td style="color:var(--text-muted)">${esc(u.email)}</td>
+                <td style="font-weight:700;color:var(--green)">${fmt(u.balance)}</td>
+                <td>${u.total_bets}</td>
+                <td style="color:var(--green)">+${fmt(u.total_deposited)}</td>
+                <td style="color:var(--danger)">-${fmt(u.total_withdrawn)}</td>
+                <td>${u.is_admin ? '<span class="admin-badge">Admin</span>' : '<span style="color:var(--text-muted);font-size:.75rem">User</span>'}</td>
+                <td style="color:var(--text-muted)">${new Date(u.created_at).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</td>
+                <td>
+                  ${isAdjusting
+                    ? `<button class="btn btn-outline btn-sm" data-action="admin-adjust-cancel">Cancel</button>`
+                    : `<button class="btn btn-amber btn-sm" data-action="admin-adjust-show" data-id="${u.id}">Adjust</button>`}
+                </td>
+              </tr>
+              ${isAdjusting ? `
+              <tr>
+                <td colspan="9" class="adjust-form-cell">
+                  <div class="adjust-form">
+                    <input id="adjust-delta" class="adjust-input" type="number" step="0.01" placeholder="+100 or -50" autofocus>
+                    <input id="adjust-note"  class="adjust-input adjust-note" type="text" placeholder="Reason (optional)" maxlength="255">
+                    <button class="btn btn-sm" style="background:#a78bfa;color:#000;font-weight:700" data-action="admin-adjust-confirm" data-id="${u.id}">Apply</button>
+                    ${state.adjustMsg ? `<span class="adjust-msg ${state.adjustMsg.type}">${esc(state.adjustMsg.text)}</span>` : ''}
+                  </div>
+                </td>
+              </tr>` : ''}`;
+          }).join('')}
         </tbody>
       </table>
     </div>`;
@@ -765,18 +819,26 @@ function renderAdminTxs() {
     <div class="data-table-wrap">
       <table class="data-table">
         <thead><tr>
-          <th>Date</th><th>User</th><th>Type</th><th>Amount</th><th>Balance Before</th><th>Balance After</th>
+          <th>Date</th><th>User</th><th>Type</th><th>Amount</th><th>Balance Before</th><th>Balance After</th><th>Note</th>
         </tr></thead>
         <tbody>
-          ${txs.map(t => `
+          ${txs.map(t => {
+            const sign = t.type === 'deposit' ? '+' : t.type === 'withdrawal' ? '-'
+              : parseFloat(t.balance_after) >= parseFloat(t.balance_before) ? '+' : '-';
+            const cls  = t.type === 'adjustment'
+              ? (sign === '+' ? 'style="color:#a78bfa;font-weight:700"' : 'style="color:#a78bfa;font-weight:700"')
+              : `class="tx-${t.type}" style="font-weight:700"`;
+            return `
             <tr>
               <td style="color:var(--text-muted)">${formatDate(t.created_at)}</td>
               <td style="font-weight:600">${esc(t.username)}</td>
               <td><span class="tx-type-badge ${t.type}">${t.type}</span></td>
-              <td class="tx-${t.type}" style="font-weight:700">${t.type==='deposit'?'+':'-'}${fmt(t.amount)}</td>
+              <td ${cls}>${sign}${fmt(t.amount)}</td>
               <td style="color:var(--text-sec)">${fmt(t.balance_before)}</td>
               <td style="font-weight:600">${fmt(t.balance_after)}</td>
-            </tr>`).join('')}
+              <td style="color:var(--text-muted);font-size:.75rem">${esc(t.note || '')}</td>
+            </tr>`;
+          }).join('')}
         </tbody>
       </table>
     </div>`;
@@ -1008,10 +1070,18 @@ document.addEventListener('click', e => {
     case 'do-deposit':  deposit();  break;
     case 'do-withdraw': withdraw(); break;
     case 'admin-tab':
-      state.adminTab = el.dataset.tab;
-      state.adminMsg = null;
+      state.adminTab = el.dataset.tab; state.adminMsg = null;
+      state.adjustingUserId = null; state.adjustMsg = null;
       renderAdminView();
       break;
+    case 'admin-adjust-show':
+      state.adjustingUserId = parseInt(el.dataset.id); state.adjustMsg = null;
+      renderAdminUsers(); break;
+    case 'admin-adjust-cancel':
+      state.adjustingUserId = null; state.adjustMsg = null;
+      renderAdminUsers(); break;
+    case 'admin-adjust-confirm':
+      adminAdjustBalance(parseInt(el.dataset.id)); break;
     case 'view-admin':
       if (!state.user?.is_admin) return;
       state.view = 'admin'; state.adminTab = 'matches'; state.adminMsg = null;

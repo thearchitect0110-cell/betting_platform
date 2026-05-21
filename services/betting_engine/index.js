@@ -371,4 +371,43 @@ app.post('/api/admin/matches/:id/settle', adminAuth, async (req, res) => {
   }
 });
 
+app.post('/api/admin/users/:id/adjust', adminAuth, async (req, res) => {
+  const delta = parseFloat(req.body.amount);
+  const note  = req.body.note?.trim() || null;
+  if (isNaN(delta) || delta === 0)
+    return res.status(400).json({ error: 'amount must be a non-zero number' });
+
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    const { rows } = await client.query(
+      'SELECT username, balance FROM users WHERE id = $1 FOR UPDATE',
+      [req.params.id]
+    );
+    if (!rows[0]) throw Object.assign(new Error('User not found'), { status: 404 });
+    const before = parseFloat(rows[0].balance);
+    const after  = parseFloat((before + delta).toFixed(2));
+    if (after < 0)
+      throw Object.assign(
+        new Error(`Balance cannot go negative (${before.toFixed(2)} + ${delta.toFixed(2)} = ${after.toFixed(2)})`),
+        { status: 400 }
+      );
+    await client.query(
+      'UPDATE users SET balance = $1, updated_at = NOW() WHERE id = $2',
+      [after, req.params.id]
+    );
+    await client.query(
+      'INSERT INTO transactions (user_id, type, amount, balance_before, balance_after, note) VALUES ($1,$2,$3,$4,$5,$6)',
+      [req.params.id, 'adjustment', Math.abs(delta), before, after, note]
+    );
+    await client.query('COMMIT');
+    res.json({ username: rows[0].username, delta: delta.toFixed(2), balance: after.toFixed(2) });
+  } catch (err) {
+    await client.query('ROLLBACK');
+    res.status(err.status || 500).json({ error: err.message });
+  } finally {
+    client.release();
+  }
+});
+
 app.listen(3000, () => console.log('Betting engine running on port 3000'));
