@@ -13,6 +13,27 @@ function log(msg) {
   console.log(`[${new Date().toISOString()}] ${msg}`);
 }
 
+async function settleAccumulator(client, accaId) {
+  const { rows: legs } = await client.query(
+    "SELECT id, user_id, amount, odds, status FROM bets WHERE accumulator_id = $1",
+    [accaId]
+  );
+  if (!legs.length || legs.some(l => l.status === 'pending')) return;
+
+  if (legs.every(l => l.status === 'won')) {
+    const stake        = parseFloat(legs[0].amount);
+    const combinedOdds = legs.reduce((p, l) => p * parseFloat(l.odds), 1);
+    const payout       = stake * combinedOdds;
+    await client.query(
+      'UPDATE users SET balance = balance + $1, updated_at = NOW() WHERE id = $2',
+      [payout, legs[0].user_id]
+    );
+    log(`Accumulator ${accaId} WON — ${legs.length} legs, payout €${payout.toFixed(2)}`);
+  } else {
+    log(`Accumulator ${accaId} LOST — ${legs.filter(l => l.status === 'lost').length} losing leg(s)`);
+  }
+}
+
 async function settleMatch(match) {
   const client = await pool.connect();
   try {
@@ -27,16 +48,16 @@ async function settleMatch(match) {
     );
     if (!locked.length) {
       await client.query('ROLLBACK');
-      return; // already being handled by another instance
+      return;
     }
 
-    const { rows: bets } = await client.query(
-      "SELECT * FROM bets WHERE match_id = $1 AND status = 'pending' FOR UPDATE",
+    // ── Settle single bets ────────────────────────────────────────────────────
+    const { rows: singles } = await client.query(
+      "SELECT * FROM bets WHERE match_id = $1 AND status = 'pending' AND accumulator_id IS NULL FOR UPDATE",
       [match.id]
     );
-
     let won = 0, lost = 0;
-    for (const bet of bets) {
+    for (const bet of singles) {
       if (bet.bet_type === match.result) {
         const payout = parseFloat(bet.amount) * parseFloat(bet.odds);
         await client.query(
@@ -51,13 +72,39 @@ async function settleMatch(match) {
       }
     }
 
+    // ── Settle accumulator legs on this match ─────────────────────────────────
+    const { rows: accaLegs } = await client.query(
+      "SELECT * FROM bets WHERE match_id = $1 AND status = 'pending' AND accumulator_id IS NOT NULL FOR UPDATE",
+      [match.id]
+    );
+    for (const leg of accaLegs) {
+      const newStatus = leg.bet_type === match.result ? 'won' : 'lost';
+      await client.query("UPDATE bets SET status = $1 WHERE id = $2", [newStatus, leg.id]);
+    }
+
     await client.query('UPDATE matches SET settled_at = NOW() WHERE id = $1', [match.id]);
     await client.query('COMMIT');
 
     log(
       `Settled match ${match.id} (${match.home_team} vs ${match.away_team}) ` +
-      `result=${match.result} — ${won} WON, ${lost} LOST, ${bets.length} total`
+      `result=${match.result} — ${won} WON, ${lost} LOST singles; ${accaLegs.length} acca leg(s) marked`
     );
+
+    // ── Check if any accumulators are now fully settled ───────────────────────
+    const accaIds = [...new Set(accaLegs.map(l => l.accumulator_id))];
+    if (accaIds.length) {
+      const accaClient = await pool.connect();
+      try {
+        await accaClient.query('BEGIN');
+        for (const accaId of accaIds) await settleAccumulator(accaClient, accaId);
+        await accaClient.query('COMMIT');
+      } catch (err) {
+        await accaClient.query('ROLLBACK');
+        log(`ERROR settling accumulators for match ${match.id}: ${err.message}`);
+      } finally {
+        accaClient.release();
+      }
+    }
   } catch (err) {
     await client.query('ROLLBACK');
     log(`ERROR settling match ${match.id}: ${err.message}`);

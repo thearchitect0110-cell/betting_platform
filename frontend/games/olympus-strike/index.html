@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Olympus Strike</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #060810;
+    font-family: 'Inter', system-ui, sans-serif;
+    color: #f0f4f8;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    user-select: none;
+  }
+
+  /* ── Top bar ── */
+  #topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    height: 48px;
+    background: rgba(0,0,0,.55);
+    border-bottom: 1px solid rgba(255,255,255,.06);
+    flex-shrink: 0;
+    gap: 12px;
+  }
+  #topbar .logo {
+    font-size: .85rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: #f5c518;
+    white-space: nowrap;
+  }
+  #topbar .logo span { color: #ff4500; }
+  #balance-display {
+    font-size: .78rem;
+    font-weight: 600;
+    color: #f0f4f8;
+    white-space: nowrap;
+  }
+  #balance-display em {
+    color: #00c85a;
+    font-style: normal;
+    font-weight: 700;
+  }
+  #close-btn, #mute-btn {
+    background: rgba(255,255,255,.07);
+    border: 1px solid rgba(255,255,255,.1);
+    color: #a0aec0;
+    border-radius: 6px;
+    padding: 5px 12px;
+    font-size: .75rem;
+    cursor: pointer;
+    transition: all .2s;
+    white-space: nowrap;
+  }
+  #close-btn:hover, #mute-btn:hover { background: rgba(255,255,255,.13); color: #fff; }
+  #mute-btn.muted { color: #ef4444; border-color: rgba(239,68,68,.35); }
+
+  /* ── Game canvas wrapper ── */
+  #game-wrap {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  #game-canvas { display: block; }
+
+  /* ── Bottom controls ── */
+  #controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 10px 16px;
+    height: 72px;
+    background: rgba(0,0,0,.55);
+    border-top: 1px solid rgba(255,255,255,.06);
+    flex-shrink: 0;
+  }
+
+  .ctrl-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+  .ctrl-label {
+    font-size: .6rem;
+    color: #4a6080;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+  }
+  .ctrl-value {
+    font-size: .9rem;
+    font-weight: 700;
+    color: #f0f4f8;
+  }
+  .ctrl-value.win-val { color: #f5c518; }
+
+  /* Bet selector */
+  #bet-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .bet-btn {
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.1);
+    color: #a0aec0;
+    border-radius: 5px;
+    width: 26px; height: 26px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all .2s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .bet-btn:hover { background: rgba(255,255,255,.13); color: #fff; }
+  #bet-display {
+    font-size: .9rem;
+    font-weight: 700;
+    min-width: 52px;
+    text-align: center;
+    color: #f5c518;
+  }
+
+  /* Spin button */
+  #spin-btn {
+    background: linear-gradient(135deg, #ff4500, #c73300);
+    border: none;
+    border-radius: 50%;
+    width: 52px; height: 52px;
+    font-size: 1.4rem;
+    cursor: pointer;
+    transition: all .2s;
+    box-shadow: 0 0 18px rgba(255,69,0,.45);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  #spin-btn:hover:not(:disabled) {
+    transform: scale(1.06);
+    box-shadow: 0 0 28px rgba(255,69,0,.65);
+  }
+  #spin-btn:disabled {
+    opacity: .45;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* Overlay messages */
+  #msg-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 20;
+  }
+  #msg-box {
+    background: rgba(6,8,16,.92);
+    border: 1px solid rgba(245,197,24,.25);
+    border-radius: 12px;
+    padding: 20px 32px;
+    text-align: center;
+    backdrop-filter: blur(8px);
+    transform: scale(0);
+    transition: transform .25s cubic-bezier(.34,1.56,.64,1);
+    max-width: 320px;
+  }
+  #msg-box.show { transform: scale(1); }
+  #msg-box .msg-tier {
+    font-size: .65rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #a0aec0;
+    margin-bottom: 4px;
+  }
+  #msg-box .msg-amount {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #f5c518;
+    text-shadow: 0 0 24px rgba(245,197,24,.6);
+  }
+  #msg-box .msg-sub {
+    font-size: .75rem;
+    color: #a0aec0;
+    margin-top: 4px;
+  }
+
+  #auth-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(6,8,16,.92);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 30;
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+    padding: 24px;
+  }
+  #auth-overlay h2 { font-size: 1.3rem; color: #f0f4f8; }
+  #auth-overlay p  { font-size: .85rem; color: #a0aec0; max-width: 260px; }
+  #auth-overlay .back-btn {
+    margin-top: 8px;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.12);
+    color: #f0f4f8;
+    border-radius: 8px;
+    padding: 10px 24px;
+    font-size: .85rem;
+    cursor: pointer;
+    transition: all .2s;
+  }
+  #auth-overlay .back-btn:hover { background: rgba(255,255,255,.16); }
+</style>
+</head>
+<body>
+
+<!-- Top bar -->
+<div id="topbar">
+  <div class="logo">STRIKE <span>⚡</span> OLYMPUS</div>
+  <div id="balance-display">Balance: <em id="bal-val">—</em></div>
+  <button id="mute-btn" title="Toggle sound">🔊</button>
+  <button id="close-btn" onclick="window.parent.postMessage('close-slot','*')">✕ Exit Game</button>
+</div>
+
+<!-- Phaser canvas mount -->
+<div id="game-wrap">
+  <canvas id="game-canvas"></canvas>
+  <div id="msg-overlay"><div id="msg-box"><div class="msg-tier" id="msg-tier"></div><div class="msg-amount" id="msg-amount"></div><div class="msg-sub" id="msg-sub"></div></div></div>
+  <div id="auth-overlay" style="display:none">
+    <h2>Login Required</h2>
+    <p>You need to be logged in to play Olympus Strike.</p>
+    <button class="back-btn" onclick="window.parent.postMessage('close-slot','*')">← Back to STRIKE Bet</button>
+  </div>
+</div>
+
+<!-- Controls -->
+<div id="controls">
+  <div class="ctrl-group">
+    <div class="ctrl-label">Bet</div>
+    <div id="bet-wrap">
+      <button class="bet-btn" id="bet-down">−</button>
+      <div id="bet-display">€1.00</div>
+      <button class="bet-btn" id="bet-up">+</button>
+    </div>
+  </div>
+
+  <button id="spin-btn" title="Spin">⚡</button>
+
+  <div class="ctrl-group">
+    <div class="ctrl-label">Last Win</div>
+    <div class="ctrl-value win-val" id="last-win">—</div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/phaser@3.70.0/dist/phaser.min.js"></script>
+<script>
+// ── Config ─────────────────────────────────────────────────────────────────
+const BET_STEPS = [0.10, 0.25, 0.50, 1, 2, 5, 10, 20, 50, 100];
+const API_BASE  = '/api/slot';
+
+const SYM_CONFIG = {
+  COIN:     { emoji: '🪙', color: '#fbbf24', glow: 'rgba(251,191,36,.5)'  },
+  SWORD:    { emoji: '⚔️', color: '#94a3b8', glow: 'rgba(148,163,184,.4)' },
+  HELM:     { emoji: '⛑️', color: '#60a5fa', glow: 'rgba(96,165,250,.5)'  },
+  POSEIDON: { emoji: '🔱', color: '#38bdf8', glow: 'rgba(56,189,248,.5)'  },
+  ATHENA:   { emoji: '🦉', color: '#a78bfa', glow: 'rgba(167,139,250,.5)' },
+  ZEUS:     { emoji: '⚡', color: '#f5c518', glow: 'rgba(245,197,24,.7)'  },
+  WILD:     { emoji: '🌟', color: '#ff4500', glow: 'rgba(255,69,0,.6)'    },
+  SCATTER:  { emoji: '🌩', color: '#7dd3fc', glow: 'rgba(125,211,252,.4)' },
+};
+
+const TIER_LABELS = {
+  no_win:     'No Win',
+  tiny_win:   'Win',
+  small_win:  'Win',
+  medium_win: 'BIG WIN',
+  big_win:    'BIG WIN',
+  mega_win:   'MEGA WIN',
+  super_win:  'SUPER WIN',
+  epic_win:   'EPIC WIN',
+  jackpot:    '🏆 JACKPOT',
+};
+
+// ── State ───────────────────────────────────────────────────────────────────
+let token   = null;
+let balance = 0;
+let betIdx  = 3; // default €1.00
+let spinning = false;
+let phaserScene = null;
+
+function getBet() { return BET_STEPS[betIdx]; }
+
+function setBalance(v) {
+  balance = v;
+  document.getElementById('bal-val').textContent = '€' + v.toFixed(2);
+}
+
+// ── Auth ────────────────────────────────────────────────────────────────────
+function getToken() {
+  try { return localStorage.getItem('bet_token') || sessionStorage.getItem('bet_token'); } catch { return null; }
+}
+
+// Seed balance from URL param immediately — parent passes the player's current balance
+// so the game is usable even before the API call returns.
+(function seedBalanceFromUrl() {
+  const params = new URLSearchParams(location.search);
+  const urlBal = parseFloat(params.get('bal'));
+  if (!isNaN(urlBal) && urlBal >= 0) setBalance(urlBal);
+})();
+
+// Spin button starts disabled until we confirm the token is valid
+document.getElementById('spin-btn').disabled = true;
+
+async function fetchInfo() {
+  token = getToken();
+  if (!token) {
+    document.getElementById('auth-overlay').style.display = 'flex';
+    return; // spin-btn stays disabled
+  }
+  try {
+    const r = await fetch(`${API_BASE}/info`, { headers: { Authorization: `Bearer ${token}` } });
+    if (r.status === 401) {
+      document.getElementById('auth-overlay').style.display = 'flex';
+      return;
+    }
+    const d = await r.json();
+    setBalance(d.balance);           // authoritative balance from DB
+  } catch (e) {
+    // Slot engine unreachable — keep URL-seeded balance, still let the player try;
+    // the spin endpoint will return a proper error if the backend is down.
+    console.warn('fetchInfo failed — using seeded balance:', e.message);
+  }
+  // Enable spin regardless of API outcome, as long as we have a token
+  document.getElementById('spin-btn').disabled = false;
+}
+
+// ── Bet controls ────────────────────────────────────────────────────────────
+document.getElementById('bet-down').addEventListener('click', () => {
+  if (betIdx > 0) { betIdx--; soundClick(); }
+  document.getElementById('bet-display').textContent = '€' + getBet().toFixed(2);
+});
+document.getElementById('bet-up').addEventListener('click', () => {
+  if (betIdx < BET_STEPS.length - 1) { betIdx++; soundClick(); }
+  document.getElementById('bet-display').textContent = '€' + getBet().toFixed(2);
+});
+
+// ── Win message overlay ──────────────────────────────────────────────────────
+let msgTimer = null;
+function showWinMsg(tier, win) {
+  clearTimeout(msgTimer);
+  const box    = document.getElementById('msg-box');
+  const label  = TIER_LABELS[tier] || tier;
+  document.getElementById('msg-tier').textContent   = label;
+  document.getElementById('msg-amount').textContent = '€' + win.toFixed(2);
+  document.getElementById('msg-sub').textContent    = tier === 'jackpot' ? '🎉 You hit the Jackpot!' : '';
+  box.classList.add('show');
+  const delay = tier === 'jackpot' ? 5000 : tier.includes('epic') ? 4000 : tier.includes('super') ? 3500 : 2500;
+  msgTimer = setTimeout(() => box.classList.remove('show'), delay);
+}
+
+// ── Phaser Game ──────────────────────────────────────────────────────────────
+const REELS    = 5;
+const ROWS     = 3;
+const CELL_W   = 96;
+const CELL_H   = 86;
+const REEL_GAP = 8;
+const PAD      = 14;
+
+const BIG_TIERS = new Set(['medium_win','big_win','mega_win','super_win','epic_win','jackpot']);
+
+class SlotScene extends Phaser.Scene {
+  constructor() { super({ key: 'SlotScene' }); }
+
+  // ── Particle texture generation ──────────────────────────────────────────
+  preload() {
+    const mk = (key, w, h, fn) => {
+      const g = this.make.graphics({ x:0, y:0, add:false });
+      fn(g); g.generateTexture(key, w, h); g.destroy();
+    };
+    mk('ptcl_coin', 14, 14, g => {
+      g.fillStyle(0xffd700,1); g.fillCircle(7,7,7);
+    });
+    mk('ptcl_spark', 8, 8, g => {
+      g.fillStyle(0xffffff,1); g.fillTriangle(4,0,8,8,0,8);
+    });
+  }
+
+  // ── Coordinate helpers ───────────────────────────────────────────────────
+  cx(r)   { return this.px + PAD + r * (CELL_W + REEL_GAP) + CELL_W / 2; }
+  cy(row) { return this.py + PAD + row * CELL_H + CELL_H / 2; }
+
+  // ── Scene creation ───────────────────────────────────────────────────────
+  create() {
+    phaserScene = this;
+    const W = this.scale.width, H = this.scale.height;
+
+    this.pw = REELS * CELL_W + (REELS - 1) * REEL_GAP + PAD * 2;
+    this.ph = ROWS  * CELL_H + PAD * 2;
+    this.px = (W - this.pw) / 2;
+    this.py = (H - this.ph) / 2;
+
+    this._buildBackground(W, H);
+    this._buildPanel();
+    this._buildSymbols();
+
+    this.winLineGfx = this.add.graphics().setDepth(5);
+    this.winCtrText = null;
+
+    this.setGrid(this._idleGrid());
+  }
+
+  _idleGrid() {
+    const k = Object.keys(SYM_CONFIG);
+    return Array.from({length:REELS}, () =>
+      Array.from({length:ROWS},   () => k[Math.floor(Math.random()*k.length)]));
+  }
+
+  // ── Background: gradient + twinkling stars + pillar silhouettes ──────────
+  _buildBackground(W, H) {
+    const bg = this.add.graphics();
+    bg.fillGradientStyle(0x020510, 0x020510, 0x04091c, 0x04091c, 1);
+    bg.fillRect(0, 0, W, H);
+
+    for (let i = 0; i < 48; i++) {
+      const x = Phaser.Math.Between(0, W);
+      const y = Phaser.Math.Between(0, H);
+      const r = Math.random() * 1.4 + 0.4;
+      const a = Math.random() * 0.5 + 0.1;
+      const s = this.add.circle(x, y, r, 0xffffff, a);
+      this.tweens.add({
+        targets: s, alpha: { from: a, to: 0.02 },
+        duration: Phaser.Math.Between(1800, 5500),
+        yoyo: true, repeat: -1, delay: Math.random()*3500,
+        ease: 'Sine.easeInOut',
+      });
+    }
+
+    // Subtle Greek pillar silhouettes on left/right edges
+    const pillar = this.add.graphics();
+    pillar.fillStyle(0x08152e, 0.55);
+    for (const xp of [0.06, 0.94]) {
+      const px = W * xp;
+      pillar.fillRect(px - 10, H * 0.08, 20, H * 0.87);
+      pillar.fillRect(px - 16, H * 0.08, 32, 7);
+      pillar.fillRect(px - 16, H * 0.93, 32, 7);
+    }
+  }
+
+  // ── Reel panel: gold border, chrome dividers, edge fades ─────────────────
+  _buildPanel() {
+    const {px, py, pw, ph} = this;
+
+    // Outer glow ring
+    const glow = this.add.graphics();
+    glow.lineStyle(4, 0xc8941a, 0.3);
+    glow.strokeRoundedRect(px-6, py-6, pw+12, ph+12, 17);
+
+    // Main panel body
+    const panel = this.add.graphics();
+    panel.fillStyle(0x07101e, 1);
+    panel.fillRoundedRect(px, py, pw, ph, 12);
+    panel.lineStyle(2, 0x19284a, 1);
+    panel.strokeRoundedRect(px, py, pw, ph, 12);
+
+    // Per-reel dark strips + chrome dividers
+    for (let r = 0; r < REELS; r++) {
+      const rx = px + PAD + r * (CELL_W + REEL_GAP);
+      const strip = this.add.graphics();
+      strip.fillStyle(0x030810, 1);
+      strip.fillRoundedRect(rx, py + PAD, CELL_W, ROWS * CELL_H, 5);
+
+      if (r < REELS - 1) {
+        const dx = rx + CELL_W + REEL_GAP / 2;
+        const div = this.add.graphics();
+        div.fillGradientStyle(0x000000, 0x1c3358, 0x1c3358, 0x000000, 0.75);
+        div.fillRect(dx-2, py+PAD, 4, ROWS*CELL_H);
+      }
+    }
+
+    // Top fade
+    const tf = this.add.graphics().setDepth(4);
+    tf.fillGradientStyle(0x07101e, 0x07101e, 0x07101e, 0x07101e, 1, 1, 0, 0);
+    tf.fillRoundedRect(px, py, pw, 24, {tl:12, tr:12, bl:0, br:0});
+
+    // Bottom fade
+    const bf = this.add.graphics().setDepth(4);
+    bf.fillGradientStyle(0x07101e, 0x07101e, 0x07101e, 0x07101e, 0, 0, 1, 1);
+    bf.fillRoundedRect(px, py+ph-24, pw, 24, {tl:0, tr:0, bl:12, br:12});
+
+    // Gold accent line at top of panel
+    const acc = this.add.graphics().setDepth(4);
+    acc.lineStyle(2, 0xf5c518, 0.5);
+    acc.lineBetween(px+22, py+3, px+pw-22, py+3);
+  }
+
+  // ── Symbol cells ─────────────────────────────────────────────────────────
+  _buildSymbols() {
+    this.cells = [];
+    this.glows = [];
+    for (let r = 0; r < REELS; r++) {
+      this.cells.push([]);
+      this.glows.push([]);
+      for (let row = 0; row < ROWS; row++) {
+        const x = this.cx(r), y = this.cy(row);
+        const glow = this.add.circle(x, y, 36, 0xffffff, 0).setDepth(2);
+        this.glows[r].push(glow);
+        const txt = this.add.text(x, y, '🪙', {
+          fontSize:'36px', fontFamily:'system-ui, sans-serif'
+        }).setOrigin(0.5).setDepth(3);
+        this.cells[r].push(txt);
+      }
+    }
+  }
+
+  // ── Grid display + win decorations ───────────────────────────────────────
+  setGrid(grid, winLines, tier) {
+    this.winLineGfx.clear();
+    this.tweens.killTweensOf(this.glows.flat());
+    this.tweens.killTweensOf(this.cells.flat());
+
+    for (let r = 0; r < REELS; r++)
+      for (let row = 0; row < ROWS; row++) {
+        this.glows[r][row].setAlpha(0);
+        this.cells[r][row].setAlpha(1).setScale(1)
+          .setText((SYM_CONFIG[grid[r][row]] || SYM_CONFIG.COIN).emoji);
+      }
+
+    if (!winLines?.length || !tier || tier === 'no_win') return;
+
+    const line     = winLines[0];
+    const winCount = line.length;
+    const winSym   = grid[0][line[0]];
+    const winColor = parseInt((SYM_CONFIG[winSym]||SYM_CONFIG.COIN).color.replace('#',''), 16);
+
+    // Dim losers
+    for (let r = 0; r < REELS; r++)
+      for (let row = 0; row < ROWS; row++) {
+        const isWin = r < winCount && line[r] === row;
+        if (!isWin) this.tweens.add({targets: this.cells[r][row], alpha:0.22, duration:260});
+      }
+
+    // Pulse winners
+    for (let r = 0; r < winCount; r++) {
+      const row = line[r], g = this.glows[r][row];
+      g.setFillStyle(winColor, 0.32).setAlpha(1);
+      this.tweens.add({targets:g, alpha:{from:1,to:0.22}, duration:520, yoyo:true, repeat:-1});
+      this.tweens.add({targets:this.cells[r][row],
+        scaleX:{from:1,to:1.13}, scaleY:{from:1,to:1.13}, duration:520, yoyo:true, repeat:-1});
+    }
+
+    this._drawWinLine(line, winCount, winColor);
+  }
+
+  _drawWinLine(line, count, color) {
+    const g = this.winLineGfx;
+    g.clear();
+    g.lineStyle(3, color, 0.88);
+    const x0 = this.cx(0) - CELL_W * 0.42;
+    const xN = this.cx(count-1) + CELL_W * 0.42;
+    g.beginPath();
+    g.moveTo(x0, this.cy(line[0]));
+    for (let r = 0; r < count; r++) g.lineTo(this.cx(r), this.cy(line[r]));
+    g.lineTo(xN, this.cy(line[count-1]));
+    g.strokePath();
+    for (let r = 0; r < count; r++) {
+      g.lineStyle(2, color, 0.65);
+      g.strokeCircle(this.cx(r), this.cy(line[r]), 37);
+    }
+    this.tweens.add({targets:g, alpha:{from:1,to:0.25}, duration:560, yoyo:true, repeat:-1});
+  }
+
+  // ── Celebration: particles, camera, win counter ──────────────────────────
+  celebrateWin(tier, win) {
+    if (!tier || tier === 'no_win' || win <= 0) return;
+
+    const cx = this.scale.width / 2;
+    const cy = this.scale.height / 2;
+
+    const isJackpot = tier === 'jackpot';
+    const isEpic    = isJackpot || tier === 'epic_win';
+    const isBig     = isEpic   || ['big_win','mega_win','super_win'].includes(tier);
+    const isMedium  = isBig    || tier === 'medium_win';
+
+    // Camera flash
+    if      (isJackpot) this.cameras.main.flash(380, 245, 197, 24);
+    else if (isEpic)    this.cameras.main.flash(200, 255, 255, 200);
+    else if (isBig)     this.cameras.main.flash(130, 255, 240, 120);
+
+    // Camera shake
+    if      (isJackpot) this.cameras.main.shake(720, 0.019);
+    else if (isEpic)    this.cameras.main.shake(460, 0.012);
+    else if (isBig)     this.cameras.main.shake(230, 0.006);
+
+    // Coin particles
+    const coins = isJackpot ? 75 : isEpic ? 48 : isBig ? 30 : isMedium ? 14 : 6;
+    this._burstCoins(cx, cy, coins);
+
+    // Spark particles
+    if (isBig) this._burstSparks(cx, cy, isJackpot ? 60 : isEpic ? 38 : 22);
+
+    // Jackpot extras
+    if (isJackpot) {
+      this.time.delayedCall(300, () => this._burstCoins(cx, cy-30, 55));
+      this.time.delayedCall(580, () => {
+        this._burstSparks(cx, cy, 45);
+        this.cameras.main.flash(260, 245, 197, 24);
+      });
+      this._drawLightning();
+    }
+
+    // Win counter inside canvas
+    this._showWinCounter(win, cx, this.py - 14);
+  }
+
+  _burstCoins(x, y, count) {
+    const em = this.add.particles(x, y, 'ptcl_coin', {
+      speed: {min:95, max:310}, angle: {min:-118, max:-62},
+      gravityY: 460, lifespan: {min:850, max:1700},
+      scale: {start:1.15, end:0.15}, alpha:{start:1, end:0},
+      tint: [0xffd700, 0xffa500, 0xffec00, 0xffe566],
+      quantity: count, emitting: false,
+    }).setDepth(10);
+    em.explode(count);
+    this.time.delayedCall(2200, () => { if (em.active) em.destroy(); });
+  }
+
+  _burstSparks(x, y, count) {
+    const em = this.add.particles(x, y, 'ptcl_spark', {
+      speed: {min:130, max:400}, angle: {min:-148, max:-32},
+      gravityY: 190, lifespan: {min:380, max:950},
+      scale: {start:2.0, end:0}, alpha:{start:1, end:0},
+      tint: [0xffffff, 0xf5c518, 0xff8c00, 0x00e0ff],
+      quantity: count, emitting: false,
+    }).setDepth(10);
+    em.explode(count);
+    this.time.delayedCall(1300, () => { if (em.active) em.destroy(); });
+  }
+
+  _drawLightning() {
+    const g = this.add.graphics().setDepth(20).setAlpha(0);
+    const W = this.scale.width, H = this.scale.height;
+    g.lineStyle(3, 0xf5c518, 1);
+    g.beginPath();
+    let lx = Phaser.Math.Between(W*0.35, W*0.65), ly = 0;
+    g.moveTo(lx, ly);
+    while (ly < H) {
+      lx += Phaser.Math.Between(-55, 55);
+      ly += Phaser.Math.Between(18, 48);
+      g.lineTo(Math.max(15, Math.min(W-15, lx)), ly);
+    }
+    g.strokePath();
+    this.tweens.add({targets:g, alpha:{from:0.95, to:0}, duration:380,
+      ease:'Power3', onComplete:()=>g.destroy()});
+  }
+
+  _showWinCounter(win, x, y) {
+    if (this.winCtrText?.active) this.winCtrText.destroy();
+    const txt = this.add.text(x, y, '€0.00', {
+      fontSize:'26px', fontFamily:'Inter, system-ui, sans-serif', fontStyle:'bold',
+      color:'#f5c518', stroke:'#000000', strokeThickness:5,
+      shadow:{offsetX:0, offsetY:0, color:'#f5c518', blur:16, fill:true},
+    }).setOrigin(0.5).setAlpha(0).setDepth(12);
+    this.winCtrText = txt;
+
+    this.tweens.add({targets:txt, alpha:1, duration:180});
+    this.tweens.add({targets:txt, y:y-22, duration:2100, ease:'Power1'});
+
+    const ctr = {v:0};
+    this.tweens.add({
+      targets:ctr, v:win, duration:1450, ease:'Power2',
+      onUpdate:   ()=>{ if (txt.active) txt.setText('€'+ctr.v.toFixed(2)); },
+      onComplete: ()=>{
+        if (!txt.active) return;
+        this.tweens.add({targets:txt,
+          scaleX:{from:1,to:1.25}, scaleY:{from:1,to:1.25}, duration:160, yoyo:true});
+      },
+    });
+    this.time.delayedCall(2700, ()=>{
+      if (!txt.active) return;
+      this.tweens.add({targets:txt, alpha:0, duration:360,
+        onComplete:()=>{ txt.destroy(); if(this.winCtrText===txt) this.winCtrText=null; }});
+    });
+  }
+
+  // ── Spin animation with anticipation ─────────────────────────────────────
+  spinAnimation(finalGrid, winLines, tier, onDone) {
+    this.winLineGfx.clear();
+    this.tweens.killTweensOf([...this.glows.flat(), ...this.cells.flat()]);
+    for (let r = 0; r < REELS; r++)
+      for (let row = 0; row < ROWS; row++) {
+        this.cells[r][row].setAlpha(1).setScale(1);
+        this.glows[r][row].setAlpha(0);
+      }
+
+    const isBig      = BIG_TIERS.has(tier) && tier !== 'medium_win';
+    const FAST_MS    = 52;
+    const SLOW_MS    = 170;   // anticipation pace
+    const BASE_TICKS = 20;
+    const SYMS       = Object.keys(SYM_CONFIG);
+    let   completed  = 0;
+
+    for (let r = 0; r < REELS; r++) {
+      const anticipateTicks = isBig && r >= 3 ? (r - 2) * 7 : 0;
+      const fastTicks       = BASE_TICKS + r * 2;
+      const totalTicks      = fastTicks + anticipateTicks;
+      let   tick            = 0;
+      let   slow            = false;
+
+      const doTick = () => {
+        tick++;
+        if (tick <= totalTicks) {
+          if (!slow && isBig && r >= 3 && tick > fastTicks) slow = true;
+
+          for (let row = 0; row < ROWS; row++) {
+            const sym = SYMS[Math.floor(Math.random() * SYMS.length)];
+            this.cells[r][row]
+              .setText(SYM_CONFIG[sym].emoji)
+              .setAlpha(slow ? 0.88 + Math.sin(tick*0.9)*0.12 : 0.55 + Math.random()*0.45);
+          }
+          this.time.delayedCall(slow ? SLOW_MS : FAST_MS, doTick);
+        } else {
+          // ── Reel lands ──
+          soundReelStop(r);
+          for (let row = 0; row < ROWS; row++) {
+            const sym = finalGrid[r][row];
+            this.cells[r][row].setText((SYM_CONFIG[sym]||SYM_CONFIG.COIN).emoji).setAlpha(1).setScale(1);
+            this.tweens.add({targets:this.cells[r][row],
+              scaleX:{from:1.28,to:1}, scaleY:{from:1.28,to:1},
+              duration:225, ease:'Back.easeOut'});
+          }
+          completed++;
+          if (completed === REELS) {
+            this.time.delayedCall(185, () => {
+              this.setGrid(finalGrid, winLines, tier);
+              onDone();
+            });
+          }
+        }
+      };
+
+      this.time.delayedCall(r * 135, doTick);
+    }
+  }
+}
+
+// Fit canvas to game-wrap
+function getGameSize() {
+  const wrap = document.getElementById('game-wrap');
+  const w = wrap.clientWidth;
+  const h = wrap.clientHeight;
+  return { width: Math.min(w, 620), height: Math.min(h, 400) };
+}
+
+const { width, height } = getGameSize();
+
+const phaserConfig = {
+  type: Phaser.CANVAS,
+  canvas: document.getElementById('game-canvas'),
+  width,
+  height,
+  backgroundColor: '#060810',
+  scene: SlotScene,
+};
+const game = new Phaser.Game(phaserConfig);
+
+// Resize handling
+window.addEventListener('resize', () => {
+  const { width: nw, height: nh } = getGameSize();
+  game.scale.resize(nw, nh);
+});
+
+// ── Audio engine (Web Audio API — fully procedural, no external files) ────────
+let _actx  = null;
+let _muted = false;
+
+function actx() {
+  if (!_actx) _actx = new (window.AudioContext || window.webkitAudioContext)();
+  if (_actx.state === 'suspended') _actx.resume();
+  return _actx;
+}
+
+function _note(ctx, freq, type, t0, dur, vol = 0.28, detune = 0) {
+  const osc  = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.type    = type;
+  osc.frequency.setValueAtTime(freq, t0);
+  if (detune) osc.detune.setValueAtTime(detune, t0);
+  gain.gain.setValueAtTime(vol, t0);
+  gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+  osc.start(t0);
+  osc.stop(t0 + dur + 0.02);
+}
+
+function _noise(ctx, t0, dur, vol = 0.12, hpFreq = 200) {
+  const samples = ctx.sampleRate * dur;
+  const buf     = ctx.createBuffer(1, samples, ctx.sampleRate);
+  const data    = buf.getChannelData(0);
+  let last = 0;
+  for (let i = 0; i < samples; i++) {
+    const w = Math.random() * 2 - 1;
+    data[i] = last = (last + 0.02 * w) / 1.02;
+  }
+  const src  = ctx.createBufferSource();
+  src.buffer = buf;
+  const hp   = ctx.createBiquadFilter();
+  hp.type    = 'highpass';
+  hp.frequency.value = hpFreq;
+  const gain = ctx.createGain();
+  gain.gain.setValueAtTime(vol, t0);
+  gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+  src.connect(hp); hp.connect(gain); gain.connect(ctx.destination);
+  src.start(t0); src.stop(t0 + dur + 0.02);
+}
+
+// Button click feedback
+function soundClick() {
+  if (_muted) return;
+  const ctx = actx(); const t = ctx.currentTime;
+  _note(ctx, 900, 'square', t, 0.04, 0.06);
+}
+
+// Mechanical spin whoosh played once when reels start
+function soundSpin() {
+  if (_muted) return;
+  const ctx = actx(); const t = ctx.currentTime;
+  _noise(ctx, t, 0.18, 0.18, 400);
+  // Brief descending sweep
+  const osc  = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.connect(gain); gain.connect(ctx.destination);
+  osc.type = 'sawtooth';
+  osc.frequency.setValueAtTime(320, t);
+  osc.frequency.exponentialRampToValueAtTime(80, t + 0.18);
+  gain.gain.setValueAtTime(0.1, t);
+  gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.18);
+  osc.start(t); osc.stop(t + 0.2);
+}
+
+// Satisfying thunk when each reel lands
+function soundReelStop(reelIndex) {
+  if (_muted) return;
+  const ctx = actx(); const t = ctx.currentTime;
+  // Low punch (pitch drops slightly per reel for variety)
+  const baseFreq = 110 - reelIndex * 8;
+  _note(ctx, baseFreq, 'sine', t, 0.12, 0.22);
+  _note(ctx, baseFreq * 2, 'triangle', t, 0.07, 0.1);
+  _noise(ctx, t, 0.06, 0.09, 800);
+}
+
+// Win fanfares — scale up with tier
+const WIN_SEQUENCES = {
+  tiny_win:   { notes: [523, 659, 784],                          step: 0.09, dur: 0.18, type: 'triangle', vol: 0.22, bass: false },
+  small_win:  { notes: [523, 659, 784, 1047],                    step: 0.09, dur: 0.20, type: 'triangle', vol: 0.26, bass: false },
+  medium_win: { notes: [392, 523, 659, 784, 1047],               step: 0.08, dur: 0.22, type: 'sine',     vol: 0.28, bass: false },
+  big_win:    { notes: [294, 392, 523, 659, 784, 1047],          step: 0.08, dur: 0.26, type: 'sine',     vol: 0.32, bass: true  },
+  mega_win:   { notes: [261, 329, 392, 523, 659, 784, 1047],     step: 0.07, dur: 0.28, type: 'sine',     vol: 0.35, bass: true  },
+  super_win:  { notes: [196, 247, 330, 392, 523, 659, 784,1047], step: 0.065,dur: 0.30, type: 'sine',     vol: 0.38, bass: true  },
+  epic_win:   { notes: [174, 220, 277, 370, 466, 587, 740, 932, 1175],
+                                                                   step: 0.06, dur: 0.32, type: 'sine',     vol: 0.40, bass: true  },
+  jackpot:    { notes: [130, 165, 196, 247, 311, 392, 494, 587, 740, 932, 1175, 1480],
+                                                                   step: 0.055,dur: 0.35, type: 'sine',     vol: 0.42, bass: true  },
+};
+
+function soundWin(tier) {
+  if (_muted) return;
+  const seq = WIN_SEQUENCES[tier];
+  if (!seq) return;
+  const ctx = actx(); const t = ctx.currentTime;
+
+  // Ascending arpeggio
+  seq.notes.forEach((freq, i) => {
+    _note(ctx, freq, seq.type, t + i * seq.step, seq.dur + seq.step * 0.5, seq.vol);
+    // Harmony a 5th up for richness on high-tier wins
+    if (seq.bass && i >= seq.notes.length - 3) {
+      _note(ctx, freq * 1.5, seq.type, t + i * seq.step, seq.dur * 0.6, seq.vol * 0.35, 5);
+    }
+  });
+
+  // Bass hit for significant wins
+  if (seq.bass) {
+    _note(ctx, 65,  'sine', t,       0.45, 0.38);
+    _note(ctx, 82,  'sine', t + 0.1, 0.35, 0.28);
+    _noise(ctx, t, 0.08, 0.14, 150);
+  }
+
+  // Jackpot: shimmer tail of harmonics after the arpeggio ends
+  if (tier === 'jackpot') {
+    const tail = t + seq.notes.length * seq.step + 0.1;
+    [523, 659, 784, 1047, 1319, 1568].forEach((f, i) => {
+      _note(ctx, f, 'sine', tail + i * 0.07, 1.2, 0.18);
+      _note(ctx, f * 1.005, 'sine', tail + i * 0.07, 1.2, 0.1, -10); // slight chorus
+    });
+    // Final triumphant chord
+    [523, 659, 784, 1047].forEach(f => _note(ctx, f, 'sine', tail + 0.55, 1.4, 0.22));
+  }
+
+  // Epic win: short shimmer burst
+  if (tier === 'epic_win') {
+    const tail = t + seq.notes.length * seq.step + 0.05;
+    [659, 784, 1047].forEach((f, i) => _note(ctx, f, 'sine', tail + i * 0.08, 0.8, 0.16));
+  }
+}
+
+// Mute toggle
+document.getElementById('mute-btn').addEventListener('click', () => {
+  soundClick();
+  _muted = !_muted;
+  const btn = document.getElementById('mute-btn');
+  btn.textContent = _muted ? '🔇' : '🔊';
+  btn.classList.toggle('muted', _muted);
+});
+
+// ── Spin ─────────────────────────────────────────────────────────────────────
+async function doSpin() {
+  if (spinning) return;
+  if (!token) { fetchInfo(); return; }
+  if (balance < getBet()) {
+    const box = document.getElementById('msg-box');
+    document.getElementById('msg-tier').textContent   = 'Insufficient Balance';
+    document.getElementById('msg-amount').textContent = `Need €${getBet().toFixed(2)}`;
+    document.getElementById('msg-sub').textContent    = `Current balance: €${balance.toFixed(2)}`;
+    box.classList.add('show');
+    clearTimeout(msgTimer);
+    msgTimer = setTimeout(() => box.classList.remove('show'), 2500);
+    return;
+  }
+
+  spinning = true;
+  document.getElementById('spin-btn').disabled = true;
+  document.getElementById('last-win').textContent = '—';
+  soundSpin();
+
+  try {
+    const r = await fetch(`${API_BASE}/spin`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ bet: getBet() }),
+    });
+    const data = await r.json();
+    if (!r.ok) {
+      alert(data.error || 'Spin failed');
+      spinning = false;
+      document.getElementById('spin-btn').disabled = false;
+      return;
+    }
+
+    // Show stake deduction immediately so the player sees the bet leave their balance
+    setBalance(balance - getBet());
+
+    phaserScene.spinAnimation(data.grid, data.winLines, data.tier, () => {
+      // Reveal final balance only after reels stop
+      setBalance(data.balance);
+      if (data.win > 0) {
+        document.getElementById('last-win').textContent = '€' + data.win.toFixed(2);
+        soundWin(data.tier);
+        phaserScene.celebrateWin(data.tier, data.win);          // particles + shake + counter
+        if (BIG_TIERS.has(data.tier)) showWinMsg(data.tier, data.win); // banner only for big wins
+      } else {
+        document.getElementById('last-win').textContent = '—';
+      }
+      spinning = false;
+      document.getElementById('spin-btn').disabled = false;
+    });
+  } catch (e) {
+    console.error('spin error:', e);
+    alert('Network error — please retry.');
+    spinning = false;
+    document.getElementById('spin-btn').disabled = false;
+  }
+}
+
+document.getElementById('spin-btn').addEventListener('click', doSpin);
+
+// Keyboard: Space or Enter to spin
+document.addEventListener('keydown', e => {
+  if ((e.code === 'Space' || e.code === 'Enter') && !e.target.matches('button, input')) {
+    e.preventDefault();
+    doSpin();
+  }
+});
+
+// ── Init ─────────────────────────────────────────────────────────────────────
+fetchInfo();
+</script>
+</body>
+</html>

@@ -10,8 +10,8 @@ services:
       - db_data:/var/lib/postgresql/data
       - ./db:/docker-entrypoint-initdb.d
 
-  betting_engine:
-    build: ./services/betting_engine
+  risk_engine:
+    build: ./services/risk_engine
     depends_on:
       - db
     environment:
@@ -19,6 +19,24 @@ services:
       DB_USER: betting_user
       DB_PASSWORD: betting_pass
       DB_NAME: betting_db
+      MAX_STAKE_PER_BET:  500
+      MAX_PAYOUT_PER_BET: 10000
+      MAX_DAILY_STAKE:    1000
+      LIABILITY_CAP:      50000
+    restart: unless-stopped
+
+  betting_engine:
+    build: ./services/betting_engine
+    depends_on:
+      - db
+      - risk_engine
+    environment:
+      DB_HOST: db
+      DB_USER: betting_user
+      DB_PASSWORD: betting_pass
+      DB_NAME: betting_db
+      RISK_ENGINE_URL: http://risk_engine:4000
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-betengine_refresh_secret_changeme_in_prod}
 
   settlement_engine:
     build: ./services/settlement_engine
@@ -31,10 +49,37 @@ services:
       DB_NAME: betting_db
       POLL_INTERVAL_MS: 10000
 
+  data_ingestor:
+    build: ./services/data_ingestor
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_USER: betting_user
+      DB_PASSWORD: betting_pass
+      DB_NAME: betting_db
+      ODDS_API_KEY: ${ODDS_API_KEY}
+      INGEST_INTERVAL_HOURS: ${INGEST_INTERVAL_HOURS:-6}
+      SCORE_POLL_INTERVAL_SECONDS: ${SCORE_POLL_INTERVAL_SECONDS:-120}
+    restart: unless-stopped
+
+  slot_engine:
+    build: ./services/slot_engine
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_USER: betting_user
+      DB_PASSWORD: betting_pass
+      DB_NAME: betting_db
+      JWT_SECRET: ${JWT_SECRET:-betengine_jwt_secret_changeme_in_prod}
+    restart: unless-stopped
+
   nginx:
     image: nginx:alpine
     depends_on:
       - betting_engine
+      - slot_engine
     ports:
       - "8080:80"
     volumes:

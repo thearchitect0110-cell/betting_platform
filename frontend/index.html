@@ -1,122 +1,179 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="el">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BetEngine</title>
+  <title>STRIKE Bet — Precision in Every Play.</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:          #0f1923;
-      --bg-card:     #16202d;
-      --bg-input:    #0d1720;
-      --bg-header:   #0a1318;
-      --sidebar-bg:  #131d27;
-      --border:      #1e3248;
-      --green:       #00c85a;
-      --green-dark:  #00a347;
-      --blue:        #3b82f6;
-      --odds-bg:     #1a2e42;
-      --odds-sel-bg: #1e3a8a;
-      --odds-sel-bd: #3b82f6;
-      --text:        #ffffff;
-      --text-sec:    #94a3b8;
-      --text-muted:  #4e6480;
-      --danger:      #ef4444;
-      --amber:       #f59e0b;
-      --radius:      8px;
+      --bg:            #0a0e14;
+      --bg-card:       #111722;
+      --bg-input:      #0d1117;
+      --bg-header:     #070b10;
+      --sidebar-bg:    #111722;
+      --border:        rgba(255,255,255,.06);
+      --border-strong: rgba(255,255,255,.10);
+      --green:         #00c85a;
+      --green-dark:    #00a347;
+      --orange:        #f5c518;
+      --orange-dark:   #d4a800;
+      --blue:          #3b82f6;
+      --play-btn:      #ff4500;
+      --play-btn-dark: #e03c00;
+      --odds-bg:       #0d1420;
+      --odds-sel-bg:   rgba(245,197,24,.13);
+      --odds-sel-bd:   #f5c518;
+      --text:          #f0f4f8;
+      --text-sec:      #a0aec0;
+      --text-muted:    #4a6080;
+      --danger:        #ef4444;
+      --amber:         #f59e0b;
+      --radius:        6px;
+      --shadow-sm:     0 2px 8px rgba(0,0,0,.25);
+      --shadow-card:   0 4px 12px rgba(0,0,0,.3);
+      --shadow-hover:  0 12px 32px rgba(0,0,0,.55);
+      --transition:    all 0.2s ease-in-out;
     }
 
-    body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; }
+    body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 13px; overflow-x: hidden; line-height: 1.5; -webkit-font-smoothing: antialiased; }
 
     /* ── Header ── */
     #site-header {
       position: sticky; top: 0; z-index: 200;
-      background: var(--bg-header); border-bottom: 1px solid var(--border);
-      height: 62px; display: flex; align-items: center; padding: 0 20px; gap: 20px;
+      background: var(--bg-header);
+      border-bottom: 1px solid rgba(255,255,255,.05);
+      box-shadow: 0 1px 0 rgba(255,255,255,.03), 0 4px 24px rgba(0,0,0,.5);
+      height: 68px; display: flex; align-items: center; padding: 0 24px; gap: 20px;
     }
-    .logo { font-size: 1.25rem; font-weight: 700; letter-spacing: -.5px; flex-shrink: 0; }
-    .logo span { color: var(--green); }
-    .header-nav { display: flex; gap: 2px; flex: 1; }
+    .logo { flex-shrink: 0; display: flex; flex-direction: column; gap: 2px; text-decoration: none; }
+    .logo-name { font-size: 1.1rem; font-weight: 800; letter-spacing: .5px; line-height: 1; color: var(--text); }
+    .logo-name span { color: var(--orange); }
+    .logo-tag { font-size: .52rem; font-weight: 600; letter-spacing: 2.5px; text-transform: uppercase; color: var(--text-muted); line-height: 1; }
+    .search-wrap { position: relative; flex: 0 1 260px; }
+    .search-wrap .search-icon { position:absolute; left:10px; top:50%; transform:translateY(-50%); color:var(--text-muted); font-size:.85rem; pointer-events:none; }
+    .search-input {
+      width:100%; padding:8px 12px 8px 34px; border-radius:8px;
+      background:var(--bg-input); border:1px solid rgba(255,255,255,.06);
+      color:var(--text); font-size:.82rem; outline:none; transition:var(--transition);
+    }
+    .search-input:focus { border-color:var(--blue); box-shadow: 0 0 0 3px rgba(59,130,246,.12); }
+    .search-input::placeholder { color:var(--text-muted); }
+    .search-clear {
+      position:absolute; right:8px; top:50%; transform:translateY(-50%);
+      color:var(--text-muted); cursor:pointer; font-size:.9rem; line-height:1;
+      background:none; border:none; padding:2px 4px; transition:var(--transition);
+    }
+    .search-clear:hover { color:var(--text); }
+    .search-results-note { font-size:.75rem; color:var(--text-muted); margin-bottom:12px; }
+    .header-nav { display: flex; gap: 2px; flex: 1; align-items: center; }
     .nav-item {
-      padding: 6px 12px; border-radius: 6px; font-size: .82rem; font-weight: 500;
-      color: var(--text-muted); cursor: pointer; transition: color .15s, background .15s; user-select: none;
+      position: relative; padding: 7px 14px; border-radius: 7px; font-size: .82rem; font-weight: 500;
+      color: var(--text-muted); cursor: pointer; transition: var(--transition); user-select: none;
     }
-    .nav-item:hover  { color: var(--text-sec); }
-    .nav-item.active { color: var(--text); background: rgba(255,255,255,.06); }
+    .nav-item:hover  { color: var(--text-sec); background: rgba(255,255,255,.04); }
+    .nav-item.active { color: var(--text); background: rgba(245,197,24,.1); font-weight: 600; }
+    .nav-item.active::after { content:''; position:absolute; bottom:-1px; left:50%; transform:translateX(-50%); width:28px; height:2px; background:var(--orange); border-radius:2px 2px 0 0; }
     .nav-item.admin-tab { color: var(--amber); }
     .nav-item.admin-tab.active { background: rgba(245,158,11,.1); }
     .header-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
     .balance-badge {
-      background: rgba(0,200,90,.12); border: 1px solid rgba(0,200,90,.3);
-      color: var(--green); font-weight: 700; font-size: .85rem; padding: 5px 12px; border-radius: 20px;
+      background: rgba(0,200,90,.08); border: 1px solid rgba(0,200,90,.2);
+      color: var(--green); font-weight: 700; font-size: .82rem; padding: 6px 14px; border-radius: 20px;
+      box-shadow: 0 0 12px rgba(0,200,90,.08);
     }
     .username-tag { font-size: .82rem; color: var(--text-sec); font-weight: 500; }
 
     /* ── Buttons ── */
-    .btn { padding: 7px 16px; border-radius: var(--radius); font-size: .82rem; font-weight: 600; cursor: pointer; border: none; transition: all .15s; font-family: inherit; }
-    .btn-sm { padding: 5px 11px; font-size: .75rem; }
-    .btn-green   { background: var(--green); color: #000; }
-    .btn-green:hover   { background: var(--green-dark); }
-    .btn-green:disabled { opacity: .5; cursor: not-allowed; }
-    .btn-outline { background: transparent; color: var(--text-sec); border: 1px solid var(--border); }
-    .btn-outline:hover { border-color: var(--blue); color: var(--text); }
-    .btn-ghost   { background: transparent; color: var(--text-muted); border: 1px solid var(--border); }
-    .btn-ghost:hover { border-color: var(--danger); color: var(--danger); }
-    .btn-amber { background: rgba(245,158,11,.12); color: var(--amber); border: 1px solid rgba(245,158,11,.3); }
-    .btn-amber:hover { background: rgba(245,158,11,.22); }
-    .btn-red   { background: rgba(239,68,68,.10); color: var(--danger); border: 1px solid rgba(239,68,68,.3); }
-    .btn-red:hover   { background: rgba(239,68,68,.20); }
-    .btn-block { width: 100%; padding: 11px; font-size: .9rem; }
+    .btn { padding: 8px 18px; border-radius: var(--radius); font-size: .8rem; font-weight: 600; cursor: pointer; border: none; transition: var(--transition); font-family: inherit; letter-spacing: .3px; }
+    .btn-sm { padding: 5px 12px; font-size: .72rem; }
+    .btn-green   { background: var(--orange); color: #0a0e14; box-shadow: 0 2px 8px rgba(245,197,24,.25); }
+    .btn-green:hover   { background: var(--orange-dark); box-shadow: 0 4px 14px rgba(245,197,24,.35); transform: translateY(-1px); }
+    .btn-green:disabled { opacity: .4; cursor: not-allowed; transform: none; box-shadow: none; }
+    .btn-outline { background: transparent; color: var(--text-sec); border: 1px solid rgba(255,255,255,.1); }
+    .btn-outline:hover { border-color: var(--orange); color: var(--text); background: rgba(245,197,24,.05); }
+    .btn-ghost   { background: transparent; color: var(--text-muted); border: 1px solid rgba(255,255,255,.06); }
+    .btn-ghost:hover { border-color: var(--danger); color: var(--danger); background: rgba(239,68,68,.05); }
+    .btn-amber { background: rgba(245,158,11,.12); color: var(--amber); border: 1px solid rgba(245,158,11,.25); }
+    .btn-amber:hover { background: rgba(245,158,11,.22); border-color: rgba(245,158,11,.4); }
+    .btn-red   { background: rgba(239,68,68,.10); color: var(--danger); border: 1px solid rgba(239,68,68,.25); }
+    .btn-red:hover   { background: rgba(239,68,68,.20); border-color: rgba(239,68,68,.4); }
+    .btn-block { width: 100%; padding: 12px; font-size: .9rem; }
 
     /* ── Layout ── */
-    .container { max-width: 1280px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 330px; gap: 20px; align-items: start; }
+    .container { max-width: 1400px; margin: 0 auto; padding: 24px; display: grid; grid-template-columns: 208px 1fr 316px; gap: 24px; align-items: start; }
     .container.single { grid-template-columns: 1fr; }
-    @media (max-width: 800px) { .container { grid-template-columns: 1fr; } aside { position: static !important; } }
+    @media (max-width: 1100px) { .container { grid-template-columns: 1fr 300px; } .league-sidebar { display: none; } }
+    @media (max-width: 800px)  { .container { grid-template-columns: 1fr; } aside { position: static !important; } }
 
     .section-title {
-      font-size: .7rem; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase;
-      color: var(--text-muted); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
+      font-size: .65rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--text-muted); margin-bottom: 16px; display: flex; align-items: center; gap: 10px;
     }
-    .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .section-title::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,.05); }
 
-    /* ── Match card (public) ── */
-    .match-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin-bottom: 8px; transition: border-color .2s; }
-    .match-card:hover { border-color: rgba(59,130,246,.35); }
+    /* ── League sidebar (left column) ── */
+    .league-sidebar { position: sticky; top: 92px; background: var(--bg-card); border: 1px solid rgba(255,255,255,.05); border-radius: 10px; overflow: hidden; box-shadow: var(--shadow-card); }
+    .ln-header { font-size: .58rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); padding: 12px 12px 10px; border-bottom: 1px solid rgba(255,255,255,.05); margin-bottom: 4px; }
+    .ln-item {
+      display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 0; cursor: pointer;
+      border-left: 2px solid transparent; margin-bottom: 0; user-select: none; transition: var(--transition);
+      color: var(--text-muted);
+    }
+    .ln-item:hover { background: rgba(255,255,255,.04); color: var(--text-sec); }
+    .ln-item.active { background: rgba(245,197,24,.07); border-left-color: var(--orange); color: var(--text); }
+    .ln-name { font-size: .72rem; font-weight: 500; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .ln-count { font-size: .6rem; font-weight: 700; background: rgba(255,255,255,.06); padding: 2px 5px; border-radius: 3px; flex-shrink: 0; }
+    .ln-item.active .ln-count { background: rgba(245,197,24,.15); color: var(--orange); }
+
+    /* ── Match card ── */
+    .match-card {
+      background: var(--bg-card); border: 1px solid rgba(255,255,255,.05); border-radius: 10px;
+      padding: 16px 18px; margin-bottom: 8px; transition: var(--transition);
+      border-left: 3px solid transparent; box-shadow: var(--shadow-card);
+    }
+    .match-card:hover { border-color: rgba(245,197,24,.22); border-left-color: var(--orange); box-shadow: var(--shadow-hover), 0 0 0 1px rgba(245,197,24,.06); transform: translateY(-1px); }
     .match-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-    .league-tag { font-size: .68rem; font-weight: 600; letter-spacing: .8px; text-transform: uppercase; color: var(--blue); }
+    .league-tag { font-size: .62rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--blue); }
+    .league-group { margin-bottom: 24px; }
+    .league-group-hdr {
+      font-size:.62rem; font-weight:700; letter-spacing:1.5px; text-transform:uppercase;
+      color:var(--text-muted); padding:10px 0 8px; display:flex; align-items:center; gap:8px;
+    }
+    .league-group-hdr::after { content:''; flex:1; height:1px; background:rgba(255,255,255,.05); }
     .match-time { font-size: .72rem; color: var(--text-muted); }
-    .match-teams { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; margin-bottom: 14px; }
-    .team-name { font-size: 1rem; font-weight: 600; }
+    .match-teams { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; margin-bottom: 16px; }
+    .team-name { font-size: 1rem; font-weight: 600; color: var(--text); }
     .team-name.away { text-align: right; }
-    .vs-badge { font-size: .68rem; font-weight: 700; color: var(--text-muted); background: rgba(255,255,255,.05); padding: 3px 7px; border-radius: 4px; }
+    .vs-badge { font-size: .68rem; font-weight: 700; color: var(--text-muted); background: rgba(255,255,255,.04); padding: 4px 8px; border-radius: 5px; border: 1px solid rgba(255,255,255,.05); }
     .odds-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
-    .odd-btn { background: var(--odds-bg); border: 1px solid transparent; border-radius: var(--radius); padding: 9px 4px; text-align: center; cursor: pointer; transition: all .15s; display: flex; flex-direction: column; align-items: center; gap: 3px; font-family: inherit; }
-    .odd-btn:hover { background: rgba(59,130,246,.15); border-color: var(--blue); }
-    .odd-btn.selected { background: var(--odds-sel-bg); border-color: var(--odds-sel-bd); box-shadow: 0 0 0 1px var(--odds-sel-bd); }
-    .odd-label { font-size: .62rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); }
+    .odd-btn { background: var(--odds-bg); border: 1px solid rgba(255,255,255,.06); border-radius: var(--radius); padding: 10px 4px; text-align: center; cursor: pointer; transition: var(--transition); display: flex; flex-direction: column; align-items: center; gap: 3px; font-family: inherit; }
+    .odd-btn:hover { background: rgba(245,197,24,.09); border-color: rgba(245,197,24,.4); transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,.25); }
+    .odd-btn.selected { background: var(--odds-sel-bg); border-color: var(--odds-sel-bd); box-shadow: 0 0 0 1px var(--odds-sel-bd), 0 4px 12px rgba(245,197,24,.15); }
+    .odd-label { font-size: .58rem; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text-muted); }
     .odd-value { font-size: .95rem; font-weight: 700; color: var(--text); }
-    .odd-btn.selected .odd-value { color: #93c5fd; }
+    .odd-btn.selected .odd-value { color: var(--orange); }
 
     /* ── Sidebar ── */
-    aside { position: sticky; top: 82px; }
-    .sidebar-panel { background: var(--sidebar-bg); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
-    .panel-header { background: rgba(255,255,255,.03); padding: 13px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-    .panel-title { font-size: .75rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; }
-    .slip-count { background: var(--blue); color: #fff; font-size: .68rem; font-weight: 700; min-width: 20px; height: 20px; padding: 0 5px; border-radius: 10px; display: grid; place-items: center; }
+    aside { position: sticky; top: 92px; }
+    .sidebar-panel { background: var(--sidebar-bg); border: 1px solid rgba(255,255,255,.05); border-radius: 10px; overflow: hidden; box-shadow: var(--shadow-card); }
+    .panel-header { background: rgba(255,255,255,.02); padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,.05); display: flex; align-items: center; justify-content: space-between; }
+    .panel-title { font-size: .65rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-sec); }
+    .slip-count { background: var(--orange); color: #0a0e14; font-size: .65rem; font-weight: 700; min-width: 20px; height: 20px; padding: 0 5px; border-radius: 10px; display: grid; place-items: center; }
     .auth-tabs { display: grid; grid-template-columns: 1fr 1fr; }
-    .auth-tab { padding: 12px; text-align: center; font-size: .82rem; font-weight: 600; color: var(--text-muted); cursor: pointer; border-bottom: 2px solid transparent; transition: all .15s; }
-    .auth-tab.active { color: var(--text); border-color: var(--blue); }
+    .auth-tab { padding: 12px; text-align: center; font-size: .78rem; font-weight: 600; color: var(--text-muted); cursor: pointer; border-bottom: 2px solid transparent; transition: var(--transition); }
+    .auth-tab:hover { color: var(--text-sec); }
+    .auth-tab.active { color: var(--text); border-color: var(--orange); }
     .panel-body { padding: 16px; }
 
     /* ── Forms ── */
     .form-group { margin-bottom: 12px; }
-    .form-label { display: block; font-size: .72rem; font-weight: 600; color: var(--text-sec); margin-bottom: 5px; }
-    .form-input { width: 100%; background: var(--bg-input); border: 1px solid var(--border); border-radius: var(--radius); padding: 9px 12px; color: var(--text); font-size: .875rem; font-family: inherit; outline: none; transition: border-color .15s; }
-    .form-input:focus { border-color: var(--blue); }
+    .form-label { display: block; font-size: .72rem; font-weight: 600; color: var(--text-sec); margin-bottom: 6px; letter-spacing: .3px; }
+    .form-input { width: 100%; background: var(--bg-input); border: 1px solid rgba(255,255,255,.08); border-radius: var(--radius); padding: 10px 12px; color: var(--text); font-size: .875rem; font-family: inherit; outline: none; transition: var(--transition); }
+    .form-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59,130,246,.12); }
     .form-input::placeholder { color: var(--text-muted); }
     .form-error { color: var(--danger); font-size: .72rem; margin-top: 10px; text-align: center; }
     .register-bonus { font-size: .72rem; color: var(--text-muted); text-align: center; margin-top: 10px; line-height: 1.5; }
@@ -125,35 +182,36 @@
     .form-grid .form-group.full { grid-column: 1 / -1; }
 
     /* ── Bet slip ── */
-    .bet-selection { background: rgba(255,255,255,.03); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 12px; margin-bottom: 8px; position: relative; }
+    .bet-selection { background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.07); border-radius: var(--radius); padding: 10px 12px; margin-bottom: 8px; position: relative; transition: var(--transition); }
+    .bet-selection:hover { border-color: rgba(255,255,255,.1); }
     .bet-sel-match { font-size: .72rem; color: var(--text-sec); margin-bottom: 5px; }
     .bet-sel-row   { display: flex; align-items: center; justify-content: space-between; }
     .bet-sel-type  { font-size: .8rem; font-weight: 600; }
-    .bet-sel-odds  { font-size: .9rem; font-weight: 700; color: var(--blue); }
-    .bet-sel-remove { position: absolute; top: 6px; right: 6px; background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: .8rem; padding: 2px 5px; border-radius: 4px; font-family: inherit; }
+    .bet-sel-odds  { font-size: .9rem; font-weight: 700; color: var(--orange); }
+    .bet-sel-remove { position: absolute; top: 6px; right: 6px; background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: .8rem; padding: 2px 5px; border-radius: 4px; font-family: inherit; transition: var(--transition); }
     .bet-sel-remove:hover { color: var(--danger); background: rgba(239,68,68,.1); }
     .stake-section { margin-top: 14px; }
     .stake-label { font-size: .68rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 7px; }
     .quick-stakes { display: flex; gap: 5px; margin-bottom: 8px; }
-    .quick-stake { flex: 1; background: rgba(255,255,255,.04); border: 1px solid var(--border); border-radius: 6px; padding: 5px 2px; font-size: .72rem; font-weight: 600; color: var(--text-sec); cursor: pointer; text-align: center; transition: all .15s; font-family: inherit; }
-    .quick-stake:hover { border-color: var(--blue); color: var(--text); }
+    .quick-stake { flex: 1; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.07); border-radius: 6px; padding: 5px 2px; font-size: .72rem; font-weight: 600; color: var(--text-sec); cursor: pointer; text-align: center; transition: var(--transition); font-family: inherit; }
+    .quick-stake:hover { border-color: var(--blue); color: var(--text); background: rgba(59,130,246,.07); }
     .stake-wrap { position: relative; margin-bottom: 12px; }
     .stake-sym { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-weight: 600; pointer-events: none; }
-    .stake-input { width: 100%; background: var(--bg-input); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 12px 10px 24px; color: var(--text); font-size: .95rem; font-weight: 600; font-family: inherit; outline: none; transition: border-color .15s; }
-    .stake-input:focus { border-color: var(--green); }
-    .summary-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-top: 1px solid var(--border); }
+    .stake-input { width: 100%; background: var(--bg-input); border: 1px solid rgba(255,255,255,.08); border-radius: var(--radius); padding: 10px 12px 10px 24px; color: var(--text); font-size: .95rem; font-weight: 600; font-family: inherit; outline: none; transition: var(--transition); }
+    .stake-input:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(0,200,90,.1); }
+    .summary-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-top: 1px solid rgba(255,255,255,.05); }
     .sum-label { font-size: .78rem; color: var(--text-muted); }
     .sum-value { font-size: .9rem; font-weight: 700; }
     .sum-value.green { color: var(--green); }
     .slip-empty { text-align: center; padding: 36px 16px; color: var(--text-muted); font-size: .82rem; line-height: 1.6; }
-    .slip-empty-icon { font-size: 2rem; margin-bottom: 10px; }
+    .slip-empty-icon { font-size: 2rem; margin-bottom: 10px; opacity: .5; }
     .slip-msg { font-size: .75rem; text-align: center; margin-top: 10px; padding: 8px; border-radius: 6px; line-height: 1.4; }
     .slip-msg.success { color: var(--green);  background: rgba(0,200,90,.08);  border: 1px solid rgba(0,200,90,.2); }
     .slip-msg.error   { color: var(--danger); background: rgba(239,68,68,.08); border: 1px solid rgba(239,68,68,.2); }
 
     /* ── Bet history ── */
-    .bet-history-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; gap: 16px; transition: border-color .2s; }
-    .bet-history-card:hover { border-color: rgba(59,130,246,.35); }
+    .bet-history-card { background: var(--bg-card); border: 1px solid rgba(255,255,255,.05); border-radius: 10px; padding: 16px 18px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; gap: 16px; transition: var(--transition); box-shadow: var(--shadow-card); }
+    .bet-history-card:hover { border-color: rgba(59,130,246,.25); box-shadow: var(--shadow-hover); transform: translateY(-1px); }
     .bhc-main { flex: 1; min-width: 0; }
     .bhc-meta { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
     .bhc-teams { font-size: 1rem; font-weight: 600; margin-bottom: 10px; }
@@ -180,26 +238,26 @@
     .settle-status { font-size: .68rem; color: var(--text-muted); margin-top: 4px; }
 
     /* ── Admin tabs ── */
-    .admin-tabs { display: flex; gap: 2px; margin-bottom: 20px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; padding: 4px; width: fit-content; }
-    .admin-tab-btn { padding: 6px 16px; border-radius: 6px; font-size: .78rem; font-weight: 600; cursor: pointer; border: none; background: transparent; color: var(--text-muted); font-family: inherit; transition: all .15s; }
-    .admin-tab-btn:hover { color: var(--text); }
-    .admin-tab-btn.active { background: var(--bg-card); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,.4); }
+    .admin-tabs { display: flex; gap: 2px; margin-bottom: 20px; background: var(--bg-input); border: 1px solid rgba(255,255,255,.06); border-radius: 8px; padding: 4px; width: fit-content; }
+    .admin-tab-btn { padding: 6px 16px; border-radius: 6px; font-size: .78rem; font-weight: 600; cursor: pointer; border: none; background: transparent; color: var(--text-muted); font-family: inherit; transition: var(--transition); }
+    .admin-tab-btn:hover { color: var(--text-sec); background: rgba(255,255,255,.04); }
+    .admin-tab-btn.active { background: var(--bg-card); color: var(--text); box-shadow: 0 2px 8px rgba(0,0,0,.4); }
 
     .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 20px; }
-    .stat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
-    .stat-label { font-size: .65rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
-    .stat-value { font-size: 1.35rem; font-weight: 700; }
+    .stat-card { background: var(--bg-card); border: 1px solid rgba(255,255,255,.05); border-radius: 10px; padding: 16px; box-shadow: var(--shadow-card); }
+    .stat-label { font-size: .65rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
+    .stat-value { font-size: 1.4rem; font-weight: 700; }
     .stat-value.green { color: var(--green); }
     .stat-value.blue  { color: var(--blue); }
     .stat-value.amber { color: var(--amber); }
     .stat-value.red   { color: var(--danger); }
 
-    .data-table-wrap { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; overflow-x: auto; }
+    .data-table-wrap { background: var(--bg-card); border: 1px solid rgba(255,255,255,.05); border-radius: 10px; overflow: hidden; overflow-x: auto; box-shadow: var(--shadow-card); }
     .data-table { width: 100%; border-collapse: collapse; white-space: nowrap; }
-    .data-table th { font-size: .63rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--border); background: rgba(255,255,255,.02); }
-    .data-table td { padding: 11px 14px; border-bottom: 1px solid rgba(30,50,72,.5); font-size: .82rem; vertical-align: middle; }
+    .data-table th { font-size: .63rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); text-align: left; padding: 12px 14px; border-bottom: 1px solid rgba(255,255,255,.05); background: rgba(255,255,255,.02); }
+    .data-table td { padding: 12px 14px; border-bottom: 1px solid rgba(255,255,255,.04); font-size: .82rem; vertical-align: middle; color: var(--text-sec); }
     .data-table tr:last-child td { border-bottom: none; }
-    .data-table tr:hover td { background: rgba(255,255,255,.015); }
+    .data-table tr:hover td { background: rgba(255,255,255,.02); color: var(--text); }
     .admin-badge { padding: 2px 7px; border-radius: 4px; font-size: .6rem; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; background: rgba(245,158,11,.12); color: var(--amber); border: 1px solid rgba(245,158,11,.3); }
 
     /* ── Admin panel ── */
@@ -208,7 +266,7 @@
     .admin-msg.success { color: var(--green);  background: rgba(0,200,90,.08);  border: 1px solid rgba(0,200,90,.2); }
     .admin-msg.error   { color: var(--danger); background: rgba(239,68,68,.08); border: 1px solid rgba(239,68,68,.2); }
 
-    .admin-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin-bottom: 8px; transition: border-color .2s; }
+    .admin-card { background: var(--bg-card); border: 1px solid rgba(255,255,255,.05); border-radius: 10px; padding: 16px; margin-bottom: 8px; transition: var(--transition); box-shadow: var(--shadow-card); }
     .admin-card.editing  { border-color: var(--blue); }
     .admin-card.settling { border-color: var(--amber); }
     .ac-header  { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
@@ -221,7 +279,7 @@
     .settle-section { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
     .settle-label   { font-size: .68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 8px; }
     .settle-options { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 10px; }
-    .settle-btn { padding: 9px 4px; border-radius: var(--radius); background: var(--odds-bg); border: 1px solid transparent; color: var(--text); font-size: .82rem; font-weight: 600; cursor: pointer; text-align: center; transition: all .15s; font-family: inherit; }
+    .settle-btn { padding: 9px 4px; border-radius: var(--radius); background: var(--odds-bg); border: 1px solid transparent; color: var(--text); font-size: .82rem; font-weight: 600; cursor: pointer; text-align: center; transition: var(--transition); font-family: inherit; }
     .settle-btn:hover { background: rgba(59,130,246,.15); border-color: var(--blue); }
     .settle-btn.selected { background: var(--odds-sel-bg); border-color: var(--blue); color: #93c5fd; }
 
@@ -238,12 +296,12 @@
     .wallet-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
     @media (max-width: 640px) { .wallet-grid { grid-template-columns: 1fr; } }
 
-    .wallet-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 20px; }
+    .wallet-card { background: var(--bg-card); border: 1px solid rgba(255,255,255,.05); border-radius: 10px; padding: 20px; box-shadow: var(--shadow-card); }
     .wallet-card-title { font-size: .72rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
 
     .quick-amounts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 12px; }
-    .qa-btn { background: rgba(255,255,255,.04); border: 1px solid var(--border); border-radius: 6px; padding: 7px 4px; font-size: .75rem; font-weight: 600; color: var(--text-sec); cursor: pointer; text-align: center; transition: all .15s; font-family: inherit; }
-    .qa-btn:hover { border-color: var(--blue); color: var(--text); }
+    .qa-btn { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.07); border-radius: 6px; padding: 7px 4px; font-size: .75rem; font-weight: 600; color: var(--text-sec); cursor: pointer; text-align: center; transition: var(--transition); font-family: inherit; }
+    .qa-btn:hover { border-color: var(--blue); color: var(--text); background: rgba(59,130,246,.07); }
 
     .wallet-result { padding: 9px 12px; border-radius: 6px; font-size: .78rem; font-weight: 500; margin-top: 10px; line-height: 1.4; }
     .wallet-result.success { color: var(--green);  background: rgba(0,200,90,.08);  border: 1px solid rgba(0,200,90,.2); }
@@ -264,7 +322,7 @@
 
     .adjust-form-cell { background: rgba(167,139,250,.04); padding: 12px 14px !important; border-top: 1px solid rgba(167,139,250,.2) !important; }
     .adjust-form { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-    .adjust-input { background: var(--bg-input); border: 1px solid var(--border); border-radius: var(--radius); padding: 7px 10px; color: var(--text); font-size: .82rem; font-family: inherit; outline: none; transition: border-color .15s; width: 130px; }
+    .adjust-input { background: var(--bg-input); border: 1px solid var(--border); border-radius: var(--radius); padding: 7px 10px; color: var(--text); font-size: .82rem; font-family: inherit; outline: none; transition: var(--transition); width: 130px; }
     .adjust-input:focus { border-color: #a78bfa; }
     .adjust-note  { flex: 1; min-width: 160px; }
     .adjust-msg   { font-size: .75rem; padding: 5px 10px; border-radius: 5px; }
@@ -278,27 +336,549 @@
     .text-link { color: var(--blue); cursor: pointer; }
     .text-link:hover { text-decoration: underline; }
 
+    /* ── Accumulator / bet slip mode tabs ── */
+    .slip-mode-tabs { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--border); }
+    .slip-mode-tab  { padding: 10px; text-align: center; font-size: .78rem; font-weight: 600; color: var(--text-muted); cursor: pointer; transition: var(--transition); border-bottom: 2px solid transparent; user-select: none; }
+    .slip-mode-tab:hover { color: var(--text-sec); background: rgba(255,255,255,.02); }
+    .slip-mode-tab.active { color: var(--text); border-color: var(--orange); }
+    .acca-odds-display { background: rgba(245,197,24,.06); border: 1px solid rgba(245,197,24,.2); border-radius: var(--radius); padding: 10px 13px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+    .acca-odds-val { font-size: 1.1rem; font-weight: 800; color: var(--orange); }
+    .acca-odds-label { font-size: .65rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); }
+    .slip-min-note { font-size: .7rem; color: var(--amber); text-align: center; margin-top: 8px; }
+
+    /* ── Accumulator in My Bets ── */
+    .acca-card { background: var(--bg-card); border: 1px solid rgba(255,255,255,.05); border-radius: 10px; padding: 16px 18px; margin-bottom: 8px; transition: var(--transition); box-shadow: var(--shadow-card); }
+    .acca-card:hover { border-color: rgba(245,158,11,.28); box-shadow: var(--shadow-hover); transform: translateY(-1px); }
+    .acca-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .acca-label { font-size: .65rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--amber); }
+    .acca-meta { font-size: .78rem; color: var(--text-sec); margin-left: 8px; }
+    .acca-leg { background: rgba(255,255,255,.025); border: 1px solid var(--border); border-radius: 6px; padding: 8px 11px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+    .acca-leg-info { flex: 1; min-width: 0; }
+    .acca-leg-match { font-size: .88rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .acca-leg-meta { font-size: .7rem; color: var(--text-muted); margin-top: 2px; }
+    .acca-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px solid var(--border); margin-top: 6px; }
+    .acca-payout { font-size: .88rem; font-weight: 700; color: var(--green); }
+
+    /* ── Mobile FAB ── */
+    #mobile-slip-fab {
+      display: none;
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+      background: var(--orange); color: #0a0e14; font-weight: 700; font-size: .85rem;
+      padding: 13px 28px; border-radius: 4px; border: none; cursor: pointer;
+      box-shadow: 0 4px 24px rgba(245,197,24,.4); z-index: 500;
+      align-items: center; gap: 8px; font-family: inherit; white-space: nowrap; letter-spacing: .5px;
+    }
+
+    /* ── Mobile responsive ── */
+    @media (max-width: 800px) {
+      .container { padding: 12px; gap: 12px; }
+      aside { position: static !important; }
+      #mobile-slip-fab { display: flex; }
+    }
+    @media (max-width: 680px) {
+      #site-header { padding: 0 12px; gap: 8px; height: 54px; }
+      .logo { font-size: 1.05rem; }
+      .search-wrap { flex: 0 1 140px; }
+      .search-input { font-size: .75rem; padding: 6px 10px 6px 28px; }
+      .header-nav .nav-item { padding: 5px 8px; font-size: .75rem; }
+      .balance-badge { padding: 4px 9px; font-size: .75rem; }
+      .username-tag { display: none; }
+      .header-right .btn { padding: 5px 10px; font-size: .75rem; }
+      .match-card { padding: 12px; }
+      .team-name { font-size: .9rem; }
+      .odd-value { font-size: .88rem; }
+    }
+    @media (max-width: 460px) {
+      .search-wrap { display: none; }
+      #site-header { gap: 6px; }
+      .nav-item { padding: 5px 7px; font-size: .72rem; }
+      .bhc-details { gap: 10px; }
+      .wallet-balance-card { padding: 20px; flex-direction: column; gap: 12px; }
+      .wbc-amount { font-size: 2rem; }
+      .data-table th, .data-table td { padding: 8px 10px; font-size: .75rem; }
+    }
+
     @keyframes pulse-border { 0%,100%{box-shadow:none} 50%{box-shadow:0 0 0 2px var(--blue)} }
     aside.pulse-border .sidebar-panel { animation: pulse-border .5s ease; }
+
+    /* ── Casino ─────────────────────────────────────────────────────────────── */
+
+    /* Jackpot ticker */
+    .jackpot-ticker { background:linear-gradient(90deg,rgba(245,197,24,.06),rgba(245,197,24,.1),rgba(245,197,24,.06)); border:1px solid rgba(245,197,24,.18); border-radius:6px; overflow:hidden; margin-bottom:20px; }
+    .jackpot-ticker-inner { display:flex; align-items:center; padding:10px 0; white-space:nowrap; animation:jp-scroll 42s linear infinite; }
+    .jackpot-ticker:hover .jackpot-ticker-inner { animation-play-state:paused; }
+    @keyframes jp-scroll { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+    .jackpot-label { font-size:.56rem; font-weight:700; letter-spacing:2.5px; text-transform:uppercase; color:var(--orange); padding:0 22px; border-right:1px solid rgba(245,197,24,.22); margin-right:26px; flex-shrink:0; }
+    .jackpot-item { display:inline-flex; flex-direction:column; gap:1px; margin-right:34px; flex-shrink:0; }
+    .jackpot-name { font-size:.52rem; font-weight:600; letter-spacing:1.2px; text-transform:uppercase; color:var(--text-muted); }
+    .jackpot-amount { font-size:.88rem; font-weight:700; color:#fbbf24; letter-spacing:.5px; }
+    .jackpot-sep { color:rgba(245,197,24,.3); font-size:.7rem; margin-right:10px; align-self:center; }
+
+    /* Casino hero */
+    .casino-hero { background:linear-gradient(135deg,#080c12 0%,#120720 55%,#080c12 100%); border:1px solid rgba(255,255,255,.07); border-radius:12px; padding:32px 36px; margin-bottom:24px; position:relative; overflow:hidden; display:flex; align-items:center; gap:32px; }
+    .casino-hero::before { content:''; position:absolute; top:-100px; right:160px; width:440px; height:440px; background:radial-gradient(circle,rgba(245,197,24,.06) 0%,transparent 62%); pointer-events:none; }
+    .casino-hero::after  { content:''; position:absolute; bottom:-80px; left:10%;  width:320px; height:320px; background:radial-gradient(circle,rgba(168,85,247,.04) 0%,transparent 58%); pointer-events:none; }
+    .casino-hero-left { flex:1; min-width:0; position:relative; z-index:1; }
+    .casino-eyebrow { display:inline-flex; align-items:center; gap:6px; font-size:.55rem; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:var(--orange); margin-bottom:12px; background:rgba(245,197,24,.08); border:1px solid rgba(245,197,24,.18); padding:4px 10px; border-radius:4px; }
+    .casino-hero-title { font-size:1.75rem; font-weight:700; letter-spacing:-.5px; line-height:1.15; margin-bottom:12px; }
+    .casino-hero-title span { color:var(--orange); }
+    .casino-hero-sub { font-size:.74rem; color:var(--text-muted); line-height:1.8; max-width:440px; margin-bottom:22px; }
+    .casino-stats { display:flex; gap:0; margin-bottom:22px; }
+    .chs { display:flex; flex-direction:column; gap:2px; padding:0 20px 0 0; margin-right:20px; border-right:1px solid var(--border); }
+    .chs:last-child { border-right:none; }
+    .chs-val { font-size:1.05rem; font-weight:700; color:var(--text); }
+    .chs-lbl { font-size:.52rem; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-muted); }
+    .casino-hero-cta { display:flex; gap:10px; flex-wrap:wrap; }
+    .casino-hero-right { flex:0 0 auto; position:relative; width:160px; height:180px; display:flex; align-items:center; justify-content:center; }
+    @media (max-width:680px) { .casino-hero-right { display:none; } .casino-hero { padding:24px 20px; } }
+    .ch-card { position:absolute; background:linear-gradient(145deg,#1a1f2e,#0e1520); border:1px solid rgba(255,255,255,.1); border-radius:12px; font-size:2.2rem; width:68px; height:90px; display:flex; align-items:center; justify-content:center; box-shadow:0 8px 28px rgba(0,0,0,.55); pointer-events:none; }
+    .ch-c1 { transform:rotate(-14deg) translate(-34px,14px); color:#fff;    z-index:1; }
+    .ch-c2 { transform:rotate(3deg)  translate(8px,-12px);  color:#fbbf24; z-index:3; box-shadow:0 12px 40px rgba(0,0,0,.6),0 0 30px rgba(251,191,36,.12); border-color:rgba(251,191,36,.18); }
+    .ch-c3 { transform:rotate(16deg) translate(38px,10px);  color:#f5c518; z-index:2; }
+
+    /* Category filters */
+    .casino-cats { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:24px; }
+    .cat-btn { display:inline-flex; align-items:center; gap:5px; padding:8px 20px; border-radius:8px; font-size:.64rem; font-weight:700; letter-spacing:.8px; text-transform:uppercase; border:1px solid rgba(255,255,255,.07); background:rgba(255,255,255,.03); color:var(--text-muted); cursor:pointer; transition:var(--transition); font-family:inherit; }
+    .cat-btn:hover { color:var(--text-sec); border-color:rgba(255,255,255,.15); background:rgba(255,255,255,.06); }
+    .cat-btn.active { background:var(--orange); color:#0a0e14; border-color:var(--orange); box-shadow:0 4px 16px rgba(245,197,24,.35); }
+
+    /* Section headers */
+    .casino-section { margin-bottom:32px; }
+    .casino-section-hdr { display:flex; align-items:center; gap:9px; margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid var(--border); }
+    .csec-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+    .csec-dot.live  { background:#ef4444; box-shadow:0 0 7px rgba(239,68,68,.7); animation:live-pulse 1.2s ease infinite; }
+    .csec-dot.slots { background:#a855f7; box-shadow:0 0 7px rgba(168,85,247,.6); }
+    .csec-dot.crash { background:var(--orange); box-shadow:0 0 7px rgba(245,197,24,.6); }
+    .csec-dot.cards { background:var(--green); box-shadow:0 0 7px rgba(0,200,90,.6); }
+    .csec-title { font-size:.78rem; font-weight:700; letter-spacing:.5px; text-transform:uppercase; color:var(--text-sec); }
+    .csec-count { font-size:.62rem; color:var(--text-muted); margin-left:auto; }
+
+    /* Game grid */
+    .casino-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:16px; }
+    @media (max-width:680px) { .casino-grid { grid-template-columns:repeat(2,1fr); gap:10px; } }
+    @media (max-width:380px) { .casino-grid { grid-template-columns:1fr; } }
+
+    /* Game card */
+    .game-card { background:var(--bg-card); border:1px solid rgba(255,255,255,.06); border-radius:12px; overflow:hidden; transition:var(--transition); cursor:pointer; box-shadow:var(--shadow-card); }
+    .game-card:hover { transform:translateY(-6px); border-color:rgba(245,197,24,.3); box-shadow:var(--shadow-hover), 0 0 0 1px rgba(245,197,24,.07); }
+    .game-thumb { height:172px; display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; }
+    .game-thumb-glow { position:absolute; inset:0; }
+    .game-thumb-icon { font-size:3.6rem; position:relative; z-index:1; line-height:1; filter:drop-shadow(0 0 18px currentColor); transition:var(--transition); }
+    .game-card:hover .game-thumb-icon { transform:scale(1.1); }
+    /* Skeleton loader */
+    .game-thumb-skeleton { position:absolute; inset:0; background:linear-gradient(90deg,rgba(255,255,255,.03) 25%,rgba(255,255,255,.07) 50%,rgba(255,255,255,.03) 75%); background-size:200% 100%; animation:skeleton-sweep 1.6s ease-in-out infinite; z-index:5; border-radius:0; }
+    @keyframes skeleton-sweep { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+    .game-thumb.loaded .game-thumb-skeleton { display:none; }
+    /* Hover overlay */
+    .game-thumb-overlay { position:absolute; inset:0; background:rgba(5,8,15,.75); backdrop-filter:blur(4px); display:flex; align-items:center; justify-content:center; opacity:0; transition:var(--transition); z-index:4; pointer-events:none; }
+    .game-card:hover .game-thumb-overlay { opacity:1; pointer-events:auto; }
+    .btn-play-hover { background:var(--play-btn); color:#fff; border:none; border-radius:50px; padding:12px 28px; font-size:.75rem; font-weight:700; letter-spacing:1px; text-transform:uppercase; cursor:pointer; font-family:inherit; box-shadow:0 0 28px rgba(255,69,0,.45); transform:translateY(8px) scale(.94); transition:var(--transition); pointer-events:none; }
+    .game-card:hover .btn-play-hover { transform:translateY(0) scale(1); }
+    /* Provider + corner badge on thumbnail */
+    .game-provider-tag { position:absolute; bottom:8px; left:8px; font-size:.48rem; font-weight:600; letter-spacing:.5px; text-transform:uppercase; color:rgba(255,255,255,.6); background:rgba(0,0,0,.55); backdrop-filter:blur(6px); border:1px solid rgba(255,255,255,.1); padding:3px 8px; border-radius:4px; z-index:2; }
+    .game-badge-thumb { position:absolute; top:8px; right:8px; font-size:.5rem; font-weight:800; letter-spacing:1px; text-transform:uppercase; padding:3px 9px; border-radius:5px; z-index:3; }
+    .game-badge-thumb.hot  { background:var(--orange);  color:#0a0e14; box-shadow:0 2px 12px rgba(245,197,24,.5); }
+    .game-badge-thumb.new  { background:var(--green);   color:#fff; box-shadow:0 2px 12px rgba(0,200,90,.45); }
+    .game-badge-thumb.live { background:#ef4444; color:#fff; box-shadow:0 2px 12px rgba(239,68,68,.5); }
+    .game-badge-thumb.live::before { content:'● '; font-size:.4rem; vertical-align:middle; animation:live-pulse 1.2s ease infinite; display:inline; }
+    /* Card body */
+    .game-body { padding:14px 14px 16px; }
+    .game-title { font-size:.9rem; font-weight:700; margin-bottom:5px; letter-spacing:.2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--text); }
+    .game-players { font-size:.62rem; color:var(--text-muted); margin-bottom:10px; display:flex; align-items:center; gap:5px; }
+    .gp-dot { width:5px; height:5px; border-radius:50%; background:var(--green); flex-shrink:0; animation:live-pulse 1.4s ease infinite; }
+    .game-features { display:flex; gap:4px; flex-wrap:wrap; margin-bottom:12px; }
+    .game-feat { font-size:.5rem; font-weight:600; letter-spacing:.4px; text-transform:uppercase; padding:3px 7px; border-radius:4px; background:rgba(255,255,255,.04); color:var(--text-muted); border:1px solid rgba(255,255,255,.07); white-space:nowrap; }
+    .btn-play { width:100%; padding:10px; font-size:.72rem; font-weight:700; letter-spacing:.8px; text-transform:uppercase; background:var(--play-btn); color:#fff; border:none; border-radius:6px; cursor:pointer; transition:var(--transition); font-family:inherit; box-shadow:0 2px 10px rgba(255,69,0,.3); }
+    .btn-play:hover { background:var(--play-btn-dark); box-shadow:0 6px 20px rgba(255,69,0,.45); transform:translateY(-1px); }
+    /* Strike Studios originals */
+    .game-card.strike-original { border-color:rgba(251,191,36,.2); }
+    .game-card.strike-original:hover { border-color:rgba(251,191,36,.45); box-shadow:var(--shadow-hover), 0 0 0 1px rgba(251,191,36,.08); }
+    .game-card.strike-original .game-provider-tag { color:rgba(251,191,36,.8); border-color:rgba(251,191,36,.22); background:rgba(20,14,0,.6); }
+    .strike-original-ribbon { position:absolute; top:0; left:0; background:linear-gradient(135deg,rgba(251,191,36,.92) 0%,rgba(255,140,0,.92) 100%); color:#0a0e14; font-size:.44rem; font-weight:800; letter-spacing:1.2px; text-transform:uppercase; padding:3px 28px 3px 8px; clip-path:polygon(0 0,100% 0,85% 100%,0 100%); z-index:3; }
+
+    /* Casino modal */
+    .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.85); backdrop-filter:blur(8px); z-index:1000; display:flex; align-items:center; justify-content:center; padding:20px; animation:modal-in .2s ease; }
+    @keyframes modal-in { from{opacity:0;transform:translateY(16px) scale(.96)} to{opacity:1;transform:translateY(0) scale(1)} }
+    .modal-card { background:linear-gradient(160deg,#141c28,#0a0e14); border:1px solid rgba(255,255,255,.08); border-radius:16px; padding:28px; max-width:420px; width:100%; position:relative; box-shadow:0 40px 100px rgba(0,0,0,.8),0 0 0 1px rgba(255,255,255,.04); }
+    .modal-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,var(--play-btn),transparent); border-radius:16px 16px 0 0; }
+    .modal-close { position:absolute; top:14px; right:14px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08); border-radius:6px; color:var(--text-muted); cursor:pointer; font-size:.8rem; padding:5px 10px; font-family:inherit; line-height:1; transition:var(--transition); }
+    .modal-close:hover { color:var(--text); background:rgba(255,255,255,.1); border-color:rgba(255,255,255,.16); }
+    .modal-eyebrow { font-size:.52rem; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:var(--orange); margin-bottom:16px; }
+    .modal-game-header { display:flex; align-items:center; gap:16px; margin-bottom:16px; }
+    .modal-icon-wrap { width:64px; height:64px; border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0; border:1px solid rgba(255,255,255,.08); }
+    .modal-icon { font-size:2rem; line-height:1; }
+    .modal-game-info { flex:1; min-width:0; }
+    .modal-title { font-size:1.05rem; font-weight:700; margin-bottom:3px; }
+    .modal-provider { font-size:.62rem; color:var(--text-muted); margin-bottom:6px; }
+    .modal-rating { display:flex; align-items:center; gap:4px; font-size:.65rem; color:#fbbf24; }
+    .modal-rating-val { font-weight:700; }
+    .modal-rating-count { color:var(--text-muted); margin-left:2px; }
+    .modal-divider { height:1px; background:var(--border); margin:14px 0; }
+    .modal-info-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:14px; }
+    .mig-item { display:flex; flex-direction:column; gap:2px; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.06); border-radius:6px; padding:8px 10px; }
+    .mig-label { font-size:.5rem; font-weight:600; letter-spacing:1px; text-transform:uppercase; color:var(--text-muted); }
+    .mig-val { font-size:.78rem; font-weight:700; color:var(--text); }
+    .modal-features-wrap { display:flex; gap:5px; flex-wrap:wrap; margin-bottom:14px; }
+    .mf-chip { font-size:.54rem; font-weight:600; padding:3px 8px; border-radius:4px; background:rgba(245,197,24,.08); color:rgba(255,120,60,.9); border:1px solid rgba(245,197,24,.2); letter-spacing:.3px; }
+    .modal-wins-box { background:rgba(0,0,0,.25); border:1px solid rgba(255,255,255,.06); border-radius:8px; padding:10px 12px; margin-bottom:16px; }
+    .mw-header { font-size:.54rem; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-muted); margin-bottom:8px; }
+    .mw-row { display:flex; align-items:center; gap:6px; padding:4px 0; border-bottom:1px solid rgba(255,255,255,.04); font-size:.65rem; }
+    .mw-row:last-child { border-bottom:none; padding-bottom:0; }
+    .mw-user { font-weight:600; color:var(--text-sec); min-width:44px; }
+    .mw-game { flex:1; color:var(--text-muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .mw-win  { color:var(--green); font-weight:700; margin-left:auto; white-space:nowrap; }
+    .mw-time { font-size:.58rem; color:var(--text-muted); white-space:nowrap; }
+    .modal-status-line { font-size:.74rem; font-weight:600; color:var(--text-sec); margin-bottom:10px; }
+    .modal-status-line em { font-style:normal; color:var(--orange); }
+    .modal-progress { height:3px; background:rgba(255,255,255,.06); border-radius:2px; overflow:hidden; margin-bottom:18px; }
+    .modal-bar { height:100%; background:linear-gradient(90deg,var(--orange),#ff8c00); border-radius:2px; animation:bar-fill 2.4s ease-out forwards; }
+    @keyframes bar-fill { 0%{width:0} 70%{width:80%} 90%{width:92%} 100%{width:92%} }
+    .modal-actions { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+
+    /* ── Live match status ── */
+    .match-status-live     { display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-size:.65rem;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:#fff;background:var(--danger);border:1px solid var(--danger); }
+    .match-status-live .ms-dot { width:6px;height:6px;border-radius:50%;background:#fff;animation:live-pulse 1s ease infinite;flex-shrink:0; }
+    .match-status-halftime { padding:3px 9px;border-radius:20px;font-size:.65rem;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--amber);background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.4); }
+    .match-status-finished { padding:3px 9px;border-radius:20px;font-size:.65rem;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-muted);background:transparent;border:1px solid var(--border); }
+    .live-score { display:flex;align-items:center;gap:6px; }
+    .score-num  { font-size:1.5rem;font-weight:800;min-width:20px;text-align:center; }
+    .score-sep  { font-size:1rem;font-weight:700;color:var(--text-muted); }
+    .match-card.in-play  { border-color:rgba(239,68,68,.3); }
+    .match-card.halftime { border-color:rgba(245,158,11,.3); }
+    .odd-btn.closed { opacity:.45;cursor:default;pointer-events:none; }
+    .betting-closed-note { text-align:center;font-size:.68rem;color:var(--text-muted);margin-top:6px;letter-spacing:.3px; }
+
+    .live-ctrl { margin-top:10px;padding:14px;background:rgba(239,68,68,.05);border:1px solid rgba(239,68,68,.2);border-radius:8px; }
+    .live-ctrl-title { font-size:.65rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--danger);margin-bottom:12px; }
+    .live-ctrl-row  { display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:10px; }
+    .live-ctrl-row:last-child { margin-bottom:0; }
+    .score-ctrl { display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:6px 10px; }
+    .score-ctrl-label { font-size:.68rem;font-weight:600;color:var(--text-muted);min-width:44px; }
+    .score-ctrl-val   { font-size:1.1rem;font-weight:800;min-width:22px;text-align:center; }
+    .score-ctrl-btn   { background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:4px;color:var(--text);font-size:.9rem;font-weight:700;width:24px;height:24px;cursor:pointer;display:grid;place-items:center;font-family:inherit;transition:var(--transition); }
+    .score-ctrl-btn:hover { background:rgba(255,255,255,.14); }
+    .minute-input { width:64px; }
 
     /* ── Live odds ── */
     .live-badge { display: inline-flex; align-items: center; gap: 5px; font-size: .62rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--green); margin-left: 8px; }
     .live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex-shrink: 0; animation: live-pulse 1.4s ease infinite; }
     @keyframes live-pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.35;transform:scale(.75)} }
-    @keyframes odds-flash { 0%{background:rgba(0,200,90,.25);border-color:rgba(0,200,90,.7);color:var(--green)} 100%{} }
+    @keyframes odds-flash { 0%{background:rgba(245,197,24,.25);border-color:rgba(245,197,24,.7);color:var(--orange)} 100%{} }
     .odd-btn.flash { animation: odds-flash .9s ease-out; }
 
     .odds-edit-section { margin-top: 10px; padding: 12px; background: rgba(59,130,246,.05); border: 1px solid rgba(59,130,246,.2); border-radius: 8px; }
     .odds-edit-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 10px; }
     .odds-edit-row .form-group { margin: 0; }
+
+    /* ── Language toggle ── */
+    .lang-toggle { display:flex; align-items:center; gap:2px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.07); border-radius:6px; padding:2px; flex-shrink:0; }
+    .lang-opt { padding:4px 9px; border-radius:5px; font-size:.68rem; font-weight:700; letter-spacing:.5px; cursor:pointer; color:var(--text-muted); transition:var(--transition); border:none; background:none; font-family:inherit; }
+    .lang-opt:hover { color:var(--text-sec); }
+    .lang-opt.active { background:var(--orange); color:#0a0e14; }
+
+    /* ── Registration Modal ─────────────────────────────────────────────────── */
+    .reg-overlay { position:fixed; inset:0; background:rgba(0,0,0,.88); backdrop-filter:blur(14px); z-index:2000; display:flex; align-items:center; justify-content:center; padding:16px; animation:modal-in .22s ease; }
+    .reg-modal { display:grid; grid-template-columns:1fr 1fr; max-width:860px; width:100%; border-radius:20px; overflow:hidden; box-shadow:0 48px 120px rgba(0,0,0,.95), 0 0 0 1px rgba(255,255,255,.06); max-height:calc(100vh - 32px); }
+    .reg-form-panel { background:#12161f; padding:36px 32px; position:relative; display:flex; flex-direction:column; overflow-y:auto; }
+    .reg-close { position:absolute; top:14px; right:14px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); color:var(--text-muted); border-radius:8px; cursor:pointer; font-size:.78rem; padding:5px 11px; font-family:inherit; transition:var(--transition); line-height:1.4; }
+    .reg-close:hover { color:var(--text); background:rgba(255,255,255,.12); border-color:rgba(255,255,255,.2); }
+    .reg-logo { margin-bottom:24px; }
+    .reg-logo-name { font-size:1.1rem; font-weight:800; color:var(--text); letter-spacing:.5px; }
+    .reg-logo-name span { color:var(--orange); }
+    .reg-logo-tag { font-size:.45rem; font-weight:600; letter-spacing:2.5px; text-transform:uppercase; color:var(--text-muted); margin-top:2px; }
+    .reg-steps { display:flex; align-items:center; gap:8px; margin-bottom:22px; }
+    .reg-step { display:flex; align-items:center; gap:7px; }
+    .reg-step-num { width:22px; height:22px; border-radius:50%; display:grid; place-items:center; font-size:.62rem; font-weight:700; border:1.5px solid rgba(255,255,255,.14); color:var(--text-muted); transition:var(--transition); flex-shrink:0; }
+    .reg-step-num.active { background:var(--orange); color:#0a0e14; border-color:var(--orange); }
+    .reg-step-num.done   { background:var(--green);  color:#fff;     border-color:var(--green); }
+    .reg-step-label { font-size:.6rem; font-weight:600; color:var(--text-muted); letter-spacing:.5px; text-transform:uppercase; }
+    .reg-step-label.active { color:var(--text); }
+    .reg-step-sep { flex:1; height:1px; background:rgba(255,255,255,.08); min-width:20px; }
+    .reg-title { font-size:1.15rem; font-weight:700; color:var(--text); margin-bottom:5px; }
+    .reg-sub { font-size:.7rem; color:var(--text-muted); line-height:1.6; margin-bottom:20px; }
+    .reg-field { margin-bottom:13px; }
+    .reg-label { display:block; font-size:.68rem; font-weight:600; color:var(--text-sec); margin-bottom:6px; letter-spacing:.3px; }
+    .reg-label .req { color:var(--danger); margin-left:2px; }
+    .reg-input { width:100%; background:#0d1117; border:1px solid rgba(255,255,255,.08); border-radius:8px; padding:11px 14px; color:var(--text); font-size:.875rem; font-family:inherit; outline:none; transition:var(--transition); }
+    .reg-input:focus { border-color:var(--orange); box-shadow:0 0 0 3px rgba(245,197,24,.1); }
+    .reg-input::placeholder { color:var(--text-muted); }
+    .reg-field-err { font-size:.64rem; color:var(--danger); margin-top:5px; display:none; }
+    .reg-field.has-error .reg-field-err { display:block; }
+    .reg-field.has-error .reg-input { border-color:var(--danger); box-shadow:0 0 0 2px rgba(239,68,68,.12); }
+    .reg-bonus-toggle { display:flex; align-items:center; gap:8px; cursor:pointer; padding:9px 13px; border:1px dashed rgba(245,197,24,.28); border-radius:8px; margin-bottom:14px; transition:var(--transition); background:rgba(245,197,24,.04); user-select:none; }
+    .reg-bonus-toggle:hover { border-color:rgba(245,197,24,.5); background:rgba(245,197,24,.07); }
+    .reg-bonus-label { font-size:.7rem; font-weight:600; color:rgba(245,197,24,.85); flex:1; }
+    .reg-bonus-arrow { font-size:.65rem; color:var(--text-muted); transition:transform .2s ease; }
+    .reg-bonus-toggle.open .reg-bonus-arrow { transform:rotate(180deg); }
+    .reg-bonus-input-wrap { display:none; margin-bottom:14px; }
+    .reg-bonus-input-wrap.open { display:block; animation:modal-in .15s ease; }
+    .reg-checks { display:flex; flex-direction:column; gap:10px; margin-bottom:18px; }
+    .reg-check-label { display:flex; align-items:flex-start; gap:10px; cursor:pointer; font-size:.68rem; color:var(--text-muted); line-height:1.5; }
+    .reg-check-label input[type=checkbox] { display:none; }
+    .reg-check-box { width:17px; height:17px; border:1.5px solid rgba(255,255,255,.2); border-radius:4px; flex-shrink:0; display:grid; place-items:center; transition:var(--transition); margin-top:1px; background:rgba(255,255,255,.03); }
+    .reg-check-label input:checked ~ .reg-check-box { background:var(--orange); border-color:var(--orange); }
+    .reg-check-label input:checked ~ .reg-check-box::after { content:'✓'; font-size:.55rem; font-weight:900; color:#0a0e14; }
+    .reg-check-text a { color:var(--orange); text-decoration:none; }
+    .reg-check-text a:hover { text-decoration:underline; }
+    .reg-tos-err { font-size:.64rem; color:var(--danger); margin-top:-10px; margin-bottom:12px; display:none; }
+    .reg-tos-err.show { display:block; }
+    .reg-error-global { background:rgba(239,68,68,.08); border:1px solid rgba(239,68,68,.22); border-radius:7px; padding:9px 13px; font-size:.73rem; color:var(--danger); margin-bottom:14px; text-align:center; display:none; line-height:1.5; }
+    .reg-error-global.show { display:block; }
+    .reg-btn-primary { width:100%; padding:13px; background:var(--orange); color:#0a0e14; border:none; border-radius:8px; font-size:.86rem; font-weight:700; cursor:pointer; font-family:inherit; letter-spacing:.6px; transition:var(--transition); margin-bottom:14px; }
+    .reg-btn-primary:hover:not(:disabled) { background:var(--orange-dark); box-shadow:0 6px 22px rgba(245,197,24,.42); transform:translateY(-1px); }
+    .reg-btn-primary:disabled { opacity:.5; cursor:not-allowed; }
+    .reg-login-link { text-align:center; font-size:.7rem; color:var(--text-muted); }
+    .reg-login-link a { color:var(--orange); cursor:pointer; text-decoration:none; font-weight:600; }
+    .reg-login-link a:hover { text-decoration:underline; }
+    /* Bonus panel */
+    .reg-bonus-panel { background:linear-gradient(160deg,#08060f 0%,#140928 45%,#0e0619 70%,#08060f 100%); padding:40px 28px; display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative; overflow:hidden; text-align:center; }
+    .reg-bonus-panel::before { content:''; position:absolute; top:-130px; right:-90px; width:420px; height:420px; background:radial-gradient(circle,rgba(245,197,24,.08) 0%,transparent 58%); pointer-events:none; }
+    .reg-bonus-panel::after  { content:''; position:absolute; bottom:-110px; left:-70px; width:340px; height:340px; background:radial-gradient(circle,rgba(168,85,247,.06) 0%,transparent 56%); pointer-events:none; }
+    .rbp-logo { font-size:1.25rem; font-weight:800; color:var(--text); letter-spacing:.5px; margin-bottom:2px; position:relative; z-index:1; }
+    .rbp-logo span { color:var(--orange); }
+    .rbp-logo-tag { font-size:.43rem; font-weight:600; letter-spacing:2.5px; text-transform:uppercase; color:var(--text-muted); margin-bottom:28px; position:relative; z-index:1; }
+    .rbp-badge { display:inline-flex; align-items:center; gap:6px; background:rgba(245,197,24,.1); border:1px solid rgba(245,197,24,.28); border-radius:20px; padding:5px 14px; font-size:.52rem; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--orange); margin-bottom:12px; position:relative; z-index:1; }
+    .rbp-offer-label { font-size:.58rem; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-muted); margin-bottom:20px; position:relative; z-index:1; }
+    .rbp-icons { display:flex; gap:18px; justify-content:center; margin-bottom:22px; font-size:2rem; position:relative; z-index:1; }
+    .rbp-icon { display:inline-block; animation:rbp-float 3s ease-in-out infinite; filter:drop-shadow(0 0 10px currentColor); }
+    .rbp-icon:nth-child(2) { animation-delay:.8s; }
+    .rbp-icon:nth-child(3) { animation-delay:1.6s; }
+    @keyframes rbp-float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-9px)} }
+    .rbp-amount { font-size:2.8rem; font-weight:800; color:#fff; letter-spacing:-1.5px; line-height:1; margin-bottom:5px; position:relative; z-index:1; }
+    .rbp-amount span { color:var(--orange); }
+    .rbp-plus { font-size:1.5rem; font-weight:700; color:#fff; opacity:.5; margin-bottom:4px; position:relative; z-index:1; }
+    .rbp-spins { font-size:1.2rem; font-weight:700; color:#a78bfa; margin-bottom:26px; position:relative; z-index:1; letter-spacing:.3px; }
+    .rbp-divider { width:40px; height:2px; background:linear-gradient(90deg,transparent,rgba(245,197,24,.5),transparent); margin:0 auto 20px; position:relative; z-index:1; }
+    .rbp-disclaimer { font-size:.52rem; color:var(--text-muted); line-height:1.7; max-width:210px; margin:0 auto; position:relative; z-index:1; }
+    .rbp-disclaimer a { color:rgba(245,197,24,.55); text-decoration:none; }
+    .rbp-deco { position:absolute; border-radius:50%; pointer-events:none; }
+    @media (max-width:680px) { .reg-modal { grid-template-columns:1fr; max-width:440px; } .reg-bonus-panel { display:none; } .reg-form-panel { padding:28px 22px; } }
+    @media (max-width:400px) { .reg-form-panel { padding:22px 16px; } }
+
+    /* ── Toast ── */
+    #toast-root { position:fixed; bottom:24px; right:24px; z-index:3000; display:flex; flex-direction:column; gap:8px; pointer-events:none; }
+    .toast { background:var(--bg-card); border:1px solid var(--border-strong); border-left:3px solid var(--orange); border-radius:8px; padding:11px 16px; font-size:.8rem; color:var(--text); box-shadow:var(--shadow-hover); max-width:300px; animation:toast-in .25s ease; pointer-events:auto; }
+    .toast.warn { border-left-color:var(--amber); }
+    .toast.success { border-left-color:var(--green); }
+    .toast.error { border-left-color:var(--danger); }
+    @keyframes toast-in { from{opacity:0;transform:translateX(20px)} to{opacity:1;transform:translateX(0)} }
+    @media (max-width:680px){ #toast-root{ left:12px; right:12px; bottom:80px; } .toast{ max-width:none; } }
+
+    /* ── Email verify banner ── */
+    .verify-banner { background:rgba(245,158,11,.1); border:1px solid rgba(245,158,11,.3); color:var(--amber); font-size:.74rem; font-weight:600; padding:6px 12px; border-radius:6px; display:inline-flex; align-items:center; gap:8px; }
+    .verify-banner button { background:rgba(245,158,11,.2); border:1px solid rgba(245,158,11,.4); color:var(--amber); border-radius:5px; font-size:.68rem; font-weight:700; padding:3px 9px; cursor:pointer; font-family:inherit; }
+    .verify-banner button:hover { background:rgba(245,158,11,.3); }
+
+    /* ── Bonus & RG cards ── */
+    .bonus-balance-badge { display:inline-block; background:rgba(0,200,90,.1); border:1px solid rgba(0,200,90,.3); color:var(--green); font-weight:800; font-size:1.4rem; padding:8px 18px; border-radius:10px; }
+    .wager-bar-wrap { height:10px; background:rgba(255,255,255,.06); border-radius:6px; overflow:hidden; margin:10px 0 6px; }
+    .wager-bar { height:100%; background:linear-gradient(90deg,var(--green),var(--orange)); border-radius:6px; transition:width .4s ease; }
+    .wager-bar-label { font-size:.72rem; color:var(--text-muted); }
+
+    .rg-section { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px; }
+    @media (max-width:640px){ .rg-section { grid-template-columns:1fr; } }
+    .rg-inputs-row { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:10px; }
+    .rg-excl-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:10px; }
+    .rg-excl-btn { padding:11px 8px; border-radius:8px; background:rgba(239,68,68,.08); border:1px solid rgba(239,68,68,.3); color:var(--danger); font-size:.78rem; font-weight:700; cursor:pointer; font-family:inherit; transition:var(--transition); }
+    .rg-excl-btn:hover { background:rgba(239,68,68,.18); border-color:rgba(239,68,68,.5); }
+    .rg-current { font-size:.72rem; color:var(--text-sec); margin-top:8px; line-height:1.6; }
+
+    /* ── Score center ── */
+    .score-card { background:var(--bg-card); border:1px solid rgba(255,255,255,.05); border-radius:12px; padding:18px 20px; margin-bottom:10px; box-shadow:var(--shadow-card); transition:var(--transition); }
+    .score-card.score-center-live { border-left:3px solid var(--danger); }
+    .score-card:hover { box-shadow:var(--shadow-hover); transform:translateY(-1px); }
+    .score-card-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
+    .score-teams-row { display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:14px; margin-bottom:14px; }
+    .score-team { font-size:1.05rem; font-weight:700; }
+    .score-team.away { text-align:right; }
+    .score-big { display:flex; align-items:center; gap:10px; }
+    .score-big .score-num { font-size:1.8rem; font-weight:800; }
+    .score-minute { display:inline-flex; align-items:center; gap:5px; font-size:.72rem; font-weight:700; color:var(--danger); animation:live-pulse 1.4s ease infinite; }
+    .scores-empty { text-align:center; padding:48px 20px; color:var(--text-muted); font-size:.9rem; }
+
+    /* ── Generic modal overlay reuse for reset/reality ── */
+    .rg-modal-card { background:linear-gradient(160deg,#141c28,#0a0e14); border:1px solid rgba(255,255,255,.08); border-radius:16px; padding:28px; max-width:400px; width:100%; box-shadow:0 40px 100px rgba(0,0,0,.8); }
+    .rg-modal-title { font-size:1.1rem; font-weight:700; margin-bottom:14px; }
+
+    /* ── Global scroll & focus improvements ── */
+    ::-webkit-scrollbar { width:6px; height:6px; }
+    ::-webkit-scrollbar-track { background:transparent; }
+    ::-webkit-scrollbar-thumb { background:rgba(255,255,255,.1); border-radius:3px; }
+    ::-webkit-scrollbar-thumb:hover { background:rgba(255,255,255,.18); }
+    *:focus-visible { outline:2px solid var(--blue); outline-offset:2px; border-radius:4px; }
   </style>
 </head>
 <body>
 
 <header id="site-header"></header>
 <div id="page-content"></div>
+<div id="modal-root"></div>
+<div id="toast-root"></div>
+
+<!-- Full-screen slot game overlay -->
+<div id="slot-overlay" style="display:none;position:fixed;inset:0;z-index:1000;background:#060810;">
+  <iframe id="slot-frame" src="" style="width:100%;height:100%;border:none;" allow="autoplay"></iframe>
+</div>
 
 <script>
+// ─── Translations ─────────────────────────────────────────────────────────────
+const TRANSLATIONS = {
+  en: {
+    nav_football:'Football', nav_casino:'Casino', nav_mybets:'My Bets', nav_wallet:'Wallet',
+    nav_admin:'Admin', btn_login:'Login', btn_register:'Register', btn_logout:'Logout',
+    search_ph:'Search teams…',
+    section_football:'Football', upcoming:'Upcoming', live_odds:'LIVE ODDS',
+    leagues:'Leagues', all_leagues:'All Leagues', no_matches:'No matches available.',
+    betting_closed:'Betting closed',
+    status_live:'LIVE', status_halftime:'HALF-TIME', status_fulltime:'FULL TIME',
+    odd_home:'1 Home', odd_draw:'X Draw', odd_away:'2 Away',
+    bet_slip:'Bet Slip', singles:'Singles', accumulator:'Accumulator',
+    slip_empty:'Your bet slip is empty.', slip_hint:'Select any odds to add a pick.',
+    combined_odds:'Combined Odds', acca_min:'Add 1 more selection for an accumulator',
+    stake_per_bet:'Stake per bet', stake_single:'Stake (single payout)',
+    total_stake:'Total stake', potential_win:'Potential winnings', max_payout:'Max payout',
+    stake_lbl:'Stake', place_bets:'Place All Bets', placing_bets:'Placing bets…',
+    placing:'Placing…', place_acca:'Place Accumulator',
+    pick_home:'1 Home Win', pick_away:'2 Away Win', pick_draw:'X Draw',
+    view_slip:'View Slip',
+    login:'Login', register:'Register', username:'Username', email:'Email',
+    password:'Password', create_account:'Create Account',
+    register_bonus:'New accounts start with',
+    my_bets_title:'My Bets', history:'History',
+    no_bets:'No bets placed yet', no_bets_go:'Go to', no_bets_place:'and place your first bet.',
+    lbl_pick:'Pick', lbl_odds:'Odds', lbl_stake:'Stake', lbl_potential:'Potential',
+    acca_label:'Accumulator', legs_combined:'legs · {odds}x combined',
+    status_pending:'pending', status_won:'won', status_lost:'lost',
+    wallet_title:'Wallet', deposit_withdraw:'Deposit & Withdraw',
+    avail_balance:'Available Balance', deposit:'Deposit', withdraw:'Withdraw',
+    amount_min5:'Amount (min €5)', deposit_funds:'Deposit Funds', withdraw_funds:'Withdraw Funds',
+    tx_history:'Transaction History', no_tx:'No transactions yet.',
+    tx_date:'Date', tx_type:'Type', tx_amount:'Amount',
+    tx_before:'Balance Before', tx_after:'Balance After',
+    tx_dep:'deposit', tx_wd:'withdrawal', tx_adj:'adjustment',
+    play_now:'Play Now', playing:'playing',
+    casino_title1:'Play Smarter.', casino_title2:'Win Bigger.',
+    casino_sub:'200+ premium games — live dealers, high-volatility slots, and crash games, all inside your STRIKE account.',
+    casino_games:'Games', casino_tables:'Live Tables', casino_jackpots:'Daily Jackpots', casino_payout:'Avg. Payout',
+    explore_live:'Explore Live →', browse_slots:'Browse Slots',
+    cat_all:'All Games', cat_live:'Live', cat_slots:'Slots', cat_crash:'Crash', cat_cards:'Cards',
+    sec_live:'Live Casino', sec_slots:'Slots', sec_crash:'Crash Games', sec_cards:'Card Games',
+    game_s:'game', game_p:'games',
+    modal_volatility:'Volatility', modal_playing:'Playing', modal_winners:'Recent Winners',
+    modal_close:'Close', modal_launching:'Launching...', modal_enter:'Enter Game →',
+    modal_launched:'Game Launched ✓', modal_status:'Status:',
+    modal_init:'Initializing STRIKE Casino session...',
+    modal_verify:'Verifying session token...',
+    modal_loading:'Loading game assets...',
+    modal_connecting:'Connecting to live server...',
+    modal_ready:'Session ready. Good luck!',
+    mins_ago:'m ago', loading:'Loading…',
+    // Live betting
+    live_bet:'LIVE BET', live_odds_warn:'Odds may change during live matches',
+    // Live scores
+    nav_scores:'Live Scores', scores_live_now:'Live Now', scores_today:"Today's Matches",
+    scores_no_live:'No live matches right now', scores_no_today:'No matches scheduled today',
+    // Bonus
+    bonus_title:'Bonus', bonus_balance:'Bonus Balance', bonus_wagering:'Wagering Progress',
+    bonus_claim_welcome:'Claim Welcome Bonus', bonus_welcome_desc:'€100 bonus + 10x wagering',
+    bonus_none:'No active bonus', bonus_to_unlock:'to unlock',
+    // Responsible gambling
+    rg_title:'Responsible Gambling', rg_dep_limits:'Deposit Limits',
+    rg_daily:'Daily', rg_weekly:'Weekly', rg_monthly:'Monthly',
+    rg_stake_limit:'Daily Stake Limit', rg_reality_check:'Reality Check', rg_save:'Save',
+    rg_self_excl:'Self-Exclusion', rg_only_reduced:'Limits can only be reduced.',
+    rg_excl_1w:'1 Week', rg_excl_1m:'1 Month', rg_excl_6m:'6 Months', rg_excl_1y:'1 Year',
+    rg_excl_confirm:'Are you sure? You will be unable to bet or deposit until the period ends.',
+    rg_off:'Off', rg_saved:'Settings saved.',
+    rc_title:'Reality Check', rc_continue:'Continue Playing', rc_close:'Close Account for Today',
+    rc_msg:"You've been playing for {mins} minutes.", rc_balance:'Your balance is {bal}.',
+    // Email verification / password reset
+    email_unverified:'Your email is not verified.', email_resend:'Resend',
+    forgot_password:'Forgot password?', reset_send:'Send reset link',
+    reset_sent:'Check your email for reset instructions.',
+    reset_title:'Reset Password', reset_new:'New Password', reset_confirm:'Confirm Password',
+    reset_submit:'Reset Password', reset_success:'Password reset successful. You can now log in.',
+    verify_success:'Email verified!',
+  },
+  el: {
+    nav_football:'Ποδόσφαιρο', nav_casino:'Καζίνο', nav_mybets:'Στοιχήματά μου', nav_wallet:'Πορτοφόλι',
+    nav_admin:'Διαχείριση', btn_login:'Σύνδεση', btn_register:'Εγγραφή', btn_logout:'Αποσύνδεση',
+    search_ph:'Αναζήτηση ομάδων…',
+    section_football:'Ποδόσφαιρο', upcoming:'Προσεχώς', live_odds:'LIVE ΑΠΟΔΟΣΕΙΣ',
+    leagues:'Πρωταθλήματα', all_leagues:'Όλα τα Πρωταθλήματα', no_matches:'Δεν υπάρχουν διαθέσιμα παιχνίδια.',
+    betting_closed:'Στοίχημα κλειστό',
+    status_live:'LIVE', status_halftime:'ΗΜΙΧΡΟΝΟ', status_fulltime:'ΤΕΛΙΚΟ',
+    odd_home:'1 Γηπ.', odd_draw:'Χ Ισ.', odd_away:'2 Φιλ.',
+    bet_slip:'Δελτίο', singles:'Απλά', accumulator:'Συσσωρευτής',
+    slip_empty:'Το δελτίο σας είναι άδειο.', slip_hint:'Επιλέξτε αποδόσεις για να προσθέσετε επιλογή.',
+    combined_odds:'Συνδυαστικές Αποδόσεις', acca_min:'Προσθέστε ακόμα 1 επιλογή για συσσωρευτή',
+    stake_per_bet:'Ποντάρισμα ανά στοίχημα', stake_single:'Ποντάρισμα (αποπληρωμή)',
+    total_stake:'Συνολικό ποντάρισμα', potential_win:'Πιθανά κέρδη', max_payout:'Μέγ. αποπληρωμή',
+    stake_lbl:'Ποντάρισμα', place_bets:'Τοποθέτηση Στοιχημάτων', placing_bets:'Τοποθέτηση…',
+    placing:'Τοποθέτηση…', place_acca:'Τοποθέτηση Συσσωρευτή',
+    pick_home:'1 Νίκη Γηπεδούχου', pick_away:'2 Νίκη Φιλοξενούμενου', pick_draw:'Χ Ισοπαλία',
+    view_slip:'Προβολή Δελτίου',
+    login:'Σύνδεση', register:'Εγγραφή', username:'Όνομα χρήστη', email:'Email',
+    password:'Κωδικός', create_account:'Δημιουργία Λογαριασμού',
+    register_bonus:'Νέοι λογαριασμοί ξεκινούν με',
+    my_bets_title:'Στοιχήματά μου', history:'Ιστορικό',
+    no_bets:'Δεν έχετε τοποθετήσει στοίχημα ακόμη', no_bets_go:'Πηγαίνετε στο', no_bets_place:'και τοποθετήστε το πρώτο σας στοίχημα.',
+    lbl_pick:'Επιλογή', lbl_odds:'Αποδόσεις', lbl_stake:'Ποντάρισμα', lbl_potential:'Πιθανά κέρδη',
+    acca_label:'Συσσωρευτής', legs_combined:'σκέλη · {odds}x συνδ.',
+    status_pending:'εκκρεμεί', status_won:'κέρδισε', status_lost:'χάθηκε',
+    wallet_title:'Πορτοφόλι', deposit_withdraw:'Κατάθεση & Ανάληψη',
+    avail_balance:'Διαθέσιμο Υπόλοιπο', deposit:'Κατάθεση', withdraw:'Ανάληψη',
+    amount_min5:'Ποσό (ελάχ. €5)', deposit_funds:'Κατάθεση Χρημάτων', withdraw_funds:'Ανάληψη Χρημάτων',
+    tx_history:'Ιστορικό Συναλλαγών', no_tx:'Δεν υπάρχουν συναλλαγές ακόμη.',
+    tx_date:'Ημερομηνία', tx_type:'Τύπος', tx_amount:'Ποσό',
+    tx_before:'Υπόλοιπο Πριν', tx_after:'Υπόλοιπο Μετά',
+    tx_dep:'κατάθεση', tx_wd:'ανάληψη', tx_adj:'προσαρμογή',
+    play_now:'Παίξε Τώρα', playing:'παίζουν',
+    casino_title1:'Παίξε Έξυπνα.', casino_title2:'Κέρδισε Μεγάλα.',
+    casino_sub:'200+ premium παιχνίδια — live dealers, κουλοχέρηδες υψηλής μεταβλητότητας και crash games, όλα μέσα στον λογαριασμό STRIKE σου.',
+    casino_games:'Παιχνίδια', casino_tables:'Live Τραπέζια', casino_jackpots:'Ημερήσια Τζάκποτ', casino_payout:'Μέσ. Αποπληρωμή',
+    explore_live:'Εξερεύνησε Live →', browse_slots:'Κουλοχέρηδες',
+    cat_all:'Όλα τα Παιχνίδια', cat_live:'Live', cat_slots:'Κουλοχέρηδες', cat_crash:'Crash', cat_cards:'Χαρτιά',
+    sec_live:'Live Καζίνο', sec_slots:'Κουλοχέρηδες', sec_crash:'Crash Games', sec_cards:'Παιχνίδια Χαρτιών',
+    game_s:'παιχνίδι', game_p:'παιχνίδια',
+    modal_volatility:'Μεταβλητότητα', modal_playing:'Παίζουν', modal_winners:'Πρόσφατοι Νικητές',
+    modal_close:'Κλείσιμο', modal_launching:'Εκκίνηση...', modal_enter:'Είσοδος στο Παιχνίδι →',
+    modal_launched:'Το παιχνίδι ξεκίνησε ✓', modal_status:'Κατάσταση:',
+    modal_init:'Εκκίνηση συνεδρίας STRIKE Casino...',
+    modal_verify:'Επαλήθευση token συνεδρίας...',
+    modal_loading:'Φόρτωση assets παιχνιδιού...',
+    modal_connecting:'Σύνδεση στον live server...',
+    modal_ready:'Η συνεδρία είναι έτοιμη. Καλή τύχη!',
+    mins_ago:'λεπ. πριν', loading:'Φόρτωση…',
+    // Live betting
+    live_bet:'LIVE BET', live_odds_warn:'Οι αποδόσεις μπορεί να αλλάξουν στα live παιχνίδια',
+    // Live scores
+    nav_scores:'Live Σκορ', scores_live_now:'Σε εξέλιξη', scores_today:'Σημερινά Παιχνίδια',
+    scores_no_live:'Δεν υπάρχουν live παιχνίδια αυτή τη στιγμή', scores_no_today:'Δεν υπάρχουν προγραμματισμένα παιχνίδια σήμερα',
+    // Bonus
+    bonus_title:'Μπόνους', bonus_balance:'Υπόλοιπο Μπόνους', bonus_wagering:'Πρόοδος Στοιχηματισμού',
+    bonus_claim_welcome:'Εξαργύρωση Μπόνους Καλωσορίσματος', bonus_welcome_desc:'€100 μπόνους + 10x στοιχηματισμός',
+    bonus_none:'Δεν υπάρχει ενεργό μπόνους', bonus_to_unlock:'για ξεκλείδωμα',
+    // Responsible gambling
+    rg_title:'Υπεύθυνο Παιχνίδι', rg_dep_limits:'Όρια Κατάθεσης',
+    rg_daily:'Ημερήσιο', rg_weekly:'Εβδομαδιαίο', rg_monthly:'Μηνιαίο',
+    rg_stake_limit:'Ημερήσιο Όριο Ποντ.', rg_reality_check:'Έλεγχος Πραγματικότητας', rg_save:'Αποθήκευση',
+    rg_self_excl:'Αυτο-αποκλεισμός', rg_only_reduced:'Τα όρια μπορούν μόνο να μειωθούν.',
+    rg_excl_1w:'1 Εβδομάδα', rg_excl_1m:'1 Μήνας', rg_excl_6m:'6 Μήνες', rg_excl_1y:'1 Έτος',
+    rg_excl_confirm:'Είσαι σίγουρος; Δεν θα μπορείς να στοιχηματίσεις ή να καταθέσεις μέχρι το τέλος της περιόδου.',
+    rg_off:'Ανενεργό', rg_saved:'Οι ρυθμίσεις αποθηκεύτηκαν.',
+    rc_title:'Έλεγχος Πραγματικότητας', rc_continue:'Συνέχεια Παιχνιδιού', rc_close:'Κλείσιμο Λογαριασμού για Σήμερα',
+    rc_msg:'Παίζεις για {mins} λεπτά.', rc_balance:'Το υπόλοιπό σου είναι {bal}.',
+    // Email verification / password reset
+    email_unverified:'Το email σου δεν έχει επαληθευτεί.', email_resend:'Επαναποστολή',
+    forgot_password:'Ξέχασες τον κωδικό;', reset_send:'Αποστολή συνδέσμου',
+    reset_sent:'Έλεγξε το email σου για οδηγίες επαναφοράς.',
+    reset_title:'Επαναφορά Κωδικού', reset_new:'Νέος Κωδικός', reset_confirm:'Επιβεβαίωση Κωδικού',
+    reset_submit:'Επαναφορά Κωδικού', reset_success:'Ο κωδικός επαναφέρθηκε. Μπορείς τώρα να συνδεθείς.',
+    verify_success:'Το email επαληθεύτηκε!',
+  }
+};
+
 // ─── State ───────────────────────────────────────────────────────────────────
 const state = {
   token:     localStorage.getItem('bet_token'),
@@ -306,11 +886,15 @@ const state = {
   matches:   [],
   betSlip:   [],
   stake:     '10',
+  betSlipMode: 'singles',   // 'singles' | 'acca'
   authTab:   'login',
+  showForgot: false,
   msg:       null,
   authError: null,
   placing:   false,
   view:      'matches',     // 'matches' | 'my-bets' | 'admin'
+  activeLeague: null,       // null = all leagues; sport_key string = filtered
+  searchQuery: '',
   myBets:    [],
   // Live odds
   flashingOdds:    new Set(),
@@ -318,10 +902,11 @@ const state = {
   transactions:    [],
   walletMsg:       null,
   // Admin
-  adminTab:           'matches',
-  adjustingUserId:    null,
-  adjustMsg:          null,
-  oddsEditingMatchId: null,
+  adminTab:            'matches',
+  adjustingUserId:     null,
+  adjustMsg:           null,
+  oddsEditingMatchId:  null,
+  liveControlMatchId:  null,
   adminMatches:    [],
   adminUsers:      [],
   adminTxs:        [],
@@ -330,25 +915,131 @@ const state = {
   settlingMatchId: null,
   settleResult:    null,
   adminMsg:        null,
+  // Casino
+  casinoCategory:  'all',
+  casinoModal:     null,
+  // Bonus
+  bonusStatus:     null,
+  bonusMsg:        null,
+  // Responsible gambling
+  rg:              null,
+  rgMsg:           null,
+  // Reality check
+  realityCheckTimer: null,
+  sessionStart:    null,
+  // i18n
+  lang: localStorage.getItem('bet_lang') || 'el',
 };
+
+// ─── Casino data ─────────────────────────────────────────────────────────────
+const CASINO_GAMES = [
+  { id:'lightning-roulette', title:'Lightning Roulette', cat:'live',  category:'Live Casino', badge:'live', rtp:'97.3%', icon:'◎', bg:'linear-gradient(135deg,#1c0a00,#3d1600,#1c0a00)', iconColor:'#fbbf24', glow:'rgba(251,191,36,.5)',  provider:'Evolution Gaming', players:3241, volatility:'Medium',    features:['Live Dealer','Lightning Multipliers','Lucky Numbers'] },
+  { id:'blackjack-pro',      title:'Blackjack Pro',      cat:'cards', category:'Card Games',  badge:'hot',  rtp:'99.5%', icon:'♠', bg:'linear-gradient(135deg,#020d05,#072110,#020d05)', iconColor:'#ffffff', glow:'rgba(0,200,90,.38)',   provider:'Evolution Gaming', players:1847, volatility:'Low',       features:['Side Bets','Perfect Pairs','Insurance'] },
+  { id:'aviator',            title:'Aviator',            cat:'crash', category:'Crash Games', badge:'hot',  rtp:'97.0%', icon:'✈', bg:'linear-gradient(135deg,#02080f,#071b35,#02080f)', iconColor:'#f5c518', glow:'rgba(245,197,24,.55)',   provider:'Spribe',           players:5620, volatility:'High',      features:['Auto Cash-Out','Live Stats','Provably Fair'] },
+  { id:'gates-of-olympus',   title:'Gates of Olympus',   cat:'slots', category:'Slots',       badge:'hot',  rtp:'96.5%', icon:'⚡', bg:'linear-gradient(135deg,#0b0618,#1e0a3c,#0b0618)', iconColor:'#a855f7', glow:'rgba(168,85,247,.55)', provider:'Pragmatic Play',   players:4103, volatility:'Very High', features:['Ante Bet','Tumble Feature','Free Spins x15'] },
+  { id:'starburst',          title:'Starburst',           cat:'slots', category:'Slots',       badge:'new',  rtp:'96.1%', icon:'★', bg:'linear-gradient(135deg,#090618,#18063a,#090618)', iconColor:'#e879f9', glow:'rgba(232,121,249,.55)',provider:'NetEnt',           players:2891, volatility:'Low',       features:['Both-Ways Win','Expanding Wilds','Respins'] },
+  { id:'poker-live',         title:'Poker Live',          cat:'live',  category:'Live Poker',  badge:'live', rtp:'98.6%', icon:'♥', bg:'linear-gradient(135deg,#140302,#300606,#140302)', iconColor:'#ef4444', glow:'rgba(239,68,68,.5)',   provider:'Evolution Gaming', players:987,  volatility:'Medium',    features:['Live Dealer','Side Bets','3-Card Bonus'] },
+  { id:'crazy-time',         title:'Crazy Time',          cat:'live',  category:'Live Casino', badge:'live', rtp:'94.4%', icon:'⊕', bg:'linear-gradient(135deg,#041200,#102800,#041200)', iconColor:'#84cc16', glow:'rgba(132,204,22,.5)',  provider:'Evolution Gaming', players:7342, volatility:'High',      features:['4 Bonus Games','Multiplier Wheel','Live Host'] },
+  { id:'sweet-bonanza',      title:'Sweet Bonanza',       cat:'slots', category:'Slots',       badge:'new',  rtp:'96.5%', icon:'✿', bg:'linear-gradient(135deg,#130312,#2c0828,#130312)', iconColor:'#f472b6', glow:'rgba(244,114,182,.5)', provider:'Pragmatic Play',   players:3156, volatility:'High',      features:['Tumble Feature','Free Spins','x100 Multipliers'] },
+  { id:'olympus-strike',     title:'Olympus Strike',      cat:'slots', category:'Slots',       badge:'hot',  rtp:'96.5%', icon:'Ψ', bg:'linear-gradient(135deg,#020814,#06173a,#050e28,#020814)', iconColor:'#fbbf24', glow:'rgba(251,191,36,.58)', provider:'Strike Studios',   players:2847, volatility:'High',      features:['Multipliers','Free Spins','Strike Bonus'] },
+  { id:'golden-pomegranate', title:'Golden Pomegranate',  cat:'slots', category:'Slots',       badge:'new',  rtp:'96.2%', icon:'❋', bg:'linear-gradient(135deg,#180208,#3a0812,#220510,#180208)', iconColor:'#fca5a5', glow:'rgba(248,113,113,.52)', provider:'Strike Studios',   players:1634, volatility:'Medium',    features:['Expanding Wilds','Respins','Golden Scatter'] },
+];
+
+const JACKPOT_DATA = [
+  { name:'MEGA JACKPOT',    current: 3_891_220.48 },
+  { name:'LIGHTNING POT',   current: 1_284_502.17 },
+  { name:'PLATINUM DROP',   current:   847_100.82 },
+  { name:'DAILY STRIKE',    current:    92_450.64 },
+  { name:'SLOTS SUPREME',   current: 2_108_790.33 },
+  { name:'LIVE TABLE POOL', current:   413_650.91 },
+];
 
 // ─── Utilities ───────────────────────────────────────────────────────────────
 const $   = id => document.getElementById(id);
 const esc = s  => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 const fmt = n  => '€' + parseFloat(n).toFixed(2);
 
+function t(key) { return TRANSLATIONS[state.lang]?.[key] ?? TRANSLATIONS.en[key] ?? key; }
+function setLang(lang) { state.lang = lang; localStorage.setItem('bet_lang', lang); render(); }
+function txTypeLabel(type) {
+  const map = { deposit: t('tx_dep'), withdrawal: t('tx_wd'), adjustment: t('tx_adj') };
+  return map[type] || type;
+}
+function statusLabel(s) {
+  const map = { pending: t('status_pending'), won: t('status_won'), lost: t('status_lost') };
+  return map[s] || s;
+}
+
+function leagueShortName(name) {
+  if (!name) return t('nav_football');
+  return name.replace(/ - [A-Za-z ]+$/, '').replace(/^UEFA /, '');
+}
+
 function formatDate(iso) {
   const d = new Date(iso);
-  return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })
-    + ' · ' + d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+  const loc = state.lang === 'el' ? 'el-GR' : 'en-GB';
+  return d.toLocaleDateString(loc, { day: '2-digit', month: 'short' })
+    + ' · ' + d.toLocaleTimeString(loc, { hour: '2-digit', minute: '2-digit' });
 }
 function toDatetimeLocal(iso) { return new Date(iso).toISOString().slice(0, 16); }
 
+function showToast(text, type = 'warn', ms = 3500) {
+  const root = $('toast-root'); if (!root) return;
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.textContent = text;
+  root.appendChild(el);
+  setTimeout(() => { el.style.opacity = '0'; el.style.transform = 'translateX(20px)'; el.style.transition = 'all .3s ease'; setTimeout(() => el.remove(), 300); }, ms);
+}
+
+function isMatchOpen(m) { return ['scheduled', 'live', 'halftime'].includes(m.status); }
+function isMatchLive(m) { return m.status === 'live' || m.status === 'halftime'; }
+function isToday(iso) {
+  const d = new Date(iso), n = new Date();
+  return d.getFullYear() === n.getFullYear() && d.getMonth() === n.getMonth() && d.getDate() === n.getDate();
+}
+
 // ─── API ─────────────────────────────────────────────────────────────────────
+let _refreshing = false;
+let _refreshPromise = null;
+
+async function _doRefresh() {
+  const rt = localStorage.getItem('bet_refresh_token');
+  if (!rt) throw new Error('No refresh token');
+  const res = await fetch('/api/refresh', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ refreshToken: rt }),
+  });
+  if (!res.ok) throw new Error('Refresh failed');
+  const data = await res.json();
+  state.token = data.token;
+  localStorage.setItem('bet_token', data.token);
+  if (data.refreshToken) localStorage.setItem('bet_refresh_token', data.refreshToken);
+}
+
 async function api(path, opts = {}) {
   const headers = { 'Content-Type': 'application/json', ...(opts.headers || {}) };
   if (state.token) headers['Authorization'] = `Bearer ${state.token}`;
-  const res  = await fetch(path, { ...opts, headers });
+  const res = await fetch(path, { ...opts, headers });
+
+  if (res.status === 401 && !opts._retry) {
+    try {
+      if (!_refreshing) {
+        _refreshing = true;
+        _refreshPromise = _doRefresh().finally(() => { _refreshing = false; });
+      }
+      await _refreshPromise;
+      return api(path, { ...opts, _retry: true });
+    } catch {
+      state.token = null; state.user = null;
+      localStorage.removeItem('bet_token');
+      localStorage.removeItem('bet_refresh_token');
+      render();
+      throw new Error('Session expired. Please log in again.');
+    }
+  }
+
   const data = await res.json();
   if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
   return data;
@@ -371,19 +1062,117 @@ async function register() {
   if (!username || !email || !password) { state.authError = 'All fields are required'; renderSidebar(); return; }
   try {
     applyAuthSuccess(await api('/api/register', { method: 'POST', body: JSON.stringify({ username, email, password }) }));
+    claimWelcomeBonus(true).then(() => { renderHeader(); });
   } catch (err) { state.authError = err.message; renderSidebar(); }
 }
 
 function applyAuthSuccess(data) {
   state.token = data.token; state.user = data.user; state.authError = null;
   localStorage.setItem('bet_token', data.token);
+  if (data.refreshToken) localStorage.setItem('bet_refresh_token', data.refreshToken);
   render();
+  startRealityCheck();
+}
+
+async function resendVerification() {
+  try {
+    const res = await api('/api/resend-verification', { method: 'POST' });
+    showToast(res.message, 'success');
+  } catch (err) { showToast(err.message, 'error'); }
+}
+
+// ─── Password reset / email verification ────────────────────────────────────────
+async function submitForgotPassword() {
+  const email = $('forgot-email')?.value?.trim();
+  if (!email) { showToast(t('email')+' ?', 'error'); return; }
+  try {
+    const res = await api('/api/forgot-password', { method: 'POST', body: JSON.stringify({ email }) });
+    const wrap = $('forgot-form-wrap');
+    if (wrap) wrap.innerHTML = `<div class="slip-msg success">${esc(res.message || t('reset_sent'))}</div>`;
+  } catch (err) { showToast(err.message, 'error'); }
+}
+
+function openResetPasswordModal(token) {
+  const el = $('modal-root'); if (!el) return;
+  el.innerHTML = `
+    <div class="modal-overlay" onclick="if(event.target===this){$('modal-root').innerHTML=''}">
+      <div class="rg-modal-card">
+        <div class="rg-modal-title">${t('reset_title')}</div>
+        <div class="form-group"><label class="form-label">${t('reset_new')}</label><input id="reset-pw1" class="form-input" type="password" placeholder="••••••••"></div>
+        <div class="form-group"><label class="form-label">${t('reset_confirm')}</label><input id="reset-pw2" class="form-input" type="password" placeholder="••••••••"></div>
+        <div id="reset-msg"></div>
+        <button class="btn btn-green btn-block" style="margin-top:8px" data-action="submit-reset" data-token="${esc(token)}">${t('reset_submit')}</button>
+      </div>
+    </div>`;
+}
+
+async function submitResetPassword(token) {
+  const pw1 = $('reset-pw1')?.value, pw2 = $('reset-pw2')?.value;
+  const msg = $('reset-msg');
+  if (!pw1 || pw1.length < 6) { if (msg) msg.innerHTML = `<div class="slip-msg error">Password must be at least 6 characters</div>`; return; }
+  if (pw1 !== pw2) { if (msg) msg.innerHTML = `<div class="slip-msg error">Passwords do not match</div>`; return; }
+  try {
+    const res = await api('/api/reset-password', { method: 'POST', body: JSON.stringify({ token, newPassword: pw1 }) });
+    $('modal-root').innerHTML = '';
+    showToast(res.message || t('reset_success'), 'success', 5000);
+    // Clear the reset param from URL
+    history.replaceState({}, '', location.pathname);
+    state.authTab = 'login'; renderSidebar();
+  } catch (err) { if (msg) msg.innerHTML = `<div class="slip-msg error">${esc(err.message)}</div>`; }
+}
+
+async function handleUrlTokens() {
+  const params = new URLSearchParams(location.search);
+  const verifyTok = params.get('verify');
+  const resetTok  = params.get('reset');
+  if (verifyTok) {
+    try {
+      const res = await api('/api/verify-email', { method: 'POST', body: JSON.stringify({ token: verifyTok }) });
+      showToast(res.message || t('verify_success'), 'success', 5000);
+      if (state.token) { await loadUser(); render(); }
+    } catch (err) { showToast(err.message, 'error', 5000); }
+    history.replaceState({}, '', location.pathname);
+  }
+  if (resetTok) {
+    openResetPasswordModal(resetTok);
+  }
+}
+
+// ─── Reality check timer ────────────────────────────────────────────────────────
+function startRealityCheck() {
+  if (state.realityCheckTimer) { clearInterval(state.realityCheckTimer); state.realityCheckTimer = null; }
+  if (!state.user) return;
+  const mins = parseInt(state.user.reality_check_mins);
+  if (!mins || mins <= 0) return;
+  state.sessionStart = Date.now();
+  state.realityCheckTimer = setInterval(() => {
+    showRealityCheckModal(mins);
+  }, mins * 60 * 1000);
+}
+
+function showRealityCheckModal(mins) {
+  const el = $('modal-root'); if (!el) return;
+  const bal = fmt(state.user?.balance || 0);
+  el.innerHTML = `
+    <div class="modal-overlay">
+      <div class="rg-modal-card">
+        <div class="rg-modal-title">⏱ ${t('rc_title')}</div>
+        <div style="font-size:.9rem;color:var(--text-sec);line-height:1.7;margin-bottom:18px">
+          ${t('rc_msg').replace('{mins}', mins)}<br>${t('rc_balance').replace('{bal}', bal)}
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <button class="btn btn-green" data-action="rc-continue">${t('rc_continue')}</button>
+          <button class="btn btn-red" data-action="rc-close-today">${t('rc_close')}</button>
+        </div>
+      </div>
+    </div>`;
 }
 
 function logout() {
   state.token = null; state.user = null; state.betSlip = []; state.msg = null;
   state.view = 'matches'; state.myBets = []; state.adminMatches = [];
   localStorage.removeItem('bet_token');
+  localStorage.removeItem('bet_refresh_token');
   render();
 }
 
@@ -397,18 +1186,26 @@ function connectOddsStream() {
       const i = state.matches.findIndex(x => x.id === m.id);
       if (i > -1) Object.assign(state.matches[i], m); else state.matches.push(m);
     });
-    if (state.view === 'matches') renderMatchList();
+    if (state.view === 'matches') { renderLeagueNav(); renderMatchList(); }
+    if (state.view === 'scores') renderScoresView();
   });
 
-  src.addEventListener('odds-update', e => {
+  src.addEventListener('match-update', e => {
     const m = JSON.parse(e.data);
+    // Patch user-facing match list
     const i = state.matches.findIndex(x => x.id === m.id);
     if (i > -1) Object.assign(state.matches[i], m); else state.matches.push(m);
-    state.flashingOdds.add(m.id);
-    setTimeout(() => { state.flashingOdds.delete(m.id); }, 900);
+    // Patch admin match list in-place (preserves stats columns from admin query)
+    const j = state.adminMatches.findIndex(x => x.id === m.id);
+    if (j > -1) Object.assign(state.adminMatches[j], m);
+    // Flash odds only if status is still scheduled
+    if (m.status === 'scheduled') {
+      state.flashingOdds.add(m.id);
+      setTimeout(() => { state.flashingOdds.delete(m.id); }, 900);
+    }
     if (state.view === 'matches') renderMatchList();
-    // Also refresh admin match list if visible
-    if (state.view === 'admin' && state.adminTab === 'matches') loadAdminMatches();
+    if (state.view === 'scores') renderScoresView();
+    if (state.view === 'admin' && state.adminTab === 'matches') renderAdminMatchList();
   });
 
   src.onerror = () => {}; // EventSource auto-reconnects
@@ -422,7 +1219,10 @@ async function loadUser() {
 }
 
 async function loadMatches() {
-  try { state.matches = await api('/api/matches'); }
+  try {
+    state.matches = await api('/api/matches');
+    if (state.view === 'matches') { renderLeagueNav(); renderMatchList(); }
+  }
   catch (err) { const el = $('matches-list'); if (el) el.innerHTML = `<div class="loading-msg">Error: ${esc(err.message)}</div>`; }
 }
 
@@ -466,7 +1266,9 @@ function toggleBet(matchId, betType, odds) {
   else {
     state.betSlip = state.betSlip.filter(b => b.matchId !== String(matchId));
     const m = state.matches.find(m => String(m.id) === String(matchId));
-    state.betSlip.push({ matchId: String(matchId), home: m.home_team, away: m.away_team, betType, odds: parseFloat(odds) });
+    const live = m && isMatchLive(m);
+    state.betSlip.push({ matchId: String(matchId), home: m.home_team, away: m.away_team, betType, odds: parseFloat(odds), live });
+    if (live) showToast(t('live_odds_warn'), 'warn');
   }
   state.msg = null; render();
 }
@@ -493,9 +1295,31 @@ async function placeAllBets() {
   if (placed > 0) {
     state.betSlip = []; state.myBets = [];
     state.msg = { type: 'success', text: failed === 0 ? `✓ ${placed} bet${placed > 1 ? 's' : ''} placed! Balance: ${fmt(newBalance)}` : `${placed} placed, ${failed} failed. Balance: ${fmt(newBalance)}` };
+    // Refresh user so bonus balance / wagering progress stay in sync
+    loadUser().then(() => renderHeader());
   } else {
     state.msg = { type: 'error', text: 'Could not place bets. Please try again.' };
   }
+  render();
+}
+
+async function placeAccumulator() {
+  const stake = parseFloat($('stake-input')?.value);
+  if (!stake || stake <= 0) { state.msg = { type: 'error', text: 'Enter a valid stake amount.' }; renderSidebar(); return; }
+  if (state.betSlip.length < 2) { state.msg = { type: 'error', text: 'Add at least 2 selections for an accumulator.' }; renderSidebar(); return; }
+  if (stake > parseFloat(state.user.balance)) { state.msg = { type: 'error', text: `Insufficient balance (${fmt(state.user.balance)}).` }; renderSidebar(); return; }
+  state.placing = true; renderSidebar();
+  try {
+    const legs = state.betSlip.map(b => ({ match_id: parseInt(b.matchId), bet_type: b.betType }));
+    const res = await api('/api/place-accumulator', { method: 'POST', body: JSON.stringify({ legs, stake }) });
+    state.user = { ...state.user, balance: res.new_balance };
+    state.betSlip = []; state.myBets = [];
+    state.msg = { type: 'success', text: `✓ Accumulator placed! ${res.legs} legs @ ${res.combined_odds}x → max ${fmt(res.potential_payout)}. Balance: ${fmt(res.new_balance)}` };
+    loadUser().then(() => renderHeader());
+  } catch (err) {
+    state.msg = { type: 'error', text: err.message };
+  }
+  state.placing = false;
   render();
 }
 
@@ -503,6 +1327,61 @@ async function placeAllBets() {
 async function loadTransactions() {
   try { state.transactions = await api('/api/transactions'); }
   catch { state.transactions = []; }
+}
+
+async function loadBonusStatus() {
+  try { state.bonusStatus = await api('/api/bonus/status'); }
+  catch { state.bonusStatus = null; }
+}
+
+async function loadRG() {
+  try { state.rg = await api('/api/responsible-gambling'); }
+  catch { state.rg = null; }
+}
+
+async function claimWelcomeBonus(silent = false) {
+  try {
+    const res = await api('/api/bonus/claim-welcome', { method: 'POST' });
+    if (res.user) {
+      state.user = { ...state.user, balance: res.user.balance, bonus_balance: res.user.bonus_balance };
+    }
+    await loadBonusStatus();
+    if (!silent) {
+      state.bonusMsg = { type: 'success', text: res.message };
+      showToast(res.message, 'success');
+      renderWalletView();
+    }
+    renderHeader();
+  } catch (err) {
+    if (!silent) { state.bonusMsg = { type: 'error', text: err.message }; renderWalletView(); }
+  }
+}
+
+async function saveRG() {
+  const body = {
+    dep_limit_daily:   $('rg-dep-daily')?.value ?? '',
+    dep_limit_weekly:  $('rg-dep-weekly')?.value ?? '',
+    dep_limit_monthly: $('rg-dep-monthly')?.value ?? '',
+    stake_limit_daily: $('rg-stake-daily')?.value ?? '',
+    reality_check_mins: parseInt($('rg-reality')?.value),
+  };
+  try {
+    state.rg = await api('/api/responsible-gambling', { method: 'POST', body: JSON.stringify(body) });
+    if (state.user) state.user.reality_check_mins = state.rg.reality_check_mins;
+    state.rgMsg = { type: 'success', text: t('rg_saved') };
+    showToast(t('rg_saved'), 'success');
+    startRealityCheck();
+    renderWalletView();
+  } catch (err) { state.rgMsg = { type: 'error', text: err.message }; renderWalletView(); }
+}
+
+async function selfExclude(days) {
+  if (!confirm(t('rg_excl_confirm'))) return;
+  try {
+    const res = await api('/api/self-exclude', { method: 'POST', body: JSON.stringify({ days }) });
+    showToast(res.message, 'warn', 5000);
+    logout();
+  } catch (err) { state.rgMsg = { type: 'error', text: err.message }; renderWalletView(); }
 }
 
 async function deposit() {
@@ -532,6 +1411,14 @@ async function withdraw() {
 }
 
 // ─── Admin actions ───────────────────────────────────────────────────────────
+async function adminUpdateStatus(id, body) {
+  try {
+    await api(`/api/admin/matches/${id}/status`, { method: 'POST', body: JSON.stringify(body) });
+    // SSE match-update will patch state; just re-render the list
+    renderAdminMatchList();
+  } catch (err) { state.adminMsg = { type: 'error', text: err.message }; renderAdminView(); }
+}
+
 async function adminUpdateOdds(id) {
   const home = parseFloat($('oe-home')?.value);
   const draw = parseFloat($('oe-draw')?.value);
@@ -655,21 +1542,43 @@ async function adminSettleMatch(id) {
 // ─── Rendering ───────────────────────────────────────────────────────────────
 function renderHeader() {
   $('site-header').innerHTML = `
-    <div class="logo">Bet<span>Engine</span></div>
+    <div class="logo">
+      <div class="logo-name">STRIKE<span> Bet</span></div>
+      <div class="logo-tag">Precision in Every Play.</div>
+    </div>
     <nav class="header-nav">
-      <span class="nav-item ${state.view === 'matches' ? 'active' : ''}" data-action="view-matches">⚽ Football</span>
-      ${state.user ? `<span class="nav-item ${state.view === 'my-bets' ? 'active' : ''}" data-action="view-my-bets">🎯 My Bets</span>` : ''}
-      ${state.user ? `<span class="nav-item ${state.view === 'wallet' ? 'active' : ''}" data-action="view-wallet">💳 Wallet</span>` : ''}
-      ${state.user?.is_admin ? `<span class="nav-item admin-tab ${state.view === 'admin' ? 'active' : ''}" data-action="view-admin">⚙ Admin</span>` : ''}
+      <span class="nav-item ${state.view === 'matches' ? 'active' : ''}" data-action="view-matches">${t('nav_football')}</span>
+      <span class="nav-item ${state.view === 'scores' ? 'active' : ''}" data-action="view-scores"><span class="live-dot" style="display:inline-block;margin-right:4px"></span>${t('nav_scores')}</span>
+      <span class="nav-item ${state.view === 'casino' ? 'active' : ''}" data-action="view-casino" style="color:${state.view==='casino'?'var(--text)':'var(--orange)'}">${t('nav_casino')}</span>
+      ${state.user ? `<span class="nav-item ${state.view === 'my-bets' ? 'active' : ''}" data-action="view-my-bets">${t('nav_mybets')}</span>` : ''}
+      ${state.user ? `<span class="nav-item ${state.view === 'wallet' ? 'active' : ''}" data-action="view-wallet">${t('nav_wallet')}</span>` : ''}
+      ${state.user?.is_admin ? `<span class="nav-item admin-tab ${state.view === 'admin' ? 'active' : ''}" data-action="view-admin">${t('nav_admin')}</span>` : ''}
     </nav>
+    <div class="search-wrap">
+      <span class="search-icon">⌕</span>
+      <input
+        id="match-search"
+        class="search-input"
+        type="text"
+        placeholder="${t('search_ph')}"
+        value="${esc(state.searchQuery)}"
+        autocomplete="off"
+      />
+      ${state.searchQuery ? `<button class="search-clear" data-action="search-clear" title="Clear">✕</button>` : ''}
+    </div>
     <div class="header-right">
+      <div class="lang-toggle">
+        <button class="lang-opt ${state.lang==='en'?'active':''}" data-action="set-lang" data-lang="en">EN</button>
+        <button class="lang-opt ${state.lang==='el'?'active':''}" data-action="set-lang" data-lang="el">ΕΛ</button>
+      </div>
       ${state.user ? `
-        <div class="balance-badge">${fmt(state.user.balance)}</div>
+        ${(state.user.email_verified === false) ? `<span class="verify-banner">⚠ ${t('email_unverified')} <button data-action="resend-verification">${t('email_resend')}</button></span>` : ''}
+        <div class="balance-badge" title="${fmt(state.user.balance)} + ${fmt(state.user.bonus_balance||0)} bonus">${fmt(parseFloat(state.user.balance) + parseFloat(state.user.bonus_balance||0))}</div>
         <span class="username-tag">${esc(state.user.username)}</span>
-        <button class="btn btn-ghost" data-action="logout">Logout</button>
+        <button class="btn btn-ghost" data-action="logout">${t('btn_logout')}</button>
       ` : `
-        <button class="btn btn-outline" data-action="tab-login">Login</button>
-        <button class="btn btn-green"   data-action="tab-register">Register</button>
+        <button class="btn btn-outline" data-action="tab-login">${t('btn_login')}</button>
+        <button class="btn btn-green"   data-action="open-register-modal">${t('btn_register')}</button>
       `}
     </div>
   `;
@@ -677,76 +1586,364 @@ function renderHeader() {
 
 function renderPage() {
   const el = $('page-content');
-  if (state.view === 'admin') {
+  if (state.view === 'casino') {
+    el.innerHTML = `<div class="container single"><div id="casino-view"></div></div>`;
+    renderCasinoView();
+  } else if (state.view === 'scores') {
+    el.innerHTML = `<div class="container single"><div id="scores-view"></div></div>`;
+    renderScoresView();
+  } else if (state.view === 'admin') {
     el.innerHTML = `<div class="container single"><div id="admin-panel"></div></div>`;
     renderAdminView();
   } else if (state.view === 'wallet') {
-    el.innerHTML = `<div class="container single"><div><div class="section-title">Wallet &nbsp;·&nbsp; Deposit &amp; Withdraw</div><div id="wallet-panel"></div></div></div>`;
+    el.innerHTML = `<div class="container single"><div><div class="section-title">${t('wallet_title')} &nbsp;·&nbsp; ${t('deposit_withdraw')}</div><div id="wallet-panel"></div></div></div>`;
     renderWalletView();
   } else if (state.view === 'my-bets') {
-    el.innerHTML = `<div class="container single"><div><div class="section-title">🎯 &nbsp;My Bets &nbsp;·&nbsp; History</div><div id="bets-list"><div class="loading-msg">Loading…</div></div></div></div>`;
+    el.innerHTML = `<div class="container single"><div><div class="section-title">${t('my_bets_title')} &nbsp;·&nbsp; ${t('history')}</div><div id="bets-list"><div class="loading-msg">${t('loading')}</div></div></div></div>`;
     renderBetsList();
   } else {
-    el.innerHTML = `<div class="container"><main><div class="section-title">⚽ &nbsp;Super League Greece &nbsp;·&nbsp; Upcoming<span class="live-badge"><span class="live-dot"></span>LIVE ODDS</span></div><div id="matches-list"><div class="loading-msg">Loading…</div></div></main><aside id="sidebar"></aside></div>`;
+    el.innerHTML = `
+      <div class="container">
+        <nav id="league-nav" class="league-sidebar"></nav>
+        <main>
+          <div class="section-title">${t('section_football')} &nbsp;·&nbsp; ${t('upcoming')} <span class="live-badge"><span class="live-dot"></span>${t('live_odds')}</span></div>
+          <div id="matches-list"><div class="loading-msg">${t('loading')}</div></div>
+        </main>
+        <aside id="sidebar"></aside>
+      </div>
+      <button id="mobile-slip-fab" data-action="fab-scroll-slip" style="display:none"></button>`;
+    renderLeagueNav();
     renderMatchList();
     renderSidebar();
+    renderMobileFab();
   }
+}
+
+function renderLeagueNav() {
+  const el = $('league-nav'); if (!el) return;
+  const seen = new Map();
+  for (const m of state.matches) {
+    if (m.sport_key && !seen.has(m.sport_key)) seen.set(m.sport_key, m.league_name);
+  }
+  const total = state.matches.length;
+  el.innerHTML = `
+    <div class="ln-header">${t('leagues')}</div>
+    <div class="ln-item ${!state.activeLeague ? 'active' : ''}" data-action="filter-league" data-key="">
+      <span class="ln-name">${t('all_leagues')}</span>
+      <span class="ln-count">${total}</span>
+    </div>
+    ${[...seen.entries()].map(([key, name]) => {
+      const count = state.matches.filter(m => m.sport_key === key).length;
+      return `<div class="ln-item ${state.activeLeague === key ? 'active' : ''}" data-action="filter-league" data-key="${esc(key)}">
+        <span class="ln-name">${esc(leagueShortName(name))}</span>
+        <span class="ln-count">${count}</span>
+      </div>`;
+    }).join('')}`;
+}
+
+function renderMatchCard(m) {
+  const isLive     = m.status === 'live';
+  const isHalftime = m.status === 'halftime';
+  const isFinished = m.status === 'finished';
+  const isOpen     = m.status === 'scheduled';
+  const hasScore   = m.home_score !== null && m.away_score !== null;
+  const flash      = state.flashingOdds.has(m.id);
+
+  const statusBadge = isLive
+    ? `<span class="match-status-live"><span class="ms-dot"></span>${t('status_live')||'LIVE'}${m.match_minute ? ' ' + m.match_minute + "'" : ''}</span>`
+    : isHalftime ? `<span class="match-status-halftime">◐ ${t('status_halftime')}</span>`
+    : isFinished ? `<span class="match-status-finished">${t('status_fulltime')}</span>`
+    : `<span class="match-time">${formatDate(m.match_date)}</span>`;
+
+  const midDisplay = hasScore
+    ? `<div class="live-score"><span class="score-num">${m.home_score}</span><span class="score-sep">-</span><span class="score-num">${m.away_score}</span></div>`
+    : `<div class="vs-badge">VS</div>`;
+
+  // Live in-play betting: only finished matches are closed; live/halftime stay open.
+  const liveBet      = isLive || isHalftime;
+  const oddsDisabled = isFinished;
+  return `
+  <div class="match-card${isLive ? ' in-play' : isHalftime ? ' halftime' : ''}">
+    <div class="match-header">
+      <span class="league-tag">⚽ ${esc(leagueShortName(m.league_name))}</span>
+      ${statusBadge}
+    </div>
+    <div class="match-teams">
+      <div class="team-name">${esc(m.home_team)}</div>
+      ${midDisplay}
+      <div class="team-name away">${esc(m.away_team)}</div>
+    </div>
+    <div class="odds-row">
+      <button class="odd-btn ${isSelected(m.id,'home') ? 'selected' : ''} ${flash ? 'flash' : ''} ${oddsDisabled ? 'closed' : ''}" ${oddsDisabled ? '' : `data-action="bet" data-match="${m.id}" data-type="home" data-odds="${m.home_odds}" data-live="${liveBet?'1':''}"`}>
+        <span class="odd-label">${t('odd_home')}</span><span class="odd-value">${parseFloat(m.home_odds).toFixed(2)}</span>
+      </button>
+      <button class="odd-btn ${isSelected(m.id,'draw') ? 'selected' : ''} ${flash ? 'flash' : ''} ${oddsDisabled ? 'closed' : ''}" ${oddsDisabled ? '' : `data-action="bet" data-match="${m.id}" data-type="draw" data-odds="${m.draw_odds}" data-live="${liveBet?'1':''}"`}>
+        <span class="odd-label">${t('odd_draw')}</span><span class="odd-value">${parseFloat(m.draw_odds).toFixed(2)}</span>
+      </button>
+      <button class="odd-btn ${isSelected(m.id,'away') ? 'selected' : ''} ${flash ? 'flash' : ''} ${oddsDisabled ? 'closed' : ''}" ${oddsDisabled ? '' : `data-action="bet" data-match="${m.id}" data-type="away" data-odds="${m.away_odds}" data-live="${liveBet?'1':''}"`}>
+        <span class="odd-label">${t('odd_away')}</span><span class="odd-value">${parseFloat(m.away_odds).toFixed(2)}</span>
+      </button>
+    </div>
+    ${liveBet ? `<div class="betting-closed-note" style="color:var(--green)"><span class="live-dot" style="display:inline-block;vertical-align:middle;margin-right:5px"></span>${t('live_bet')} — ${t('live_odds_warn')}</div>` : ''}
+    ${oddsDisabled ? `<div class="betting-closed-note">${t('betting_closed')}</div>` : ''}
+  </div>`;
 }
 
 function renderMatchList() {
   const el = $('matches-list'); if (!el) return;
-  if (!state.matches.length) { el.innerHTML = '<div class="loading-msg">No matches available.</div>'; return; }
-  el.innerHTML = state.matches.map(m => `
-    <div class="match-card">
-      <div class="match-header">
-        <span class="league-tag">⚽ Super League Greece</span>
-        <span class="match-time">${formatDate(m.match_date)}</span>
+
+  const q = state.searchQuery.trim().toLowerCase();
+
+  let visible = state.activeLeague
+    ? state.matches.filter(m => m.sport_key === state.activeLeague)
+    : state.matches;
+
+  if (q) {
+    visible = visible.filter(m =>
+      m.home_team.toLowerCase().includes(q) ||
+      m.away_team.toLowerCase().includes(q)
+    );
+  }
+
+  if (!visible.length) {
+    el.innerHTML = q
+      ? `<div class="loading-msg">${state.lang==='el'?`Δεν βρέθηκαν αγώνες για "<strong>${esc(q)}</strong>".`:`No matches found for "<strong>${esc(q)}</strong>".`}</div>`
+      : `<div class="loading-msg">${t('no_matches')}</div>`;
+    return;
+  }
+
+  const resultsNote = q
+    ? `<div class="search-results-note">${state.lang==='el'?`${visible.length} αγώνες για "<strong>${esc(q)}</strong>"`:visible.length+' match'+(visible.length!==1?'es':'')+' for "<strong>'+esc(q)+'</strong>"'}</div>`
+    : '';
+
+  // When searching, skip grouping and show flat list across all leagues
+  if (q || state.activeLeague) {
+    el.innerHTML = resultsNote + visible.map(renderMatchCard).join('');
+  } else {
+    const groups = new Map();
+    for (const m of visible) {
+      const key = m.league_name || 'Other';
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(m);
+    }
+    el.innerHTML = [...groups.entries()].map(([name, ms]) =>
+      `<div class="league-group">
+        <div class="league-group-hdr">⚽ ${esc(leagueShortName(name))}</div>
+        ${ms.map(renderMatchCard).join('')}
+      </div>`
+    ).join('');
+  }
+}
+
+function renderScoreCard(m, live) {
+  const isHalftime = m.status === 'halftime';
+  const hs = m.home_score ?? 0, as = m.away_score ?? 0;
+  const isFinished = m.status === 'finished';
+  const oddsDisabled = isFinished;
+  const liveBet = live;
+  const badge = isHalftime
+    ? `<span class="match-status-halftime">◐ ${t('status_halftime')}</span>`
+    : live ? `<span class="match-status-live"><span class="ms-dot"></span>${t('status_live')}${m.match_minute ? ' ' + m.match_minute + "'" : ''}</span>`
+    : `<span class="match-time">${formatDate(m.match_date)}</span>`;
+  const mid = live
+    ? `<div class="score-big"><span class="score-num">${hs}</span><span class="score-sep">:</span><span class="score-num">${as}</span></div>`
+    : `<div class="vs-badge">VS</div>`;
+  return `
+    <div class="score-card ${live ? 'score-center-live' : ''}">
+      <div class="score-card-top">
+        <span class="league-tag">⚽ ${esc(leagueShortName(m.league_name))}</span>
+        ${badge}
       </div>
-      <div class="match-teams">
-        <div class="team-name">${esc(m.home_team)}</div>
-        <div class="vs-badge">VS</div>
-        <div class="team-name away">${esc(m.away_team)}</div>
+      <div class="score-teams-row">
+        <div class="score-team">${esc(m.home_team)}</div>
+        ${mid}
+        <div class="score-team away">${esc(m.away_team)}</div>
       </div>
+      ${(live && m.status === 'live' && m.match_minute) ? `<div style="text-align:center;margin-bottom:12px"><span class="score-minute">● ${m.match_minute}'</span></div>` : ''}
       <div class="odds-row">
-        <button class="odd-btn ${isSelected(m.id,'home') ? 'selected' : ''} ${state.flashingOdds.has(m.id) ? 'flash' : ''}" data-action="bet" data-match="${m.id}" data-type="home" data-odds="${m.home_odds}">
-          <span class="odd-label">1 Home</span><span class="odd-value">${parseFloat(m.home_odds).toFixed(2)}</span>
+        <button class="odd-btn ${isSelected(m.id,'home') ? 'selected' : ''} ${oddsDisabled ? 'closed' : ''}" ${oddsDisabled ? '' : `data-action="bet" data-match="${m.id}" data-type="home" data-odds="${m.home_odds}" data-live="${liveBet?'1':''}"`}>
+          <span class="odd-label">${t('odd_home')}</span><span class="odd-value">${parseFloat(m.home_odds).toFixed(2)}</span>
         </button>
-        <button class="odd-btn ${isSelected(m.id,'draw') ? 'selected' : ''} ${state.flashingOdds.has(m.id) ? 'flash' : ''}" data-action="bet" data-match="${m.id}" data-type="draw" data-odds="${m.draw_odds}">
-          <span class="odd-label">X Draw</span><span class="odd-value">${parseFloat(m.draw_odds).toFixed(2)}</span>
+        <button class="odd-btn ${isSelected(m.id,'draw') ? 'selected' : ''} ${oddsDisabled ? 'closed' : ''}" ${oddsDisabled ? '' : `data-action="bet" data-match="${m.id}" data-type="draw" data-odds="${m.draw_odds}" data-live="${liveBet?'1':''}"`}>
+          <span class="odd-label">${t('odd_draw')}</span><span class="odd-value">${parseFloat(m.draw_odds).toFixed(2)}</span>
         </button>
-        <button class="odd-btn ${isSelected(m.id,'away') ? 'selected' : ''} ${state.flashingOdds.has(m.id) ? 'flash' : ''}" data-action="bet" data-match="${m.id}" data-type="away" data-odds="${m.away_odds}">
-          <span class="odd-label">2 Away</span><span class="odd-value">${parseFloat(m.away_odds).toFixed(2)}</span>
+        <button class="odd-btn ${isSelected(m.id,'away') ? 'selected' : ''} ${oddsDisabled ? 'closed' : ''}" ${oddsDisabled ? '' : `data-action="bet" data-match="${m.id}" data-type="away" data-odds="${m.away_odds}" data-live="${liveBet?'1':''}"`}>
+          <span class="odd-label">${t('odd_away')}</span><span class="odd-value">${parseFloat(m.away_odds).toFixed(2)}</span>
         </button>
       </div>
+    </div>`;
+}
+
+function renderScoresView() {
+  const el = $('scores-view'); if (!el) return;
+  const liveMatches  = state.matches.filter(m => m.status === 'live' || m.status === 'halftime');
+  const todayMatches = state.matches.filter(m => m.status === 'scheduled' && isToday(m.match_date));
+
+  el.innerHTML = `
+    <div class="casino-section">
+      <div class="casino-section-hdr">
+        <span class="csec-dot live"></span>
+        <span class="csec-title">${t('scores_live_now')}</span>
+        <span class="csec-count">${liveMatches.length}</span>
+      </div>
+      ${liveMatches.length
+        ? liveMatches.map(m => renderScoreCard(m, true)).join('')
+        : `<div class="scores-empty">${t('scores_no_live')}</div>`}
     </div>
-  `).join('');
+    <div class="casino-section">
+      <div class="casino-section-hdr">
+        <span class="csec-dot cards"></span>
+        <span class="csec-title">${t('scores_today')}</span>
+        <span class="csec-count">${todayMatches.length}</span>
+      </div>
+      ${todayMatches.length
+        ? todayMatches.map(m => renderScoreCard(m, false)).join('')
+        : `<div class="scores-empty">${t('scores_no_today')}</div>`}
+    </div>`;
 }
 
 function renderBetsList() {
   const el = $('bets-list'); if (!el) return;
   if (!state.myBets.length) {
-    el.innerHTML = `<div class="bets-empty"><div class="bets-empty-icon">🎯</div><div style="font-size:1rem;font-weight:600;margin-bottom:8px;color:var(--text)">No bets placed yet</div><div style="font-size:.82rem">Go to <span class="text-link" data-action="view-matches">Football</span> and place your first bet.</div></div>`; return;
+    el.innerHTML = `<div class="bets-empty"><div class="bets-empty-icon">🎯</div><div style="font-size:1rem;font-weight:600;margin-bottom:8px;color:var(--text)">${t('no_bets')}</div><div style="font-size:.82rem">${t('no_bets_go')} <span class="text-link" data-action="view-matches">${t('nav_football')}</span> ${t('no_bets_place')}</div></div>`; return;
   }
-  el.innerHTML = state.myBets.map(b => {
-    const pickLabel = b.bet_type === 'home' ? '1 Home Win' : b.bet_type === 'away' ? '2 Away Win' : 'X Draw';
+
+  // Separate singles from accumulator legs
+  const singles = state.myBets.filter(b => !b.accumulator_id);
+  const accaMap = new Map();
+  for (const b of state.myBets) {
+    if (!b.accumulator_id) continue;
+    if (!accaMap.has(b.accumulator_id)) accaMap.set(b.accumulator_id, []);
+    accaMap.get(b.accumulator_id).push(b);
+  }
+
+  const singlesHtml = singles.map(b => {
+    const pickLabel = b.bet_type === 'home' ? t('pick_home') : b.bet_type === 'away' ? t('pick_away') : t('pick_draw');
     return `
       <div class="bet-history-card">
         <div class="bhc-main">
-          <div class="bhc-meta"><span class="league-tag">⚽ Super League</span><span class="match-time">${formatDate(b.match_date)}</span></div>
+          <div class="bhc-meta"><span class="league-tag">⚽ ${esc(leagueShortName(b.league_name))}</span><span class="match-time">${formatDate(b.match_date)}</span>${b.is_live?`<span class="live-badge" style="color:var(--danger)"><span class="live-dot" style="background:var(--danger)"></span>${t('live_bet')}</span>`:''}</div>
           <div class="bhc-teams">${esc(b.home_team)} <span class="vs-mini">vs</span> ${esc(b.away_team)}</div>
           <div class="bhc-details">
-            <div class="bhc-detail"><span class="bhc-label">Pick</span><span class="bhc-value">${pickLabel}</span></div>
-            <div class="bhc-detail"><span class="bhc-label">Odds</span><span class="bhc-value">${parseFloat(b.odds).toFixed(2)}</span></div>
-            <div class="bhc-detail"><span class="bhc-label">Stake</span><span class="bhc-value">${fmt(b.amount)}</span></div>
-            <div class="bhc-detail"><span class="bhc-label">Potential</span><span class="bhc-value" style="color:var(--green)">${fmt(parseFloat(b.amount) * parseFloat(b.odds))}</span></div>
+            <div class="bhc-detail"><span class="bhc-label">${t('lbl_pick')}</span><span class="bhc-value">${pickLabel}</span></div>
+            <div class="bhc-detail"><span class="bhc-label">${t('lbl_odds')}</span><span class="bhc-value">${parseFloat(b.odds).toFixed(2)}</span></div>
+            <div class="bhc-detail"><span class="bhc-label">${t('lbl_stake')}</span><span class="bhc-value">${fmt(b.amount)}</span></div>
+            <div class="bhc-detail"><span class="bhc-label">${t('lbl_potential')}</span><span class="bhc-value" style="color:var(--green)">${fmt(parseFloat(b.amount) * parseFloat(b.odds))}</span></div>
           </div>
         </div>
         <div class="bhc-right">
-          <span class="status-badge status-${esc(b.status)}">${esc(b.status)}</span>
+          <span class="status-badge status-${esc(b.status)}">${statusLabel(b.status)}</span>
           <div class="bhc-date">${formatDate(b.created_at)}</div>
         </div>
       </div>`;
   }).join('');
+
+  const accaHtml = [...accaMap.entries()].map(([, legs]) => {
+    const combinedOdds = legs.reduce((p, l) => p * parseFloat(l.odds), 1);
+    const stake = parseFloat(legs[0].amount);
+    const allSettled = legs.every(l => l.status !== 'pending');
+    const allWon     = legs.every(l => l.status === 'won');
+    const accaStatus = allSettled ? (allWon ? 'won' : 'lost') : 'pending';
+    return `
+      <div class="acca-card">
+        <div class="acca-header">
+          <div>
+            <span class="acca-label">${t('acca_label')}</span>
+            <span class="acca-meta">${legs.length} ${t('legs_combined').replace('{odds}', combinedOdds.toFixed(2))}</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <span class="status-badge status-${accaStatus}">${statusLabel(accaStatus)}</span>
+            <span class="acca-payout">${fmt(stake * combinedOdds)}</span>
+          </div>
+        </div>
+        ${legs.map(l => {
+          const pick = l.bet_type === 'home' ? t('odd_home') : l.bet_type === 'away' ? t('odd_away') : t('odd_draw');
+          return `
+          <div class="acca-leg">
+            <div class="acca-leg-info">
+              <div class="acca-leg-match">${esc(l.home_team)} vs ${esc(l.away_team)}</div>
+              <div class="acca-leg-meta">⚽ ${esc(leagueShortName(l.league_name))} &nbsp;·&nbsp; ${pick} @ ${parseFloat(l.odds).toFixed(2)}</div>
+            </div>
+            <span class="status-badge status-${l.status}">${statusLabel(l.status)}</span>
+          </div>`;
+        }).join('')}
+        <div class="acca-footer">
+          <span style="font-size:.78rem;color:var(--text-muted)">${t('stake_lbl')}: ${fmt(stake)}</span>
+          <span class="bhc-date">${formatDate(legs[0].created_at)}</span>
+        </div>
+      </div>`;
+  }).join('');
+
+  el.innerHTML = accaHtml + singlesHtml;
+}
+
+function renderBonusSection() {
+  const bs = state.bonusStatus;
+  const bonusBal = parseFloat(bs?.bonus_balance ?? state.user?.bonus_balance ?? 0);
+  const wagered  = parseFloat(bs?.bonus_wagered ?? 0);
+  const req      = parseFloat(bs?.bonus_requirement ?? 0);
+  const hasBonus = req > 0 || bonusBal > 0;
+  const pct      = req > 0 ? Math.min(100, (wagered / req) * 100) : 0;
+  const noBonusEver = bs && req === 0 && bonusBal === 0;
+
+  return `
+    <div class="wallet-card" style="margin-bottom:24px">
+      <div class="wallet-card-title">🎁 ${t('bonus_title')}</div>
+      ${hasBonus ? `
+        <div style="margin-bottom:14px"><span class="bonus-balance-badge">${fmt(bonusBal)}</span> <span style="font-size:.72rem;color:var(--text-muted);margin-left:8px">${t('bonus_balance')}</span></div>
+        ${req > 0 ? `
+          <div class="wager-bar-label">${t('bonus_wagering')}: ${fmt(wagered)} / ${fmt(req)}</div>
+          <div class="wager-bar-wrap"><div class="wager-bar" style="width:${pct}%"></div></div>
+          <div class="wager-bar-label">${fmt(Math.max(0, req - wagered))} ${t('bonus_to_unlock')}</div>
+        ` : ''}
+      ` : `
+        <div style="font-size:.85rem;color:var(--text-muted);margin-bottom:14px">${t('bonus_none')}</div>
+        ${noBonusEver ? `
+          <button class="btn btn-green btn-block" data-action="claim-welcome-bonus">${t('bonus_claim_welcome')}</button>
+          <div style="font-size:.72rem;color:var(--text-muted);text-align:center;margin-top:8px">${t('bonus_welcome_desc')}</div>
+        ` : ''}
+      `}
+      ${state.bonusMsg ? `<div class="wallet-result ${state.bonusMsg.type}">${esc(state.bonusMsg.text)}</div>` : ''}
+    </div>`;
+}
+
+function renderRGSection() {
+  const rg = state.rg || {};
+  const rcMins = rg.reality_check_mins ?? 60;
+  const rcOpts = [{v:15,l:'15m'},{v:30,l:'30m'},{v:60,l:'60m'},{v:120,l:'2h'},{v:0,l:t('rg_off')}];
+  const excluded = rg.self_excluded_until && new Date(rg.self_excluded_until) > new Date();
+  return `
+    <div class="section-title">🛡️ ${t('rg_title')}</div>
+    <div class="rg-section">
+      <div class="wallet-card">
+        <div class="wallet-card-title">${t('rg_dep_limits')}</div>
+        <div class="rg-inputs-row">
+          <div><label class="form-label">${t('rg_daily')}</label><input id="rg-dep-daily" class="form-input" type="number" min="0" step="1" placeholder="—" value="${rg.dep_limit_daily ?? ''}"></div>
+          <div><label class="form-label">${t('rg_weekly')}</label><input id="rg-dep-weekly" class="form-input" type="number" min="0" step="1" placeholder="—" value="${rg.dep_limit_weekly ?? ''}"></div>
+          <div><label class="form-label">${t('rg_monthly')}</label><input id="rg-dep-monthly" class="form-input" type="number" min="0" step="1" placeholder="—" value="${rg.dep_limit_monthly ?? ''}"></div>
+        </div>
+        <div class="wallet-card-title" style="margin-top:6px">${t('rg_stake_limit')}</div>
+        <input id="rg-stake-daily" class="form-input" type="number" min="0" step="1" placeholder="—" value="${rg.stake_limit_daily ?? ''}" style="margin-bottom:10px">
+        <div class="wallet-card-title" style="margin-top:0">${t('rg_reality_check')}</div>
+        <select id="rg-reality" class="form-input" style="margin-bottom:12px">
+          ${rcOpts.map(o => `<option value="${o.v}" ${o.v===rcMins?'selected':''}>${o.l}</option>`).join('')}
+        </select>
+        <button class="btn btn-green btn-block" data-action="rg-save">${t('rg_save')}</button>
+        <div class="rg-current">${t('rg_only_reduced')}</div>
+        ${state.rgMsg ? `<div class="wallet-result ${state.rgMsg.type}">${esc(state.rgMsg.text)}</div>` : ''}
+      </div>
+      <div class="wallet-card">
+        <div class="wallet-card-title" style="color:var(--danger)">${t('rg_self_excl')}</div>
+        ${excluded ? `<div class="rg-current" style="color:var(--danger)">Excluded until ${new Date(rg.self_excluded_until).toISOString().slice(0,10)}</div>` : `
+          <div class="rg-excl-grid">
+            <button class="rg-excl-btn" data-action="rg-exclude" data-days="7">${t('rg_excl_1w')}</button>
+            <button class="rg-excl-btn" data-action="rg-exclude" data-days="30">${t('rg_excl_1m')}</button>
+            <button class="rg-excl-btn" data-action="rg-exclude" data-days="180">${t('rg_excl_6m')}</button>
+            <button class="rg-excl-btn" data-action="rg-exclude" data-days="365">${t('rg_excl_1y')}</button>
+          </div>
+        `}
+      </div>
+    </div>`;
 }
 
 function renderWalletView() {
@@ -758,28 +1955,30 @@ function renderWalletView() {
   el.innerHTML = `
     <div class="wallet-balance-card">
       <div>
-        <div class="wbc-label">Available Balance</div>
+        <div class="wbc-label">${t('avail_balance')}</div>
         <div class="wbc-amount">${fmt(bal)}</div>
         <div class="wbc-user">${esc(state.user?.username)}</div>
       </div>
     </div>
 
+    ${renderBonusSection()}
+
     <div class="wallet-grid">
       <div class="wallet-card">
-        <div class="wallet-card-title">Deposit</div>
+        <div class="wallet-card-title">${t('deposit')}</div>
         <div class="quick-amounts">
           ${[50,100,250,500].map(v => `<button class="qa-btn" data-action="wallet-quick-dep" data-val="${v}">€${v}</button>`).join('')}
         </div>
         <div class="form-group" style="margin-bottom:10px">
-          <label class="form-label">Amount (min €5)</label>
+          <label class="form-label">${t('amount_min5')}</label>
           <div class="stake-wrap"><span class="stake-sym">€</span><input id="deposit-amount" class="stake-input" type="number" min="5" step="1" placeholder="0.00"></div>
         </div>
-        <button class="btn btn-green btn-block" data-action="do-deposit">Deposit Funds</button>
+        <button class="btn btn-green btn-block" data-action="do-deposit">${t('deposit_funds')}</button>
         ${depMsg ? `<div class="wallet-result ${depMsg.type}">${esc(depMsg.text)}</div>` : ''}
       </div>
 
       <div class="wallet-card">
-        <div class="wallet-card-title">Withdraw</div>
+        <div class="wallet-card-title">${t('withdraw')}</div>
         <div class="quick-amounts">
           ${[25,50,75,100].map(pct => {
             const v = (bal * pct / 100).toFixed(2);
@@ -787,29 +1986,31 @@ function renderWalletView() {
           }).join('')}
         </div>
         <div class="form-group" style="margin-bottom:10px">
-          <label class="form-label">Amount (min €5, max ${fmt(bal)})</label>
+          <label class="form-label">${t('amount_min5')}, max ${fmt(bal)}</label>
           <div class="stake-wrap"><span class="stake-sym">€</span><input id="withdraw-amount" class="stake-input" type="number" min="5" step="1" max="${bal}" placeholder="0.00"></div>
         </div>
-        <button class="btn btn-red btn-block" data-action="do-withdraw">Withdraw Funds</button>
+        <button class="btn btn-red btn-block" data-action="do-withdraw">${t('withdraw_funds')}</button>
         ${wdMsg ? `<div class="wallet-result ${wdMsg.type}">${esc(wdMsg.text)}</div>` : ''}
       </div>
     </div>
 
-    <div class="section-title">Transaction History</div>
-    ${state.transactions.length === 0 ? `<div class="loading-msg">No transactions yet.</div>` : `
+    ${renderRGSection()}
+
+    <div class="section-title">${t('tx_history')}</div>
+    ${state.transactions.length === 0 ? `<div class="loading-msg">${t('no_tx')}</div>` : `
       <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;overflow:hidden">
         <table class="tx-table">
           <thead><tr>
-            <th>Date</th><th>Type</th><th>Amount</th><th>Balance Before</th><th>Balance After</th>
+            <th>${t('tx_date')}</th><th>${t('tx_type')}</th><th>${t('tx_amount')}</th><th>${t('tx_before')}</th><th>${t('tx_after')}</th>
           </tr></thead>
           <tbody>
-            ${state.transactions.map(t => `
+            ${state.transactions.map(tx => `
               <tr>
-                <td style="color:var(--text-muted)">${formatDate(t.created_at)}</td>
-                <td><span class="tx-type-badge ${t.type}">${t.type}</span></td>
-                <td class="tx-${t.type}" style="font-weight:700">${t.type === 'deposit' ? '+' : '-'}${fmt(t.amount)}</td>
-                <td style="color:var(--text-sec)">${fmt(t.balance_before)}</td>
-                <td style="font-weight:600">${fmt(t.balance_after)}</td>
+                <td style="color:var(--text-muted)">${formatDate(tx.created_at)}</td>
+                <td><span class="tx-type-badge ${tx.type}">${txTypeLabel(tx.type)}</span></td>
+                <td class="tx-${tx.type}" style="font-weight:700">${tx.type === 'deposit' ? '+' : '-'}${fmt(tx.amount)}</td>
+                <td style="color:var(--text-sec)">${fmt(tx.balance_before)}</td>
+                <td style="font-weight:600">${fmt(tx.balance_after)}</td>
               </tr>`).join('')}
           </tbody>
         </table>
@@ -904,21 +2105,21 @@ function renderAdminTxs() {
           <th>Date</th><th>User</th><th>Type</th><th>Amount</th><th>Balance Before</th><th>Balance After</th><th>Note</th>
         </tr></thead>
         <tbody>
-          ${txs.map(t => {
-            const sign = t.type === 'deposit' ? '+' : t.type === 'withdrawal' ? '-'
-              : parseFloat(t.balance_after) >= parseFloat(t.balance_before) ? '+' : '-';
-            const cls  = t.type === 'adjustment'
+          ${txs.map(tx => {
+            const sign = tx.type === 'deposit' ? '+' : tx.type === 'withdrawal' ? '-'
+              : parseFloat(tx.balance_after) >= parseFloat(tx.balance_before) ? '+' : '-';
+            const cls  = tx.type === 'adjustment'
               ? (sign === '+' ? 'style="color:#a78bfa;font-weight:700"' : 'style="color:#a78bfa;font-weight:700"')
-              : `class="tx-${t.type}" style="font-weight:700"`;
+              : `class="tx-${tx.type}" style="font-weight:700"`;
             return `
             <tr>
-              <td style="color:var(--text-muted)">${formatDate(t.created_at)}</td>
-              <td style="font-weight:600">${esc(t.username)}</td>
-              <td><span class="tx-type-badge ${t.type}">${t.type}</span></td>
-              <td ${cls}>${sign}${fmt(t.amount)}</td>
-              <td style="color:var(--text-sec)">${fmt(t.balance_before)}</td>
-              <td style="font-weight:600">${fmt(t.balance_after)}</td>
-              <td style="color:var(--text-muted);font-size:.75rem">${esc(t.note || '')}</td>
+              <td style="color:var(--text-muted)">${formatDate(tx.created_at)}</td>
+              <td style="font-weight:600">${esc(tx.username)}</td>
+              <td><span class="tx-type-badge ${tx.type}">${tx.type}</span></td>
+              <td ${cls}>${sign}${fmt(tx.amount)}</td>
+              <td style="color:var(--text-sec)">${fmt(tx.balance_before)}</td>
+              <td style="font-weight:600">${fmt(tx.balance_after)}</td>
+              <td style="color:var(--text-muted);font-size:.75rem">${esc(tx.note || '')}</td>
             </tr>`;
           }).join('')}
         </tbody>
@@ -938,7 +2139,7 @@ function renderAdminView() {
   el.innerHTML = `
     ${state.adminMsg ? `<div class="admin-msg ${state.adminMsg.type}">${esc(state.adminMsg.text)}</div>` : ''}
     <div class="admin-tabs">
-      ${tabs.map(t => `<button class="admin-tab-btn ${state.adminTab===t.id?'active':''}" data-action="admin-tab" data-tab="${t.id}">${t.label}</button>`).join('')}
+      ${tabs.map(tab => `<button class="admin-tab-btn ${state.adminTab===tab.id?'active':''}" data-action="admin-tab" data-tab="${tab.id}">${tab.label}</button>`).join('')}
     </div>
     <div id="admin-tab-content"></div>
   `;
@@ -1018,11 +2219,12 @@ function renderAdminMatchList() {
         </div>
       </div>`;
 
+    const isLiveCtrl  = state.liveControlMatchId === m.id;
     const resultLabel = m.result === 'home' ? '1 Home Win' : m.result === 'away' ? '2 Away Win' : m.result === 'draw' ? 'X Draw' : null;
     return `
       <div class="admin-card ${isSettling ? 'settling' : ''}">
         <div class="ac-header">
-          <span class="league-tag">⚽ Super League</span>
+          <span class="league-tag">⚽ ${esc(leagueShortName(m.league_name))}</span>
           <span class="match-time">${formatDate(m.match_date)}</span>
           <span class="status-badge status-${esc(m.status)}">${esc(m.status)}</span>
           ${resultLabel ? `<span class="result-badge result-${esc(m.result)}">${resultLabel}</span>` : ''}
@@ -1034,6 +2236,47 @@ function renderAdminMatchList() {
           <span>2&nbsp;<b>${parseFloat(m.away_odds).toFixed(2)}</b></span>
         </div>
         <div class="ac-stats">${m.pending_bets} pending bet${m.pending_bets != 1 ? 's' : ''} &nbsp;·&nbsp; ${fmt(m.total_staked)} staked</div>
+        ${isLiveCtrl ? `
+          <div class="live-ctrl">
+            <div class="live-ctrl-title">Live Control</div>
+            <div class="live-ctrl-row">
+              ${m.status === 'scheduled' ? `
+                <button class="btn btn-sm" style="background:var(--danger);color:#fff;font-weight:700" data-action="lc-kickoff" data-id="${m.id}">Kick Off</button>
+              ` : ''}
+              ${m.status === 'live' ? `
+                <button class="btn btn-amber btn-sm" data-action="lc-halftime" data-id="${m.id}">Half-time</button>
+                <button class="btn btn-sm" style="background:var(--text-muted);color:#000;font-weight:700" data-action="lc-fulltime" data-id="${m.id}">Full Time</button>
+              ` : ''}
+              ${m.status === 'halftime' ? `
+                <button class="btn btn-sm" style="background:var(--danger);color:#fff;font-weight:700" data-action="lc-2ndhalf" data-id="${m.id}">2nd Half</button>
+                <button class="btn btn-sm" style="background:var(--text-muted);color:#000;font-weight:700" data-action="lc-fulltime" data-id="${m.id}">Full Time</button>
+              ` : ''}
+            </div>
+            ${(m.status === 'live' || m.status === 'halftime') ? `
+              <div class="live-ctrl-row">
+                <div class="score-ctrl">
+                  <span class="score-ctrl-label">${esc(m.home_team.split(' ')[0])}</span>
+                  <button class="score-ctrl-btn" data-action="lc-score-dec-home" data-id="${m.id}">−</button>
+                  <span class="score-ctrl-val">${m.home_score ?? 0}</span>
+                  <button class="score-ctrl-btn" data-action="lc-score-inc-home" data-id="${m.id}">+</button>
+                </div>
+                <div class="score-ctrl">
+                  <span class="score-ctrl-label">${esc(m.away_team.split(' ')[0])}</span>
+                  <button class="score-ctrl-btn" data-action="lc-score-dec-away" data-id="${m.id}">−</button>
+                  <span class="score-ctrl-val">${m.away_score ?? 0}</span>
+                  <button class="score-ctrl-btn" data-action="lc-score-inc-away" data-id="${m.id}">+</button>
+                </div>
+              </div>
+            ` : ''}
+            ${m.status === 'live' ? `
+              <div class="live-ctrl-row">
+                <span style="font-size:.72rem;color:var(--text-muted)">Minute:</span>
+                <input id="lc-minute" class="form-input minute-input" type="number" min="1" max="120" value="${m.match_minute ?? 1}">
+                <button class="btn btn-outline btn-sm" data-action="lc-set-minute" data-id="${m.id}">Set</button>
+              </div>
+            ` : ''}
+          </div>
+        ` : ''}
         ${state.oddsEditingMatchId === m.id ? `
           <div class="odds-edit-section">
             <div class="settle-label" style="margin-bottom:8px">Update Odds</div>
@@ -1072,6 +2315,7 @@ function renderAdminMatchList() {
         <div class="admin-actions">
           <button class="btn btn-outline btn-sm" data-action="admin-edit" data-id="${m.id}">Edit</button>
           ${m.status === 'scheduled' ? `<button class="btn btn-outline btn-sm" style="border-color:rgba(59,130,246,.4);color:var(--blue)" data-action="admin-odds-show" data-id="${m.id}">Update Odds</button>` : ''}
+          ${m.status !== 'finished' ? `<button class="btn btn-sm" style="background:rgba(239,68,68,.12);color:var(--danger);border:1px solid rgba(239,68,68,.3)" data-action="admin-live-show" data-id="${m.id}">Live Control</button>` : ''}
           ${m.status !== 'finished' ? `<button class="btn btn-amber btn-sm" data-action="admin-settle-show" data-id="${m.id}">Settle Result</button>` : ''}
           <button class="btn btn-red btn-sm" data-action="admin-delete" data-id="${m.id}">Delete</button>
         </div>
@@ -1079,42 +2323,318 @@ function renderAdminMatchList() {
   }).join('');
 }
 
+// ─── Casino ───────────────────────────────────────────────────────────────────
+function _jpItems() {
+  return `<span class="jackpot-label">⚡ LIVE JACKPOTS</span>` +
+    JACKPOT_DATA.map(j =>
+      `<span class="jackpot-item">
+        <span class="jackpot-name">${j.name}</span>
+        <span class="jackpot-amount" data-jp="${esc(j.name)}">€${Math.floor(j.current).toLocaleString('en-GB')}</span>
+      </span>`
+    ).join('<span class="jackpot-sep">·</span>');
+}
+
+function updateJackpots() {
+  JACKPOT_DATA.forEach(j => {
+    j.current += Math.random() * 60 + 8;
+    document.querySelectorAll(`[data-jp="${j.name}"]`).forEach(el => {
+      el.textContent = '€' + Math.floor(j.current).toLocaleString('en-GB');
+    });
+  });
+}
+
+function renderGameCard(g) {
+  const playerFmt = g.players >= 1000 ? (g.players / 1000).toFixed(1).replace(/\.0$/, '') + 'K' : g.players;
+  const isStrike = g.provider === 'Strike Studios';
+  return `
+    <div class="game-card${isStrike ? ' strike-original' : ''}" data-action="play-game" data-id="${g.id}">
+      <div class="game-thumb loaded" style="background:${g.bg}">
+        <div class="game-thumb-skeleton"></div>
+        <div class="game-thumb-glow" style="background:radial-gradient(circle at 50% 55%,${g.glow} 0%,transparent 65%)"></div>
+        <span class="game-thumb-icon" style="color:${g.iconColor}">${g.icon}</span>
+        <div class="game-thumb-overlay">
+          <button class="btn-play-hover">▶&nbsp; ${t('play_now')}</button>
+        </div>
+        <span class="game-badge-thumb ${g.badge}">${g.badge === 'live' ? '● LIVE' : g.badge.toUpperCase()}</span>
+        ${isStrike ? `<span class="strike-original-ribbon">STRIKE ORIGINAL</span>` : ''}
+        <span class="game-provider-tag">${g.provider}</span>
+      </div>
+      <div class="game-body">
+        <div class="game-title">${esc(g.title)}</div>
+        <div class="game-players"><span class="gp-dot"></span>${playerFmt} ${t('playing')} &nbsp;·&nbsp; RTP ${g.rtp}</div>
+        <div class="game-features">${g.features.slice(0, 2).map(f => `<span class="game-feat">${f}</span>`).join('')}</div>
+        <button class="btn-play" data-action="play-game" data-id="${g.id}">${t('play_now')}</button>
+      </div>
+    </div>`;
+}
+
+function renderCasinoView() {
+  const el = $('casino-view'); if (!el) return;
+  const cat = state.casinoCategory;
+  const cats = [
+    { id:'all',   label:t('cat_all'),   icon:'◈' },
+    { id:'live',  label:t('cat_live'),  icon:'●' },
+    { id:'slots', label:t('cat_slots'), icon:'★' },
+    { id:'crash', label:t('cat_crash'), icon:'✈' },
+    { id:'cards', label:t('cat_cards'), icon:'♠' },
+  ];
+
+  let gridHtml;
+  if (cat === 'all') {
+    const sections = [
+      { key:'live',  label:t('sec_live'),  emoji:'●' },
+      { key:'slots', label:t('sec_slots'), emoji:'★' },
+      { key:'crash', label:t('sec_crash'), emoji:'✈' },
+      { key:'cards', label:t('sec_cards'), emoji:'♠' },
+    ];
+    gridHtml = sections.map(s => {
+      const games = CASINO_GAMES.filter(g => g.cat === s.key);
+      if (!games.length) return '';
+      return `
+        <div class="casino-section">
+          <div class="casino-section-hdr">
+            <span class="csec-dot ${s.key}"></span>
+            <span class="csec-title">${s.label}</span>
+            <span class="csec-count">${games.length} ${games.length > 1 ? t('game_p') : t('game_s')}</span>
+          </div>
+          <div class="casino-grid">${games.map(renderGameCard).join('')}</div>
+        </div>`;
+    }).join('');
+  } else {
+    const visible = CASINO_GAMES.filter(g => g.cat === cat);
+    gridHtml = `<div class="casino-grid">${visible.map(renderGameCard).join('')}</div>`;
+  }
+
+  el.innerHTML = `
+    <div class="jackpot-ticker">
+      <div class="jackpot-ticker-inner">${_jpItems()}${_jpItems()}</div>
+    </div>
+
+    <div class="casino-hero">
+      <div class="casino-hero-left">
+        <div class="casino-eyebrow">⚡ STRIKE · CASINO</div>
+        <div class="casino-hero-title">${t('casino_title1')}<br><span>${t('casino_title2')}</span></div>
+        <div class="casino-hero-sub">${t('casino_sub')}</div>
+        <div class="casino-stats">
+          <div class="chs"><div class="chs-val">200+</div><div class="chs-lbl">${t('casino_games')}</div></div>
+          <div class="chs"><div class="chs-val">24/7</div><div class="chs-lbl">${t('casino_tables')}</div></div>
+          <div class="chs"><div class="chs-val">€5M+</div><div class="chs-lbl">${t('casino_jackpots')}</div></div>
+          <div class="chs"><div class="chs-val">&lt;1s</div><div class="chs-lbl">${t('casino_payout')}</div></div>
+        </div>
+        <div class="casino-hero-cta">
+          <button class="btn btn-green" data-action="casino-cat" data-cat="live" style="font-size:.72rem;padding:9px 20px">${t('explore_live')}</button>
+          <button class="btn btn-outline" data-action="casino-cat" data-cat="slots" style="font-size:.72rem;padding:9px 20px">${t('browse_slots')}</button>
+        </div>
+      </div>
+      <div class="casino-hero-right">
+        <div class="ch-card ch-c1">♠</div>
+        <div class="ch-card ch-c2">◎</div>
+        <div class="ch-card ch-c3">✈</div>
+      </div>
+    </div>
+
+    <div class="casino-cats">
+      ${cats.map(c => `<button class="cat-btn ${cat===c.id?'active':''}" data-action="casino-cat" data-cat="${c.id}">${c.label}</button>`).join('')}
+    </div>
+
+    ${gridHtml}`;
+}
+
+function openSlotGame() {
+  if (!state.token) { $('auth-username')?.focus(); return; }
+  const overlay = document.getElementById('slot-overlay');
+  const frame   = document.getElementById('slot-frame');
+  if (!overlay || !frame) return;
+  const bal = parseFloat(state.user?.balance ?? 0);
+  frame.src = `/games/olympus-strike/index.html?bal=${encodeURIComponent(bal.toFixed(2))}`;
+  overlay.style.display = 'block';
+  document.body.style.overflow = 'hidden';
+  // Push a history entry so the browser back button can close the overlay
+  history.pushState({ slotOpen: true }, '');
+}
+
+function closeSlotGame(fromPopstate = false) {
+  const overlay = document.getElementById('slot-overlay');
+  const frame   = document.getElementById('slot-frame');
+  if (!overlay || !frame) return;
+  overlay.style.display = 'none';
+  frame.src = '';
+  document.body.style.overflow = '';
+  state.view = 'casino';
+  render();
+  if (state.token) loadUser().then(render);
+  // If closed by the exit button (not by the back button), remove the history entry we pushed
+  if (!fromPopstate) history.back();
+}
+
+// Back button: intercept while slot overlay is open
+window.addEventListener('popstate', () => {
+  if (document.getElementById('slot-overlay')?.style.display === 'block') {
+    closeSlotGame(true); // browser already navigated back — don't call history.back() again
+  }
+});
+
+window.addEventListener('message', e => {
+  if (e.data === 'close-slot') closeSlotGame(false);
+});
+
+function openCasinoModal(gameId) {
+  state.casinoModal = gameId;
+  renderCasinoModal();
+  const steps = [
+    [600,  () => t('modal_verify')],
+    [1300, () => t('modal_loading')],
+    [2100, () => t('modal_connecting')],
+    [2700, () => t('modal_ready')],
+  ];
+  steps.forEach(([ms, msgFn]) => {
+    setTimeout(() => {
+      const stat = document.querySelector('.modal-status-line em');
+      if (stat) stat.textContent = msgFn();
+      if (ms >= 2700) {
+        const btn = document.querySelector('.modal-enter-btn');
+        if (btn) { btn.disabled = false; btn.textContent = t('modal_enter'); btn.style.opacity = '1'; btn.style.cursor = 'pointer'; }
+      }
+    }, ms);
+  });
+}
+
+function _modalWins(g) {
+  const names = ['A***n', 'M***o', 'K***s', 'P***r', 'J***e', 'S***h', 'D***v', 'T***a'];
+  const amounts = [840, 1240, 2100, 560, 3800, 450, 1875, 620, 4200, 970];
+  return [0, 1, 2].map(i => {
+    const n = names[(g.players * (i + 2)) % names.length];
+    const a = amounts[(g.players + i * 7) % amounts.length];
+    const mins = [1, 3, 8][i];
+    return `<div class="mw-row"><span class="mw-user">${n}</span><span class="mw-game">${esc(g.title)}</span><span class="mw-win">+€${a.toLocaleString()}</span><span class="mw-time">${mins} ${t('mins_ago')}</span></div>`;
+  }).join('');
+}
+
+function renderCasinoModal() {
+  const el = $('modal-root'); if (!el) return;
+  if (!state.casinoModal) { el.innerHTML = ''; return; }
+  const g = CASINO_GAMES.find(x => x.id === state.casinoModal);
+  if (!g) { el.innerHTML = ''; return; }
+  const closeFn = `state.casinoModal=null;renderCasinoModal();`;
+  const rating = (4.3 + (g.players % 13) / 26).toFixed(1);
+  const reviews = ((g.players * 3) + 8000).toLocaleString();
+  const stars = '★'.repeat(Math.round(parseFloat(rating))) + '☆'.repeat(5 - Math.round(parseFloat(rating)));
+  const playerFmt = g.players >= 1000 ? (g.players / 1000).toFixed(1).replace(/\.0$/, '') + 'K' : g.players;
+  el.innerHTML = `
+    <div class="modal-overlay" onclick="if(event.target===this){${closeFn}}">
+      <div class="modal-card">
+        <button class="modal-close" onclick="${closeFn}">✕</button>
+        <div class="modal-eyebrow">STRIKE CASINO</div>
+        <div class="modal-game-header">
+          <div class="modal-icon-wrap" style="background:${g.bg}">
+            <span class="modal-icon" style="filter:drop-shadow(0 0 14px ${g.glow});color:${g.iconColor}">${g.icon}</span>
+          </div>
+          <div class="modal-game-info">
+            <div class="modal-title">${esc(g.title)}</div>
+            <div class="modal-provider">${g.provider}</div>
+            <div class="modal-rating">
+              <span style="letter-spacing:1px">${stars}</span>
+              <span class="modal-rating-val">${rating}</span>
+              <span class="modal-rating-count">(${reviews})</span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-info-grid">
+          <div class="mig-item"><div class="mig-label">RTP</div><div class="mig-val">${g.rtp}</div></div>
+          <div class="mig-item"><div class="mig-label">${t('modal_volatility')}</div><div class="mig-val">${g.volatility}</div></div>
+          <div class="mig-item"><div class="mig-label">${t('modal_playing')}</div><div class="mig-val" style="color:var(--green)">${playerFmt}</div></div>
+        </div>
+        <div class="modal-features-wrap">${g.features.map(f => `<span class="mf-chip">${f}</span>`).join('')}</div>
+        <div class="modal-divider"></div>
+        <div class="modal-wins-box">
+          <div class="mw-header">${t('modal_winners')}</div>
+          ${_modalWins(g)}
+        </div>
+        <div class="modal-status-line">${t('modal_status')} <em>${t('modal_init')}</em></div>
+        <div class="modal-progress"><div class="modal-bar"></div></div>
+        <div class="modal-actions">
+          <button class="btn btn-outline" onclick="${closeFn}">${t('modal_close')}</button>
+          <button class="btn btn-green modal-enter-btn" disabled style="opacity:.45;cursor:not-allowed" onclick="this.textContent=t('modal_launched');this.style.background='var(--green)';this.style.color='#fff';this.style.cursor='default';setTimeout(()=>{${closeFn}},900)">${t('modal_launching')}</button>
+        </div>
+      </div>
+    </div>`;
+}
+
 function renderSidebar() {
   const el = $('sidebar'); if (!el) return;
   el.innerHTML = state.user ? renderBetSlip() : renderAuthForm();
+  renderMobileFab();
+}
+
+function renderMobileFab() {
+  const fab = $('mobile-slip-fab');
+  if (!fab) return;
+  const n = state.betSlip.length;
+  if (n > 0) {
+    fab.style.display = 'flex';
+    fab.textContent = `${t('view_slip')} (${n})`;
+  } else {
+    fab.style.display = 'none';
+  }
 }
 
 function renderBetSlip() {
   const slip = state.betSlip, stake = parseFloat(state.stake) || 0;
+  const isAcca = state.betSlipMode === 'acca';
+  const combinedOdds = slip.reduce((p, b) => p * b.odds, 1);
+
   return `
     <div class="sidebar-panel">
       <div class="panel-header">
-        <span class="panel-title">Bet Slip</span>
+        <span class="panel-title">${t('bet_slip')}</span>
         ${slip.length ? `<span class="slip-count">${slip.length}</span>` : ''}
       </div>
+      ${slip.length > 0 ? `
+        <div class="slip-mode-tabs">
+          <div class="slip-mode-tab ${!isAcca?'active':''}" data-action="slip-mode" data-mode="singles">${t('singles')}</div>
+          <div class="slip-mode-tab ${isAcca?'active':''}" data-action="slip-mode" data-mode="acca">${t('accumulator')}</div>
+        </div>` : ''}
       <div class="panel-body">
         ${slip.length === 0 ? `
-          <div class="slip-empty"><div class="slip-empty-icon">🎯</div><div>Your bet slip is empty.</div><div style="font-size:.72rem;color:var(--text-muted);margin-top:6px">Select any odds to add a pick.</div></div>
+          <div class="slip-empty"><div class="slip-empty-icon">🎯</div><div>${t('slip_empty')}</div><div style="font-size:.72rem;color:var(--text-muted);margin-top:6px">${t('slip_hint')}</div></div>
         ` : `
           ${slip.map(b => `
             <div class="bet-selection">
               <button class="bet-sel-remove" data-action="remove-bet" data-match="${b.matchId}">✕</button>
-              <div class="bet-sel-match">${esc(b.home)} vs ${esc(b.away)}</div>
+              <div class="bet-sel-match">${esc(b.home)} vs ${esc(b.away)}${b.live?` <span class="live-badge" style="color:var(--danger)"><span class="live-dot" style="background:var(--danger)"></span>${t('live_bet')}</span>`:''}</div>
               <div class="bet-sel-row">
-                <span class="bet-sel-type">${b.betType==='home'?'1 Home Win':b.betType==='away'?'2 Away Win':'X Draw'}</span>
+                <span class="bet-sel-type">${b.betType==='home'?t('pick_home'):b.betType==='away'?t('pick_away'):t('pick_draw')}</span>
                 <span class="bet-sel-odds">${b.odds.toFixed(2)}</span>
               </div>
             </div>`).join('')}
+
+          ${isAcca ? `
+            <div class="acca-odds-display">
+              <div><div class="acca-odds-label">${t('combined_odds')}</div></div>
+              <div class="acca-odds-val">${combinedOdds.toFixed(2)}x</div>
+            </div>
+            ${slip.length < 2 ? `<div class="slip-min-note">${t('acca_min')}</div>` : ''}
+          ` : ''}
+
           <div class="stake-section">
-            <div class="stake-label">Stake per bet</div>
+            <div class="stake-label">${isAcca ? t('stake_single') : t('stake_per_bet')}</div>
             <div class="quick-stakes">${[5,10,25,50].map(v=>`<button class="quick-stake" data-action="quick-stake" data-val="${v}">€${v}</button>`).join('')}</div>
             <div class="stake-wrap"><span class="stake-sym">€</span><input id="stake-input" class="stake-input" type="number" min="1" step="1" value="${esc(state.stake)}" placeholder="0.00"></div>
           </div>
-          <div class="summary-row"><span class="sum-label">Total stake &nbsp;·&nbsp; ${slip.length} bet${slip.length>1?'s':''}</span><span class="sum-value">${fmt(stake*slip.length)}</span></div>
-          <div class="summary-row" style="border-top:none;padding-top:4px;margin-bottom:14px"><span class="sum-label">Potential winnings</span><span class="sum-value green">${fmt(slip.reduce((s,b)=>s+stake*b.odds,0))}</span></div>
-          <button class="btn btn-green btn-block" data-action="place-bets" ${state.placing?'disabled':''}>
-            ${state.placing ? 'Placing bets…' : 'Place All Bets'}
-          </button>
+
+          ${isAcca ? `
+            <div class="summary-row"><span class="sum-label">${t('stake_lbl')}</span><span class="sum-value">${fmt(stake)}</span></div>
+            <div class="summary-row" style="border-top:none;padding-top:4px;margin-bottom:14px"><span class="sum-label">${t('max_payout')}</span><span class="sum-value green">${fmt(stake * combinedOdds)}</span></div>
+            <button class="btn btn-green btn-block" data-action="place-acca" ${(state.placing||slip.length<2)?'disabled':''}>
+              ${state.placing ? t('placing') : `${t('place_acca')} (${slip.length})`}
+            </button>
+          ` : `
+            <div class="summary-row"><span class="sum-label">${t('total_stake')} &nbsp;·&nbsp; ${slip.length}</span><span class="sum-value">${fmt(stake*slip.length)}</span></div>
+            <div class="summary-row" style="border-top:none;padding-top:4px;margin-bottom:14px"><span class="sum-label">${t('potential_win')}</span><span class="sum-value green">${fmt(slip.reduce((s,b)=>s+stake*b.odds,0))}</span></div>
+            <button class="btn btn-green btn-block" data-action="place-bets" ${state.placing?'disabled':''}>
+              ${state.placing ? t('placing_bets') : t('place_bets')}
+            </button>
+          `}
         `}
         ${state.msg ? `<div class="slip-msg ${state.msg.type}">${esc(state.msg.text)}</div>` : ''}
       </div>
@@ -1125,16 +2645,24 @@ function renderAuthForm() {
   return `
     <div class="sidebar-panel">
       <div class="auth-tabs">
-        <div class="auth-tab ${state.authTab==='login'?'active':''}" data-action="tab-login">Login</div>
-        <div class="auth-tab ${state.authTab==='register'?'active':''}" data-action="tab-register">Register</div>
+        <div class="auth-tab ${state.authTab==='login'?'active':''}" data-action="tab-login">${t('login')}</div>
+        <div class="auth-tab ${state.authTab==='register'?'active':''}" data-action="tab-register">${t('register')}</div>
       </div>
       <div class="panel-body">
-        <div class="form-group"><label class="form-label" for="auth-username">Username</label><input id="auth-username" class="form-input" type="text" placeholder="your username" autocomplete="username"></div>
-        ${state.authTab==='register'?`<div class="form-group"><label class="form-label" for="auth-email">Email</label><input id="auth-email" class="form-input" type="email" placeholder="your@email.com" autocomplete="email"></div>`:''}
-        <div class="form-group"><label class="form-label" for="auth-password">Password</label><input id="auth-password" class="form-input" type="password" placeholder="••••••••" autocomplete="${state.authTab==='register'?'new-password':'current-password'}"></div>
-        <button class="btn btn-green btn-block" data-action="${state.authTab}">${state.authTab==='login'?'Login':'Create Account'}</button>
-        ${state.authTab==='register'?`<div class="register-bonus">New accounts start with <strong style="color:var(--green)">€1,000.00</strong> balance.</div>`:''}
+        <div class="form-group"><label class="form-label" for="auth-username">${t('username')}</label><input id="auth-username" class="form-input" type="text" placeholder="${t('username').toLowerCase()}" autocomplete="username"></div>
+        ${state.authTab==='register'?`<div class="form-group"><label class="form-label" for="auth-email">${t('email')}</label><input id="auth-email" class="form-input" type="email" placeholder="your@email.com" autocomplete="email"></div>`:''}
+        <div class="form-group"><label class="form-label" for="auth-password">${t('password')}</label><input id="auth-password" class="form-input" type="password" placeholder="••••••••" autocomplete="${state.authTab==='register'?'new-password':'current-password'}"></div>
+        <button class="btn btn-green btn-block" data-action="${state.authTab}">${state.authTab==='login'?t('login'):t('create_account')}</button>
+        ${state.authTab==='login'?`<div style="text-align:center;margin-top:10px"><span class="text-link" style="font-size:.74rem" data-action="show-forgot">${t('forgot_password')}</span></div>`:''}
+        ${state.authTab==='register'?`<div class="register-bonus">${t('register_bonus')} <strong style="color:var(--green)">€1,000.00</strong>.</div>`:''}
         ${state.authError?`<div class="form-error">${esc(state.authError)}</div>`:''}
+        ${(state.authTab==='login' && state.showForgot)?`
+          <div id="forgot-form-wrap" style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
+            <div class="form-group"><label class="form-label" for="forgot-email">${t('email')}</label><input id="forgot-email" class="form-input" type="email" placeholder="your@email.com"></div>
+            <button class="btn btn-outline btn-block" data-action="submit-forgot">${t('reset_send')}</button>
+            <div style="text-align:center;margin-top:8px"><span class="text-link" style="font-size:.72rem" data-action="hide-forgot">✕ Cancel</span></div>
+          </div>
+        `:''}
       </div>
     </div>`;
 }
@@ -1148,18 +2676,49 @@ document.addEventListener('click', e => {
   if (!action) return;
 
   switch (action) {
+    case 'set-lang': setLang(el.dataset.lang); break;
     case 'login':    login();    break;
     case 'register': register(); break;
     case 'logout':   logout();   break;
-    case 'tab-login':    state.authTab = 'login';    state.authError = null; renderSidebar(); break;
-    case 'tab-register': state.authTab = 'register'; state.authError = null; renderSidebar(); break;
+    case 'tab-login':          state.authTab = 'login'; state.authError = null; state.showForgot = false; renderSidebar(); break;
+    case 'tab-register':       state.authTab = 'register'; state.authError = null; state.showForgot = false; renderSidebar(); break;
+    case 'open-register-modal': openRegisterModal(); break;
+    case 'show-forgot':        state.showForgot = true; renderSidebar(); break;
+    case 'hide-forgot':        state.showForgot = false; renderSidebar(); break;
+    case 'submit-forgot':      submitForgotPassword(); break;
+    case 'submit-reset':       submitResetPassword(el.dataset.token); break;
+    case 'rc-continue':        $('modal-root').innerHTML = ''; break;
+    case 'rc-close-today':     $('modal-root').innerHTML = ''; selfExclude(1); break;
+    case 'search-clear':
+      state.searchQuery = '';
+      if (state.view === 'matches') renderMatchList();
+      renderHeader();
+      $('match-search')?.focus();
+      break;
     case 'view-matches': state.view = 'matches'; state.walletMsg = null; render(); break;
+    case 'view-scores':  state.view = 'scores';  state.walletMsg = null; render(); break;
+    case 'view-casino':  state.view = 'casino';  state.walletMsg = null; render(); break;
+    case 'casino-cat':   state.casinoCategory = el.dataset.cat; renderCasinoView(); break;
+    case 'play-game':
+      if (el.dataset.id === 'olympus-strike') openSlotGame();
+      else openCasinoModal(el.dataset.id);
+      break;
+    case 'filter-league':
+      state.activeLeague = el.dataset.key || null;
+      renderLeagueNav(); renderMatchList(); break;
     case 'view-my-bets':
       if (!state.token) { $('auth-username')?.focus(); return; }
       state.view = 'my-bets'; render(); loadMyBets(); break;
     case 'view-wallet':
       if (!state.token) return;
-      state.view = 'wallet'; state.walletMsg = null; render(); loadTransactions(); break;
+      state.view = 'wallet'; state.walletMsg = null; state.bonusMsg = null; state.rgMsg = null;
+      render();
+      Promise.all([loadTransactions(), loadBonusStatus(), loadRG()]).then(() => renderWalletView());
+      break;
+    case 'claim-welcome-bonus': claimWelcomeBonus(false); break;
+    case 'rg-save': saveRG(); break;
+    case 'rg-exclude': selfExclude(parseInt(el.dataset.days)); break;
+    case 'resend-verification': resendVerification(); break;
     case 'wallet-quick-dep':
       if ($('deposit-amount'))  $('deposit-amount').value  = el.dataset.val; break;
     case 'wallet-quick-wd':
@@ -1171,6 +2730,22 @@ document.addEventListener('click', e => {
       state.adjustingUserId = null; state.adjustMsg = null;
       renderAdminView();
       break;
+    case 'admin-live-show': {
+      state.liveControlMatchId = parseInt(el.dataset.id);
+      state.editingMatchId = null; state.settlingMatchId = null; state.oddsEditingMatchId = null;
+      renderAdminMatchList(); break;
+    }
+    case 'admin-live-cancel':
+      state.liveControlMatchId = null; renderAdminMatchList(); break;
+    case 'lc-kickoff': adminUpdateStatus(parseInt(el.dataset.id), { status:'live', match_minute:1, home_score:0, away_score:0 }); break;
+    case 'lc-halftime': adminUpdateStatus(parseInt(el.dataset.id), { status:'halftime' }); break;
+    case 'lc-2ndhalf': adminUpdateStatus(parseInt(el.dataset.id), { status:'live', match_minute:46 }); break;
+    case 'lc-fulltime': adminUpdateStatus(parseInt(el.dataset.id), { status:'finished' }); break;
+    case 'lc-score-inc-home': { const m = state.adminMatches.find(x=>x.id===parseInt(el.dataset.id)); if(m) adminUpdateStatus(m.id,{home_score:(m.home_score??0)+1}); break; }
+    case 'lc-score-dec-home': { const m = state.adminMatches.find(x=>x.id===parseInt(el.dataset.id)); if(m) adminUpdateStatus(m.id,{home_score:Math.max(0,(m.home_score??0)-1)}); break; }
+    case 'lc-score-inc-away': { const m = state.adminMatches.find(x=>x.id===parseInt(el.dataset.id)); if(m) adminUpdateStatus(m.id,{away_score:(m.away_score??0)+1}); break; }
+    case 'lc-score-dec-away': { const m = state.adminMatches.find(x=>x.id===parseInt(el.dataset.id)); if(m) adminUpdateStatus(m.id,{away_score:Math.max(0,(m.away_score??0)-1)}); break; }
+    case 'lc-set-minute': { const v=parseInt($('lc-minute')?.value); if(!isNaN(v)&&v>0) adminUpdateStatus(parseInt(el.dataset.id),{match_minute:v}); break; }
     case 'admin-odds-show':
       state.oddsEditingMatchId = parseInt(el.dataset.id);
       state.editingMatchId = null; state.settlingMatchId = null;
@@ -1195,17 +2770,22 @@ document.addEventListener('click', e => {
     case 'bet':        toggleBet(el.dataset.match, el.dataset.type, el.dataset.odds); break;
     case 'remove-bet': removeBet(el.dataset.match); break;
     case 'place-bets': placeAllBets(); break;
+    case 'place-acca': placeAccumulator(); break;
+    case 'slip-mode':
+      state.betSlipMode = el.dataset.mode; state.msg = null; renderSidebar(); break;
     case 'quick-stake': state.stake = el.dataset.val; render(); break;
+    case 'fab-scroll-slip':
+      document.getElementById('sidebar')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); break;
     // Admin
     case 'admin-add-show':   state.showAddMatch = true;  state.adminMsg = null; renderAdminView(); break;
     case 'admin-add-cancel': state.showAddMatch = false; renderAdminView(); break;
     case 'admin-create':     adminCreateMatch(); break;
-    case 'admin-edit':       state.editingMatchId = parseInt(el.dataset.id); state.settlingMatchId = null; state.oddsEditingMatchId = null; renderAdminMatchList(); break;
+    case 'admin-edit':       state.editingMatchId = parseInt(el.dataset.id); state.settlingMatchId = null; state.oddsEditingMatchId = null; state.liveControlMatchId = null; renderAdminMatchList(); break;
     case 'admin-edit-cancel': state.editingMatchId = null; renderAdminMatchList(); break;
     case 'admin-save':       adminSaveMatch(parseInt(el.dataset.id)); break;
     case 'admin-delete':     adminDeleteMatch(parseInt(el.dataset.id)); break;
     case 'admin-settle-show':
-      state.settlingMatchId = parseInt(el.dataset.id); state.editingMatchId = null; state.oddsEditingMatchId = null;
+      state.settlingMatchId = parseInt(el.dataset.id); state.editingMatchId = null; state.oddsEditingMatchId = null; state.liveControlMatchId = null;
       state.settleResult = null; renderAdminMatchList(); break;
     case 'admin-settle-cancel': state.settlingMatchId = null; state.settleResult = null; renderAdminMatchList(); break;
     case 'settle-pick':       state.settleResult = el.dataset.result; renderAdminMatchList(); break;
@@ -1214,6 +2794,16 @@ document.addEventListener('click', e => {
 });
 
 document.addEventListener('input', e => {
+  if (e.target.id === 'match-search') {
+    state.searchQuery = e.target.value;
+    if (state.view === 'matches') renderMatchList();
+    // re-render header to show/hide the clear button
+    renderHeader();
+    // restore focus after header re-render
+    const inp = $('match-search');
+    if (inp) { inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); }
+    return;
+  }
   if (e.target.id !== 'stake-input') return;
   state.stake = e.target.value;
   const stake = parseFloat(e.target.value) || 0;
@@ -1227,12 +2817,246 @@ document.addEventListener('keydown', e => {
     state.authTab === 'login' ? login() : register();
 });
 
+// ─── Register Modal ───────────────────────────────────────────────────────────
+let _regData = {};
+
+function openRegisterModal() {
+  if ($('reg-modal-root')) return;
+  _regData = {};
+  const root = document.createElement('div');
+  root.id = 'reg-modal-root';
+  root.innerHTML = `
+  <div class="reg-overlay" id="reg-overlay">
+    <div class="reg-modal" role="dialog" aria-modal="true" aria-label="Εγγραφή">
+
+      <!-- ── Form panel ── -->
+      <div class="reg-form-panel">
+        <button class="reg-close" onclick="closeRegisterModal()" title="Κλείσιμο">✕</button>
+
+        <div class="reg-logo">
+          <div class="reg-logo-name">STRIKE<span> Bet</span></div>
+          <div class="reg-logo-tag">Precision in Every Play.</div>
+        </div>
+
+        <!-- Step 1 -->
+        <div id="reg-s1">
+          <div class="reg-steps">
+            <div class="reg-step">
+              <div class="reg-step-num active">1</div>
+              <div class="reg-step-label active">Λογαριασμός</div>
+            </div>
+            <div class="reg-step-sep"></div>
+            <div class="reg-step">
+              <div class="reg-step-num">2</div>
+              <div class="reg-step-label">Στοιχεία</div>
+            </div>
+          </div>
+          <h2 class="reg-title">Εγγραφή</h2>
+          <p class="reg-sub">Δημιούργησε δωρεάν λογαριασμό και λάβε μπόνους καλωσορίσματος.</p>
+
+          <div class="reg-field" id="rf-email">
+            <label class="reg-label" for="ri-email">E-mail <span class="req">*</span></label>
+            <input class="reg-input" type="email" id="ri-email" placeholder="your@email.com" autocomplete="email">
+            <div class="reg-field-err">Πρέπει να συμπληρωθεί ένα έγκυρο email.</div>
+          </div>
+
+          <div class="reg-field" id="rf-pass">
+            <label class="reg-label" for="ri-pass">Κωδικός <span class="req">*</span></label>
+            <input class="reg-input" type="password" id="ri-pass" placeholder="Τουλάχιστον 6 χαρακτήρες" autocomplete="new-password">
+            <div class="reg-field-err">Ο κωδικός πρέπει να έχει τουλάχιστον 6 χαρακτήρες.</div>
+          </div>
+
+          <div class="reg-bonus-toggle" id="ri-bonus-toggle" onclick="_regToggleBonus()">
+            <span style="font-size:.9rem">🎁</span>
+            <span class="reg-bonus-label">Εξαργύρωση κωδικού μπόνους</span>
+            <span class="reg-bonus-arrow" id="ri-bonus-arrow">▾</span>
+          </div>
+          <div class="reg-bonus-input-wrap" id="ri-bonus-wrap">
+            <input class="reg-input" type="text" id="ri-bonus-code" placeholder="Εισάγετε τον κωδικό μπόνους">
+          </div>
+
+          <div class="reg-checks">
+            <label class="reg-check-label">
+              <input type="checkbox" id="ri-chk-email">
+              <div class="reg-check-box"></div>
+              <span class="reg-check-text">Αποστολή προσφορών μέσω ηλεκτρονικού ταχυδρομείου</span>
+            </label>
+            <label class="reg-check-label">
+              <input type="checkbox" id="ri-chk-tos">
+              <div class="reg-check-box"></div>
+              <span class="reg-check-text">Είμαι 21 ετών και αποδέχομαι τους <a href="#" onclick="return false">Όρους και Προϋποθέσεις</a> και την <a href="#" onclick="return false">Πολιτική Απορρήτου</a> <span class="req">*</span></span>
+            </label>
+          </div>
+          <div class="reg-tos-err" id="ri-tos-err">Πρέπει να αποδεχτείς τους Όρους και Προϋποθέσεις.</div>
+
+          <div class="reg-error-global" id="ri-err-1"></div>
+          <button class="reg-btn-primary" onclick="_regNext()">ΕΠΟΜΕΝΟ →</button>
+          <div class="reg-login-link">Έχεις λογαριασμό; <a onclick="closeRegisterModal();state.authTab='login';renderSidebar()">Σύνδεση</a></div>
+        </div>
+
+        <!-- Step 2 -->
+        <div id="reg-s2" style="display:none">
+          <div class="reg-steps">
+            <div class="reg-step">
+              <div class="reg-step-num done">✓</div>
+              <div class="reg-step-label">Λογαριασμός</div>
+            </div>
+            <div class="reg-step-sep"></div>
+            <div class="reg-step">
+              <div class="reg-step-num active">2</div>
+              <div class="reg-step-label active">Στοιχεία</div>
+            </div>
+          </div>
+          <h2 class="reg-title">Ένα βήμα ακόμα!</h2>
+          <p class="reg-sub">Διάλεξε ένα όνομα χρήστη για τον λογαριασμό σου.</p>
+
+          <div class="reg-field" id="rf-user">
+            <label class="reg-label" for="ri-user">Όνομα Χρήστη <span class="req">*</span></label>
+            <input class="reg-input" type="text" id="ri-user" placeholder="π.χ. giannis92" autocomplete="username" maxlength="30">
+            <div class="reg-field-err">Το όνομα χρήστη πρέπει να έχει τουλάχιστον 3 χαρακτήρες.</div>
+          </div>
+
+          <div class="reg-error-global" id="ri-err-2"></div>
+          <button class="reg-btn-primary" id="ri-submit-btn" onclick="_regSubmit()">ΔΗΜΙΟΥΡΓΙΑ ΛΟΓΑΡΙΑΣΜΟΥ</button>
+          <div class="reg-login-link"><a onclick="_regBack()">← Πίσω</a></div>
+        </div>
+      </div>
+
+      <!-- ── Bonus panel ── -->
+      <div class="reg-bonus-panel">
+        <div class="rbp-deco" style="width:220px;height:220px;background:rgba(245,197,24,.06);top:5%;right:-80px;border-radius:50%;"></div>
+        <div class="rbp-deco" style="width:130px;height:130px;background:rgba(168,85,247,.07);bottom:12%;left:-40px;border-radius:50%;"></div>
+        <div class="rbp-deco" style="width:55px;height:55px;background:rgba(245,197,24,.08);bottom:38%;right:15%;border-radius:50%;"></div>
+
+        <div class="rbp-logo">STRIKE<span> Bet</span></div>
+        <div class="rbp-logo-tag">Precision in Every Play.</div>
+
+        <div class="rbp-badge">★ &nbsp;Μπόνους Καλωσορίσματος</div>
+        <div class="rbp-offer-label">Προσφορά* καλωσορίσματος</div>
+
+        <div class="rbp-icons">
+          <span class="rbp-icon" style="color:#fbbf24">🎰</span>
+          <span class="rbp-icon" style="color:#a78bfa">⚡</span>
+          <span class="rbp-icon" style="color:#f4d03f">🪙</span>
+        </div>
+
+        <div class="rbp-amount">Έως <span>1.000€</span></div>
+        <div class="rbp-plus">+</div>
+        <div class="rbp-spins">300 Free Spins</div>
+
+        <div class="rbp-divider"></div>
+        <div class="rbp-disclaimer">*Η προσφορά ισχύει για νέα μέλη. Ισχύουν <a href="#" onclick="return false">Όροι & Προϋποθέσεις</a>. Τζόγος για άτομα 21+.</div>
+      </div>
+
+    </div>
+  </div>`;
+  document.body.appendChild(root);
+  document.body.style.overflow = 'hidden';
+
+  $('reg-overlay').addEventListener('click', e => { if (e.target === $('reg-overlay')) closeRegisterModal(); });
+  setTimeout(() => $('ri-email')?.focus(), 60);
+}
+
+function closeRegisterModal() {
+  $('reg-modal-root')?.remove();
+  document.body.style.overflow = '';
+}
+
+function _regToggleBonus() {
+  const open = $('ri-bonus-wrap')?.classList.toggle('open');
+  $('ri-bonus-toggle')?.classList.toggle('open', open);
+  if (open) $('ri-bonus-code')?.focus();
+}
+
+function _regNext() {
+  const email = $('ri-email')?.value.trim() ?? '';
+  const pass  = $('ri-pass')?.value ?? '';
+  const tos   = $('ri-chk-tos')?.checked;
+  let ok = true;
+
+  const setErr = (fieldId, hasErr) => {
+    $('reg-modal-root')?.querySelector(`#${fieldId}`)?.classList.toggle('has-error', hasErr);
+  };
+
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  setErr('rf-email', !emailOk); if (!emailOk) ok = false;
+
+  const passOk = pass.length >= 6;
+  setErr('rf-pass', !passOk); if (!passOk) ok = false;
+
+  const tosErr = $('ri-tos-err');
+  if (!tos) { tosErr?.classList.add('show'); ok = false; }
+  else      { tosErr?.classList.remove('show'); }
+
+  if (!ok) return;
+
+  _regData.email      = email;
+  _regData.password   = pass;
+  _regData.bonusCode  = $('ri-bonus-code')?.value.trim() || '';
+  _regData.wantsEmail = $('ri-chk-email')?.checked || false;
+
+  const suggested = email.split('@')[0].replace(/[^a-zA-Z0-9_.-]/g, '').slice(0, 20);
+  if ($('ri-user')) $('ri-user').value = suggested;
+
+  $('reg-s1').style.display = 'none';
+  $('reg-s2').style.display = 'block';
+  setTimeout(() => $('ri-user')?.focus(), 40);
+}
+
+function _regBack() {
+  $('reg-s2').style.display = 'none';
+  $('reg-s1').style.display = 'block';
+  const errEl = $('ri-err-2');
+  if (errEl) { errEl.classList.remove('show'); errEl.textContent = ''; }
+  setTimeout(() => $('ri-email')?.focus(), 40);
+}
+
+async function _regSubmit() {
+  const username = $('ri-user')?.value.trim() ?? '';
+  const userField = $('reg-modal-root')?.querySelector('#rf-user');
+  const errEl     = $('ri-err-2');
+  const btn       = $('ri-submit-btn');
+
+  const userOk = username.length >= 3;
+  userField?.classList.toggle('has-error', !userOk);
+  if (!userOk) return;
+
+  if (btn) { btn.disabled = true; btn.textContent = 'Δημιουργία λογαριασμού…'; }
+  if (errEl) { errEl.classList.remove('show'); errEl.textContent = ''; }
+
+  try {
+    const data = await api('/api/register', {
+      method: 'POST',
+      body: JSON.stringify({ username, email: _regData.email, password: _regData.password }),
+    });
+    applyAuthSuccess(data);
+    claimWelcomeBonus(true).then(() => { renderHeader(); });
+    closeRegisterModal();
+  } catch (err) {
+    if (errEl) { errEl.textContent = err.message; errEl.classList.add('show'); }
+    if (btn) { btn.disabled = false; btn.textContent = 'ΔΗΜΙΟΥΡΓΙΑ ΛΟΓΑΡΙΑΣΜΟΥ'; }
+  }
+}
+
+// Close reg modal on Escape
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && $('reg-modal-root')) closeRegisterModal();
+  if (e.key === 'Enter') {
+    if (e.target.id === 'ri-email' || e.target.id === 'ri-pass' || e.target.id === 'ri-bonus-code') _regNext();
+    if (e.target.id === 'ri-user') _regSubmit();
+  }
+});
+
 // ─── Init ────────────────────────────────────────────────────────────────────
 (async function init() {
   renderHeader(); renderPage();
   await Promise.all([loadUser(), loadMatches()]);
   render();
+  if (state.user) startRealityCheck();
+  await handleUrlTokens();
   connectOddsStream();
+  // Jackpot ticker updater — only burns CPU when casino is open
+  setInterval(() => { if (state.view === 'casino') updateJackpots(); }, 3200);
 })();
 </script>
 </body>
