@@ -256,6 +256,40 @@ app.get('/api/my-bets', auth, async (req, res) => {
 
 // ── Admin routes ─────────────────────────────────────────────────────────────
 
+app.get('/api/admin/users', adminAuth, async (req, res) => {
+  try {
+    const { rows } = await pool.query(`
+      SELECT
+        u.id, u.username, u.email, u.balance, u.is_admin, u.created_at,
+        COUNT(DISTINCT b.id)                                          AS total_bets,
+        COALESCE(SUM(b.amount) FILTER (WHERE b.status = 'won'),  0)  AS total_won,
+        COALESCE(SUM(t.amount) FILTER (WHERE t.type = 'deposit'),    0) AS total_deposited,
+        COALESCE(SUM(t.amount) FILTER (WHERE t.type = 'withdrawal'), 0) AS total_withdrawn
+      FROM users u
+      LEFT JOIN bets b ON b.user_id = u.id
+      LEFT JOIN transactions t ON t.user_id = u.id
+      GROUP BY u.id
+      ORDER BY u.created_at ASC
+    `);
+    res.json(rows);
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+app.get('/api/admin/transactions', adminAuth, async (req, res) => {
+  try {
+    const { rows } = await pool.query(`
+      SELECT
+        t.id, t.type, t.amount, t.balance_before, t.balance_after, t.created_at,
+        u.id AS user_id, u.username
+      FROM transactions t
+      JOIN users u ON u.id = t.user_id
+      ORDER BY t.created_at DESC
+      LIMIT 500
+    `);
+    res.json(rows);
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
 app.get('/api/admin/matches', adminAuth, async (req, res) => {
   try {
     const { rows } = await pool.query(`

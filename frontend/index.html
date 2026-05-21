@@ -179,6 +179,29 @@
     .result-away  { color: var(--blue);   border-color: rgba(59,130,246,.3); background: rgba(59,130,246,.06); }
     .settle-status { font-size: .68rem; color: var(--text-muted); margin-top: 4px; }
 
+    /* ── Admin tabs ── */
+    .admin-tabs { display: flex; gap: 2px; margin-bottom: 20px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; padding: 4px; width: fit-content; }
+    .admin-tab-btn { padding: 6px 16px; border-radius: 6px; font-size: .78rem; font-weight: 600; cursor: pointer; border: none; background: transparent; color: var(--text-muted); font-family: inherit; transition: all .15s; }
+    .admin-tab-btn:hover { color: var(--text); }
+    .admin-tab-btn.active { background: var(--bg-card); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,.4); }
+
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 20px; }
+    .stat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+    .stat-label { font-size: .65rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
+    .stat-value { font-size: 1.35rem; font-weight: 700; }
+    .stat-value.green { color: var(--green); }
+    .stat-value.blue  { color: var(--blue); }
+    .stat-value.amber { color: var(--amber); }
+    .stat-value.red   { color: var(--danger); }
+
+    .data-table-wrap { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; overflow-x: auto; }
+    .data-table { width: 100%; border-collapse: collapse; white-space: nowrap; }
+    .data-table th { font-size: .63rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--border); background: rgba(255,255,255,.02); }
+    .data-table td { padding: 11px 14px; border-bottom: 1px solid rgba(30,50,72,.5); font-size: .82rem; vertical-align: middle; }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:hover td { background: rgba(255,255,255,.015); }
+    .admin-badge { padding: 2px 7px; border-radius: 4px; font-size: .6rem; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; background: rgba(245,158,11,.12); color: var(--amber); border: 1px solid rgba(245,158,11,.3); }
+
     /* ── Admin panel ── */
     .admin-top-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
     .admin-msg { padding: 10px 14px; border-radius: var(--radius); font-size: .8rem; margin-bottom: 16px; line-height: 1.4; }
@@ -272,7 +295,10 @@ const state = {
   transactions:    [],
   walletMsg:       null,
   // Admin
+  adminTab:        'matches',   // 'matches' | 'users' | 'transactions'
   adminMatches:    [],
+  adminUsers:      [],
+  adminTxs:        [],
   showAddMatch:    false,
   editingMatchId:  null,
   settlingMatchId: null,
@@ -361,6 +387,16 @@ async function loadAdminMatches() {
   try { state.adminMatches = await api('/api/admin/matches'); }
   catch (err) { if (el) el.innerHTML = `<div class="loading-msg">Error: ${esc(err.message)}</div>`; return; }
   renderAdminMatchList();
+}
+
+async function loadAdminUsers() {
+  try { state.adminUsers = await api('/api/admin/users'); renderAdminUsers(); }
+  catch (err) { const el = $('admin-users-wrap'); if (el) el.innerHTML = `<div class="loading-msg">Error: ${esc(err.message)}</div>`; }
+}
+
+async function loadAdminTxs() {
+  try { state.adminTxs = await api('/api/admin/transactions'); renderAdminTxs(); }
+  catch (err) { const el = $('admin-txs-wrap'); if (el) el.innerHTML = `<div class="loading-msg">Error: ${esc(err.message)}</div>`; }
 }
 
 // ─── Bet slip ────────────────────────────────────────────────────────────────
@@ -672,36 +708,142 @@ function renderWalletView() {
   `;
 }
 
+function renderAdminUsers() {
+  const el = $('admin-users-wrap'); if (!el) return;
+  const users = state.adminUsers;
+  if (!users.length) { el.innerHTML = '<div class="loading-msg">No users found.</div>'; return; }
+
+  const totalBalance   = users.reduce((s, u) => s + parseFloat(u.balance), 0);
+  const totalDeposited = users.reduce((s, u) => s + parseFloat(u.total_deposited), 0);
+  const totalWithdrawn = users.reduce((s, u) => s + parseFloat(u.total_withdrawn), 0);
+
+  el.innerHTML = `
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-label">Total Users</div><div class="stat-value blue">${users.length}</div></div>
+      <div class="stat-card"><div class="stat-label">Platform Balance</div><div class="stat-value green">${fmt(totalBalance)}</div></div>
+      <div class="stat-card"><div class="stat-label">Total Deposited</div><div class="stat-value green">${fmt(totalDeposited)}</div></div>
+      <div class="stat-card"><div class="stat-label">Total Withdrawn</div><div class="stat-value red">${fmt(totalWithdrawn)}</div></div>
+    </div>
+    <div class="data-table-wrap">
+      <table class="data-table">
+        <thead><tr>
+          <th>User</th><th>Email</th><th>Balance</th>
+          <th>Bets</th><th>Deposited</th><th>Withdrawn</th><th>Role</th><th>Joined</th>
+        </tr></thead>
+        <tbody>
+          ${users.map(u => `
+            <tr>
+              <td style="font-weight:600">${esc(u.username)}</td>
+              <td style="color:var(--text-muted)">${esc(u.email)}</td>
+              <td style="font-weight:700;color:var(--green)">${fmt(u.balance)}</td>
+              <td>${u.total_bets}</td>
+              <td style="color:var(--green)">+${fmt(u.total_deposited)}</td>
+              <td style="color:var(--danger)">-${fmt(u.total_withdrawn)}</td>
+              <td>${u.is_admin ? '<span class="admin-badge">Admin</span>' : '<span style="color:var(--text-muted);font-size:.75rem">User</span>'}</td>
+              <td style="color:var(--text-muted)">${new Date(u.created_at).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</td>
+            </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`;
+}
+
+function renderAdminTxs() {
+  const el = $('admin-txs-wrap'); if (!el) return;
+  const txs = state.adminTxs;
+  if (!txs.length) { el.innerHTML = '<div class="loading-msg">No transactions found.</div>'; return; }
+
+  const totalDep = txs.filter(t => t.type === 'deposit')   .reduce((s, t) => s + parseFloat(t.amount), 0);
+  const totalWd  = txs.filter(t => t.type === 'withdrawal').reduce((s, t) => s + parseFloat(t.amount), 0);
+
+  el.innerHTML = `
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-label">Total Transactions</div><div class="stat-value blue">${txs.length}</div></div>
+      <div class="stat-card"><div class="stat-label">Total Deposits</div><div class="stat-value green">+${fmt(totalDep)}</div></div>
+      <div class="stat-card"><div class="stat-label">Total Withdrawals</div><div class="stat-value red">-${fmt(totalWd)}</div></div>
+      <div class="stat-card"><div class="stat-label">Net Flow</div><div class="stat-value ${totalDep - totalWd >= 0 ? 'green' : 'red'}">${fmt(totalDep - totalWd)}</div></div>
+    </div>
+    <div class="data-table-wrap">
+      <table class="data-table">
+        <thead><tr>
+          <th>Date</th><th>User</th><th>Type</th><th>Amount</th><th>Balance Before</th><th>Balance After</th>
+        </tr></thead>
+        <tbody>
+          ${txs.map(t => `
+            <tr>
+              <td style="color:var(--text-muted)">${formatDate(t.created_at)}</td>
+              <td style="font-weight:600">${esc(t.username)}</td>
+              <td><span class="tx-type-badge ${t.type}">${t.type}</span></td>
+              <td class="tx-${t.type}" style="font-weight:700">${t.type==='deposit'?'+':'-'}${fmt(t.amount)}</td>
+              <td style="color:var(--text-sec)">${fmt(t.balance_before)}</td>
+              <td style="font-weight:600">${fmt(t.balance_after)}</td>
+            </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`;
+}
+
 function renderAdminView() {
   const el = $('admin-panel'); if (!el) return;
-  const addForm = state.showAddMatch ? `
-    <div class="add-match-card">
-      <div class="section-title">➕ &nbsp;New Match</div>
-      <div class="form-grid">
-        <div class="form-group"><label class="form-label">Home Team</label><input id="add-home" class="form-input" placeholder="e.g. Panathinaikos"></div>
-        <div class="form-group"><label class="form-label">Away Team</label><input id="add-away" class="form-input" placeholder="e.g. Olympiacos"></div>
-        <div class="form-group full"><label class="form-label">Match Date & Time</label><input id="add-date" class="form-input" type="datetime-local"></div>
-        <div class="form-group"><label class="form-label">Home Odds</label><input id="add-home-odds" class="form-input" type="number" step=".01" placeholder="2.40"></div>
-        <div class="form-group"><label class="form-label">Draw Odds</label><input id="add-draw-odds" class="form-input" type="number" step=".01" placeholder="3.10"></div>
-        <div class="form-group"><label class="form-label">Away Odds</label><input id="add-away-odds" class="form-input" type="number" step=".01" placeholder="2.90"></div>
-      </div>
-      <div class="admin-actions">
-        <button class="btn btn-green btn-sm" data-action="admin-create">Create Match</button>
-        <button class="btn btn-outline btn-sm" data-action="admin-add-cancel">Cancel</button>
-      </div>
-    </div>
-  ` : '';
+
+  const tabs = [
+    { id: 'matches',      label: 'Matches' },
+    { id: 'users',        label: 'Users' },
+    { id: 'transactions', label: 'Transactions' },
+  ];
 
   el.innerHTML = `
     ${state.adminMsg ? `<div class="admin-msg ${state.adminMsg.type}">${esc(state.adminMsg.text)}</div>` : ''}
-    <div class="admin-top-bar">
-      <div class="section-title" style="margin:0;flex:1">⚙ &nbsp;Match Management</div>
-      ${!state.showAddMatch ? `<button class="btn btn-green btn-sm" data-action="admin-add-show">+ Add Match</button>` : ''}
+    <div class="admin-tabs">
+      ${tabs.map(t => `<button class="admin-tab-btn ${state.adminTab===t.id?'active':''}" data-action="admin-tab" data-tab="${t.id}">${t.label}</button>`).join('')}
     </div>
-    ${addForm}
-    <div id="admin-matches-list"></div>
+    <div id="admin-tab-content"></div>
   `;
-  renderAdminMatchList();
+
+  renderAdminTabContent();
+}
+
+function renderAdminTabContent() {
+  const el = $('admin-tab-content'); if (!el) return;
+
+  if (state.adminTab === 'matches') {
+    const addForm = state.showAddMatch ? `
+      <div class="add-match-card">
+        <div class="section-title">➕ &nbsp;New Match</div>
+        <div class="form-grid">
+          <div class="form-group"><label class="form-label">Home Team</label><input id="add-home" class="form-input" placeholder="e.g. Panathinaikos"></div>
+          <div class="form-group"><label class="form-label">Away Team</label><input id="add-away" class="form-input" placeholder="e.g. Olympiacos"></div>
+          <div class="form-group full"><label class="form-label">Match Date & Time</label><input id="add-date" class="form-input" type="datetime-local"></div>
+          <div class="form-group"><label class="form-label">Home Odds</label><input id="add-home-odds" class="form-input" type="number" step=".01" placeholder="2.40"></div>
+          <div class="form-group"><label class="form-label">Draw Odds</label><input id="add-draw-odds" class="form-input" type="number" step=".01" placeholder="3.10"></div>
+          <div class="form-group"><label class="form-label">Away Odds</label><input id="add-away-odds" class="form-input" type="number" step=".01" placeholder="2.90"></div>
+        </div>
+        <div class="admin-actions">
+          <button class="btn btn-green btn-sm" data-action="admin-create">Create Match</button>
+          <button class="btn btn-outline btn-sm" data-action="admin-add-cancel">Cancel</button>
+        </div>
+      </div>
+    ` : '';
+    el.innerHTML = `
+      <div class="admin-top-bar">
+        <div class="section-title" style="margin:0;flex:1">Match Management</div>
+        ${!state.showAddMatch ? `<button class="btn btn-green btn-sm" data-action="admin-add-show">+ Add Match</button>` : ''}
+      </div>
+      ${addForm}
+      <div id="admin-matches-list"><div class="loading-msg">Loading…</div></div>`;
+    renderAdminMatchList();
+
+  } else if (state.adminTab === 'users') {
+    el.innerHTML = `
+      <div class="section-title">User Balances</div>
+      <div id="admin-users-wrap"><div class="loading-msg">Loading…</div></div>`;
+    loadAdminUsers();
+
+  } else if (state.adminTab === 'transactions') {
+    el.innerHTML = `
+      <div class="section-title">All Transactions</div>
+      <div id="admin-txs-wrap"><div class="loading-msg">Loading…</div></div>`;
+    loadAdminTxs();
+  }
 }
 
 function renderAdminMatchList() {
@@ -865,9 +1007,15 @@ document.addEventListener('click', e => {
       if ($('withdraw-amount')) $('withdraw-amount').value = el.dataset.val; break;
     case 'do-deposit':  deposit();  break;
     case 'do-withdraw': withdraw(); break;
+    case 'admin-tab':
+      state.adminTab = el.dataset.tab;
+      state.adminMsg = null;
+      renderAdminView();
+      break;
     case 'view-admin':
       if (!state.user?.is_admin) return;
-      state.view = 'admin'; state.adminMsg = null; render(); loadAdminMatches(); break;
+      state.view = 'admin'; state.adminTab = 'matches'; state.adminMsg = null;
+      render(); loadAdminMatches(); break;
     case 'bet':        toggleBet(el.dataset.match, el.dataset.type, el.dataset.odds); break;
     case 'remove-bet': removeBet(el.dataset.match); break;
     case 'place-bets': placeAllBets(); break;
