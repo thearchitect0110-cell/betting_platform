@@ -491,6 +491,22 @@ async function withdraw() {
 }
 
 // ─── Admin actions ───────────────────────────────────────────────────────────
+async function adminToggleAdmin(id) {
+  try {
+    const res = await api(`/api/admin/users/${id}/toggle-admin`, { method: 'POST' });
+    const idx = state.adminUsers.findIndex(u => u.id === id);
+    if (idx > -1) state.adminUsers[idx].is_admin = res.is_admin;
+    state.adminMsg = {
+      type: 'success',
+      text: `${res.username} is now ${res.is_admin ? 'an Admin' : 'a regular User'}.`
+    };
+    renderAdminView();
+  } catch (err) {
+    state.adminMsg = { type: 'error', text: err.message };
+    renderAdminView();
+  }
+}
+
 async function adminAdjustBalance(id) {
   const delta = parseFloat($('adjust-delta')?.value);
   const note  = $('adjust-note')?.value?.trim();
@@ -776,7 +792,15 @@ function renderAdminUsers() {
                 <td>${u.total_bets}</td>
                 <td style="color:var(--green)">+${fmt(u.total_deposited)}</td>
                 <td style="color:var(--danger)">-${fmt(u.total_withdrawn)}</td>
-                <td>${u.is_admin ? '<span class="admin-badge">Admin</span>' : '<span style="color:var(--text-muted);font-size:.75rem">User</span>'}</td>
+                <td>
+                  ${u.is_admin ? '<span class="admin-badge">Admin</span>' : '<span style="color:var(--text-muted);font-size:.75rem">User</span>'}
+                  ${u.id === state.user?.id
+                    ? ' <span style="color:var(--text-muted);font-size:.7rem">(you)</span>'
+                    : u.is_admin
+                      ? `<button class="btn btn-red btn-sm" style="margin-left:6px;padding:2px 8px;font-size:.68rem" data-action="admin-toggle-admin" data-id="${u.id}">Revoke</button>`
+                      : `<button class="btn btn-amber btn-sm" style="margin-left:6px;padding:2px 8px;font-size:.68rem" data-action="admin-toggle-admin" data-id="${u.id}">Promote</button>`
+                  }
+                </td>
                 <td style="color:var(--text-muted)">${new Date(u.created_at).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</td>
                 <td>
                   ${isAdjusting
@@ -1074,6 +1098,7 @@ document.addEventListener('click', e => {
       state.adjustingUserId = null; state.adjustMsg = null;
       renderAdminView();
       break;
+    case 'admin-toggle-admin': adminToggleAdmin(parseInt(el.dataset.id)); break;
     case 'admin-adjust-show':
       state.adjustingUserId = parseInt(el.dataset.id); state.adjustMsg = null;
       renderAdminUsers(); break;

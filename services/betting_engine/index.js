@@ -371,6 +371,20 @@ app.post('/api/admin/matches/:id/settle', adminAuth, async (req, res) => {
   }
 });
 
+app.post('/api/admin/users/:id/toggle-admin', adminAuth, async (req, res) => {
+  const targetId = parseInt(req.params.id);
+  if (targetId === req.user.id)
+    return res.status(400).json({ error: 'You cannot change your own admin status' });
+  try {
+    const { rows } = await pool.query(
+      'UPDATE users SET is_admin = NOT is_admin WHERE id = $1 RETURNING id, username, is_admin',
+      [targetId]
+    );
+    if (!rows[0]) return res.status(404).json({ error: 'User not found' });
+    res.json(rows[0]);
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
 app.post('/api/admin/users/:id/adjust', adminAuth, async (req, res) => {
   const delta = parseFloat(req.body.amount);
   const note  = req.body.note?.trim() || null;
