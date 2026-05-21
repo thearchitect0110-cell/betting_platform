@@ -15,6 +15,16 @@ const JWT_SECRET = process.env.JWT_SECRET || 'betengine_jwt_secret_changeme_in_p
 const app = express();
 app.use(express.json());
 
+// ── SSE broadcast ─────────────────────────────────────────────────────────────
+const clients = new Set();
+
+function broadcast(event, data) {
+  const chunk = `event: ${event}\ndata: ${JSON.stringify(data)}\n\n`;
+  for (const res of clients) {
+    try { res.write(chunk); } catch { clients.delete(res); }
+  }
+}
+
 function auth(req, res, next) {
   const header = req.headers.authorization;
   if (!header || !header.startsWith('Bearer '))
@@ -167,6 +177,31 @@ app.get('/api/transactions', auth, async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+});
+
+app.get('/api/odds-stream', async (req, res) => {
+  res.setHeader('Content-Type',  'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection',    'keep-alive');
+  res.flushHeaders();
+
+  clients.add(res);
+
+  // Send current scheduled matches as initial snapshot
+  try {
+    const { rows } = await pool.query(
+      "SELECT * FROM matches WHERE status = 'scheduled' ORDER BY match_date ASC"
+    );
+    res.write(`event: snapshot\ndata: ${JSON.stringify(rows)}\n\n`);
+  } catch { /* non-fatal */ }
+
+  // Heartbeat keeps the connection alive through nginx / proxies
+  const heartbeat = setInterval(() => {
+    try { res.write(':heartbeat\n\n'); }
+    catch { clearInterval(heartbeat); clients.delete(res); }
+  }, 25000);
+
+  req.on('close', () => { clients.delete(res); clearInterval(heartbeat); });
 });
 
 app.get('/api/matches', async (req, res) => {
@@ -335,6 +370,7 @@ app.put('/api/admin/matches/:id', adminAuth, async (req, res) => {
       [home_team, away_team, match_date, home_odds, away_odds, draw_odds, status, req.params.id]
     );
     if (!rows[0]) return res.status(404).json({ error: 'Match not found' });
+    if (rows[0].status === 'scheduled') broadcast('odds-update', rows[0]);
     res.json(rows[0]);
   } catch (err) { res.status(500).json({ error: err.message }); }
 });

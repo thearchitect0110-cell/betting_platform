@@ -280,6 +280,17 @@
 
     @keyframes pulse-border { 0%,100%{box-shadow:none} 50%{box-shadow:0 0 0 2px var(--blue)} }
     aside.pulse-border .sidebar-panel { animation: pulse-border .5s ease; }
+
+    /* ── Live odds ── */
+    .live-badge { display: inline-flex; align-items: center; gap: 5px; font-size: .62rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--green); margin-left: 8px; }
+    .live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex-shrink: 0; animation: live-pulse 1.4s ease infinite; }
+    @keyframes live-pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.35;transform:scale(.75)} }
+    @keyframes odds-flash { 0%{background:rgba(0,200,90,.25);border-color:rgba(0,200,90,.7);color:var(--green)} 100%{} }
+    .odd-btn.flash { animation: odds-flash .9s ease-out; }
+
+    .odds-edit-section { margin-top: 10px; padding: 12px; background: rgba(59,130,246,.05); border: 1px solid rgba(59,130,246,.2); border-radius: 8px; }
+    .odds-edit-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+    .odds-edit-row .form-group { margin: 0; }
   </style>
 </head>
 <body>
@@ -301,13 +312,16 @@ const state = {
   placing:   false,
   view:      'matches',     // 'matches' | 'my-bets' | 'admin'
   myBets:    [],
+  // Live odds
+  flashingOdds:    new Set(),
   // Wallet
   transactions:    [],
   walletMsg:       null,
   // Admin
-  adminTab:        'matches',   // 'matches' | 'users' | 'transactions'
-  adjustingUserId: null,
-  adjustMsg:       null,
+  adminTab:           'matches',
+  adjustingUserId:    null,
+  adjustMsg:          null,
+  oddsEditingMatchId: null,
   adminMatches:    [],
   adminUsers:      [],
   adminTxs:        [],
@@ -371,6 +385,33 @@ function logout() {
   state.view = 'matches'; state.myBets = []; state.adminMatches = [];
   localStorage.removeItem('bet_token');
   render();
+}
+
+// ─── Live odds stream ─────────────────────────────────────────────────────────
+function connectOddsStream() {
+  const src = new EventSource('/api/odds-stream');
+
+  src.addEventListener('snapshot', e => {
+    const fresh = JSON.parse(e.data);
+    fresh.forEach(m => {
+      const i = state.matches.findIndex(x => x.id === m.id);
+      if (i > -1) Object.assign(state.matches[i], m); else state.matches.push(m);
+    });
+    if (state.view === 'matches') renderMatchList();
+  });
+
+  src.addEventListener('odds-update', e => {
+    const m = JSON.parse(e.data);
+    const i = state.matches.findIndex(x => x.id === m.id);
+    if (i > -1) Object.assign(state.matches[i], m); else state.matches.push(m);
+    state.flashingOdds.add(m.id);
+    setTimeout(() => { state.flashingOdds.delete(m.id); }, 900);
+    if (state.view === 'matches') renderMatchList();
+    // Also refresh admin match list if visible
+    if (state.view === 'admin' && state.adminTab === 'matches') loadAdminMatches();
+  });
+
+  src.onerror = () => {}; // EventSource auto-reconnects
 }
 
 // ─── Data loading ────────────────────────────────────────────────────────────
@@ -491,6 +532,23 @@ async function withdraw() {
 }
 
 // ─── Admin actions ───────────────────────────────────────────────────────────
+async function adminUpdateOdds(id) {
+  const home = parseFloat($('oe-home')?.value);
+  const draw = parseFloat($('oe-draw')?.value);
+  const away = parseFloat($('oe-away')?.value);
+  if ([home, draw, away].some(v => isNaN(v) || v <= 1)) {
+    state.adminMsg = { type: 'error', text: 'All odds must be numbers greater than 1.' };
+    renderAdminView(); return;
+  }
+  try {
+    await api(`/api/admin/matches/${id}`, { method: 'PUT', body: JSON.stringify({ home_odds: home, draw_odds: draw, away_odds: away }) });
+    state.oddsEditingMatchId = null;
+    state.adminMsg = { type: 'success', text: 'Odds updated — broadcasted to connected users.' };
+    await loadAdminMatches();
+    renderAdminView();
+  } catch (err) { state.adminMsg = { type: 'error', text: err.message }; renderAdminView(); }
+}
+
 async function adminToggleAdmin(id) {
   try {
     const res = await api(`/api/admin/users/${id}/toggle-admin`, { method: 'POST' });
@@ -629,7 +687,7 @@ function renderPage() {
     el.innerHTML = `<div class="container single"><div><div class="section-title">🎯 &nbsp;My Bets &nbsp;·&nbsp; History</div><div id="bets-list"><div class="loading-msg">Loading…</div></div></div></div>`;
     renderBetsList();
   } else {
-    el.innerHTML = `<div class="container"><main><div class="section-title">⚽ &nbsp;Super League Greece &nbsp;·&nbsp; Upcoming</div><div id="matches-list"><div class="loading-msg">Loading…</div></div></main><aside id="sidebar"></aside></div>`;
+    el.innerHTML = `<div class="container"><main><div class="section-title">⚽ &nbsp;Super League Greece &nbsp;·&nbsp; Upcoming<span class="live-badge"><span class="live-dot"></span>LIVE ODDS</span></div><div id="matches-list"><div class="loading-msg">Loading…</div></div></main><aside id="sidebar"></aside></div>`;
     renderMatchList();
     renderSidebar();
   }
@@ -650,13 +708,13 @@ function renderMatchList() {
         <div class="team-name away">${esc(m.away_team)}</div>
       </div>
       <div class="odds-row">
-        <button class="odd-btn ${isSelected(m.id,'home') ? 'selected' : ''}" data-action="bet" data-match="${m.id}" data-type="home" data-odds="${m.home_odds}">
+        <button class="odd-btn ${isSelected(m.id,'home') ? 'selected' : ''} ${state.flashingOdds.has(m.id) ? 'flash' : ''}" data-action="bet" data-match="${m.id}" data-type="home" data-odds="${m.home_odds}">
           <span class="odd-label">1 Home</span><span class="odd-value">${parseFloat(m.home_odds).toFixed(2)}</span>
         </button>
-        <button class="odd-btn ${isSelected(m.id,'draw') ? 'selected' : ''}" data-action="bet" data-match="${m.id}" data-type="draw" data-odds="${m.draw_odds}">
+        <button class="odd-btn ${isSelected(m.id,'draw') ? 'selected' : ''} ${state.flashingOdds.has(m.id) ? 'flash' : ''}" data-action="bet" data-match="${m.id}" data-type="draw" data-odds="${m.draw_odds}">
           <span class="odd-label">X Draw</span><span class="odd-value">${parseFloat(m.draw_odds).toFixed(2)}</span>
         </button>
-        <button class="odd-btn ${isSelected(m.id,'away') ? 'selected' : ''}" data-action="bet" data-match="${m.id}" data-type="away" data-odds="${m.away_odds}">
+        <button class="odd-btn ${isSelected(m.id,'away') ? 'selected' : ''} ${state.flashingOdds.has(m.id) ? 'flash' : ''}" data-action="bet" data-match="${m.id}" data-type="away" data-odds="${m.away_odds}">
           <span class="odd-label">2 Away</span><span class="odd-value">${parseFloat(m.away_odds).toFixed(2)}</span>
         </button>
       </div>
@@ -976,6 +1034,20 @@ function renderAdminMatchList() {
           <span>2&nbsp;<b>${parseFloat(m.away_odds).toFixed(2)}</b></span>
         </div>
         <div class="ac-stats">${m.pending_bets} pending bet${m.pending_bets != 1 ? 's' : ''} &nbsp;·&nbsp; ${fmt(m.total_staked)} staked</div>
+        ${state.oddsEditingMatchId === m.id ? `
+          <div class="odds-edit-section">
+            <div class="settle-label" style="margin-bottom:8px">Update Odds</div>
+            <div class="odds-edit-row">
+              <div class="form-group"><label class="form-label">1 Home</label><input id="oe-home" class="form-input" type="number" step=".01" min="1.01" value="${parseFloat(m.home_odds).toFixed(2)}"></div>
+              <div class="form-group"><label class="form-label">X Draw</label><input id="oe-draw" class="form-input" type="number" step=".01" min="1.01" value="${parseFloat(m.draw_odds).toFixed(2)}"></div>
+              <div class="form-group"><label class="form-label">2 Away</label><input id="oe-away" class="form-input" type="number" step=".01" min="1.01" value="${parseFloat(m.away_odds).toFixed(2)}"></div>
+            </div>
+            <div class="admin-actions" style="border:none;padding:0">
+              <button class="btn btn-blue btn-sm" style="background:var(--blue);color:#fff" data-action="admin-odds-save" data-id="${m.id}">Broadcast Update</button>
+              <button class="btn btn-outline btn-sm" data-action="admin-odds-cancel">Cancel</button>
+            </div>
+          </div>
+        ` : ''}
         ${m.status === 'finished' ? `
           <div class="settle-status">
             ${m.settled_at
@@ -999,6 +1071,7 @@ function renderAdminMatchList() {
         ` : ''}
         <div class="admin-actions">
           <button class="btn btn-outline btn-sm" data-action="admin-edit" data-id="${m.id}">Edit</button>
+          ${m.status === 'scheduled' ? `<button class="btn btn-outline btn-sm" style="border-color:rgba(59,130,246,.4);color:var(--blue)" data-action="admin-odds-show" data-id="${m.id}">Update Odds</button>` : ''}
           ${m.status !== 'finished' ? `<button class="btn btn-amber btn-sm" data-action="admin-settle-show" data-id="${m.id}">Settle Result</button>` : ''}
           <button class="btn btn-red btn-sm" data-action="admin-delete" data-id="${m.id}">Delete</button>
         </div>
@@ -1098,6 +1171,14 @@ document.addEventListener('click', e => {
       state.adjustingUserId = null; state.adjustMsg = null;
       renderAdminView();
       break;
+    case 'admin-odds-show':
+      state.oddsEditingMatchId = parseInt(el.dataset.id);
+      state.editingMatchId = null; state.settlingMatchId = null;
+      renderAdminMatchList(); break;
+    case 'admin-odds-cancel':
+      state.oddsEditingMatchId = null; renderAdminMatchList(); break;
+    case 'admin-odds-save':
+      adminUpdateOdds(parseInt(el.dataset.id)); break;
     case 'admin-toggle-admin': adminToggleAdmin(parseInt(el.dataset.id)); break;
     case 'admin-adjust-show':
       state.adjustingUserId = parseInt(el.dataset.id); state.adjustMsg = null;
@@ -1119,12 +1200,12 @@ document.addEventListener('click', e => {
     case 'admin-add-show':   state.showAddMatch = true;  state.adminMsg = null; renderAdminView(); break;
     case 'admin-add-cancel': state.showAddMatch = false; renderAdminView(); break;
     case 'admin-create':     adminCreateMatch(); break;
-    case 'admin-edit':       state.editingMatchId = parseInt(el.dataset.id); state.settlingMatchId = null; renderAdminMatchList(); break;
+    case 'admin-edit':       state.editingMatchId = parseInt(el.dataset.id); state.settlingMatchId = null; state.oddsEditingMatchId = null; renderAdminMatchList(); break;
     case 'admin-edit-cancel': state.editingMatchId = null; renderAdminMatchList(); break;
     case 'admin-save':       adminSaveMatch(parseInt(el.dataset.id)); break;
     case 'admin-delete':     adminDeleteMatch(parseInt(el.dataset.id)); break;
     case 'admin-settle-show':
-      state.settlingMatchId = parseInt(el.dataset.id); state.editingMatchId = null;
+      state.settlingMatchId = parseInt(el.dataset.id); state.editingMatchId = null; state.oddsEditingMatchId = null;
       state.settleResult = null; renderAdminMatchList(); break;
     case 'admin-settle-cancel': state.settlingMatchId = null; state.settleResult = null; renderAdminMatchList(); break;
     case 'settle-pick':       state.settleResult = el.dataset.result; renderAdminMatchList(); break;
@@ -1151,6 +1232,7 @@ document.addEventListener('keydown', e => {
   renderHeader(); renderPage();
   await Promise.all([loadUser(), loadMatches()]);
   render();
+  connectOddsStream();
 })();
 </script>
 </body>
