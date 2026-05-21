@@ -27,6 +27,7 @@
       --text-sec:    #94a3b8;
       --text-muted:  #4e6480;
       --danger:      #ef4444;
+      --amber:       #f59e0b;
       --radius:      8px;
     }
 
@@ -51,27 +52,20 @@
       padding: 0 20px;
       gap: 20px;
     }
-    .logo {
-      font-size: 1.25rem;
-      font-weight: 700;
-      letter-spacing: -.5px;
-      flex-shrink: 0;
-    }
+    .logo { font-size: 1.25rem; font-weight: 700; letter-spacing: -.5px; flex-shrink: 0; }
     .logo span { color: var(--green); }
-    .header-nav {
-      display: flex;
-      gap: 2px;
-      flex: 1;
-    }
+    .header-nav { display: flex; gap: 2px; flex: 1; }
     .nav-item {
       padding: 6px 12px;
       border-radius: 6px;
       font-size: .82rem;
       font-weight: 500;
       color: var(--text-muted);
-      cursor: default;
+      cursor: pointer;
       transition: color .15s, background .15s;
+      user-select: none;
     }
+    .nav-item:hover  { color: var(--text-sec); }
     .nav-item.active { color: var(--text); background: rgba(255,255,255,.06); }
     .header-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
     .balance-badge {
@@ -82,7 +76,6 @@
       font-size: .85rem;
       padding: 5px 12px;
       border-radius: 20px;
-      letter-spacing: .3px;
     }
     .username-tag { font-size: .82rem; color: var(--text-sec); font-weight: 500; }
 
@@ -97,8 +90,8 @@
       transition: all .15s;
       font-family: inherit;
     }
-    .btn-green  { background: var(--green);  color: #000; }
-    .btn-green:hover  { background: var(--green-dark); }
+    .btn-green   { background: var(--green); color: #000; }
+    .btn-green:hover   { background: var(--green-dark); }
     .btn-green:disabled { opacity: .5; cursor: not-allowed; }
     .btn-outline { background: transparent; color: var(--text-sec); border: 1px solid var(--border); }
     .btn-outline:hover { border-color: var(--blue); color: var(--text); }
@@ -116,6 +109,7 @@
       gap: 20px;
       align-items: start;
     }
+    .container.single { grid-template-columns: 1fr; }
     @media (max-width: 800px) {
       .container { grid-template-columns: 1fr; }
       aside { position: static !important; }
@@ -151,13 +145,7 @@
       align-items: center;
       margin-bottom: 12px;
     }
-    .league-tag {
-      font-size: .68rem;
-      font-weight: 600;
-      letter-spacing: .8px;
-      text-transform: uppercase;
-      color: var(--blue);
-    }
+    .league-tag { font-size: .68rem; font-weight: 600; letter-spacing: .8px; text-transform: uppercase; color: var(--blue); }
     .match-time { font-size: .72rem; color: var(--text-muted); }
     .match-teams {
       display: grid;
@@ -169,12 +157,8 @@
     .team-name { font-size: 1rem; font-weight: 600; }
     .team-name.away { text-align: right; }
     .vs-badge {
-      font-size: .68rem;
-      font-weight: 700;
-      color: var(--text-muted);
-      background: rgba(255,255,255,.05);
-      padding: 3px 7px;
-      border-radius: 4px;
+      font-size: .68rem; font-weight: 700; color: var(--text-muted);
+      background: rgba(255,255,255,.05); padding: 3px 7px; border-radius: 4px;
     }
     .odds-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
     .odd-btn {
@@ -197,27 +181,13 @@
       border-color: var(--odds-sel-bd);
       box-shadow: 0 0 0 1px var(--odds-sel-bd);
     }
-    .odd-label {
-      font-size: .62rem;
-      font-weight: 600;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      color: var(--text-muted);
-    }
+    .odd-label { font-size: .62rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); }
     .odd-value { font-size: .95rem; font-weight: 700; color: var(--text); }
     .odd-btn.selected .odd-value { color: #93c5fd; }
 
     /* ── Sidebar ─────────────────────────────── */
-    aside {
-      position: sticky;
-      top: 82px;
-    }
-    .sidebar-panel {
-      background: var(--sidebar-bg);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      overflow: hidden;
-    }
+    aside { position: sticky; top: 82px; }
+    .sidebar-panel { background: var(--sidebar-bg); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
     .panel-header {
       background: rgba(255,255,255,.03);
       padding: 13px 16px;
@@ -226,34 +196,20 @@
       align-items: center;
       justify-content: space-between;
     }
-    .panel-title {
-      font-size: .75rem;
-      font-weight: 700;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-    }
+    .panel-title { font-size: .75rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; }
     .slip-count {
-      background: var(--blue);
-      color: #fff;
-      font-size: .68rem;
-      font-weight: 700;
-      min-width: 20px;
-      height: 20px;
-      padding: 0 5px;
-      border-radius: 10px;
-      display: grid;
-      place-items: center;
+      background: var(--blue); color: #fff;
+      font-size: .68rem; font-weight: 700;
+      min-width: 20px; height: 20px; padding: 0 5px;
+      border-radius: 10px; display: grid; place-items: center;
     }
 
     /* ── Auth tabs ───────────────────────────── */
     .auth-tabs { display: grid; grid-template-columns: 1fr 1fr; }
     .auth-tab {
-      padding: 12px;
-      text-align: center;
-      font-size: .82rem;
-      font-weight: 600;
-      color: var(--text-muted);
-      cursor: pointer;
+      padding: 12px; text-align: center;
+      font-size: .82rem; font-weight: 600;
+      color: var(--text-muted); cursor: pointer;
       border-bottom: 2px solid transparent;
       transition: all .15s;
     }
@@ -262,169 +218,129 @@
     /* ── Forms ───────────────────────────────── */
     .panel-body { padding: 16px; }
     .form-group { margin-bottom: 12px; }
-    .form-label {
-      display: block;
-      font-size: .72rem;
-      font-weight: 600;
-      color: var(--text-sec);
-      margin-bottom: 5px;
-      letter-spacing: .3px;
-    }
+    .form-label { display: block; font-size: .72rem; font-weight: 600; color: var(--text-sec); margin-bottom: 5px; }
     .form-input {
-      width: 100%;
-      background: var(--bg-input);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 9px 12px;
-      color: var(--text);
-      font-size: .875rem;
-      font-family: inherit;
-      outline: none;
-      transition: border-color .15s;
+      width: 100%; background: var(--bg-input);
+      border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 9px 12px; color: var(--text); font-size: .875rem;
+      font-family: inherit; outline: none; transition: border-color .15s;
     }
     .form-input:focus { border-color: var(--blue); }
     .form-input::placeholder { color: var(--text-muted); }
-    .form-error {
-      color: var(--danger);
-      font-size: .72rem;
-      margin-top: 10px;
-      text-align: center;
-    }
-    .register-bonus {
-      font-size: .72rem;
-      color: var(--text-muted);
-      text-align: center;
-      margin-top: 10px;
-      line-height: 1.5;
-    }
+    .form-error { color: var(--danger); font-size: .72rem; margin-top: 10px; text-align: center; }
+    .register-bonus { font-size: .72rem; color: var(--text-muted); text-align: center; margin-top: 10px; line-height: 1.5; }
 
-    /* ── Bet selections ──────────────────────── */
+    /* ── Bet slip selections ─────────────────── */
     .bet-selection {
       background: rgba(255,255,255,.03);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 10px 12px;
-      margin-bottom: 8px;
-      position: relative;
+      padding: 10px 12px; margin-bottom: 8px; position: relative;
     }
     .bet-sel-match { font-size: .72rem; color: var(--text-sec); margin-bottom: 5px; }
-    .bet-sel-row { display: flex; align-items: center; justify-content: space-between; }
-    .bet-sel-type { font-size: .8rem; font-weight: 600; text-transform: capitalize; }
-    .bet-sel-odds { font-size: .9rem; font-weight: 700; color: var(--blue); }
+    .bet-sel-row   { display: flex; align-items: center; justify-content: space-between; }
+    .bet-sel-type  { font-size: .8rem; font-weight: 600; }
+    .bet-sel-odds  { font-size: .9rem; font-weight: 700; color: var(--blue); }
     .bet-sel-remove {
-      position: absolute;
-      top: 6px; right: 6px;
-      background: none;
-      border: none;
-      color: var(--text-muted);
-      cursor: pointer;
-      font-size: .8rem;
-      padding: 2px 5px;
-      border-radius: 4px;
-      font-family: inherit;
+      position: absolute; top: 6px; right: 6px;
+      background: none; border: none; color: var(--text-muted);
+      cursor: pointer; font-size: .8rem; padding: 2px 5px;
+      border-radius: 4px; font-family: inherit;
     }
     .bet-sel-remove:hover { color: var(--danger); background: rgba(239,68,68,.1); }
 
     /* ── Stake ───────────────────────────────── */
     .stake-section { margin-top: 14px; }
-    .stake-label {
-      font-size: .68rem;
-      font-weight: 600;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: .5px;
-      margin-bottom: 7px;
-    }
+    .stake-label { font-size: .68rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 7px; }
     .quick-stakes { display: flex; gap: 5px; margin-bottom: 8px; }
     .quick-stake {
-      flex: 1;
-      background: rgba(255,255,255,.04);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 5px 2px;
-      font-size: .72rem;
-      font-weight: 600;
-      color: var(--text-sec);
-      cursor: pointer;
-      text-align: center;
-      transition: all .15s;
-      font-family: inherit;
+      flex: 1; background: rgba(255,255,255,.04);
+      border: 1px solid var(--border); border-radius: 6px;
+      padding: 5px 2px; font-size: .72rem; font-weight: 600;
+      color: var(--text-sec); cursor: pointer; text-align: center;
+      transition: all .15s; font-family: inherit;
     }
     .quick-stake:hover { border-color: var(--blue); color: var(--text); }
     .stake-wrap { position: relative; margin-bottom: 12px; }
     .stake-sym {
-      position: absolute;
-      left: 11px; top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-muted);
-      font-weight: 600;
-      pointer-events: none;
+      position: absolute; left: 11px; top: 50%;
+      transform: translateY(-50%); color: var(--text-muted);
+      font-weight: 600; pointer-events: none;
     }
     .stake-input {
-      width: 100%;
-      background: var(--bg-input);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 10px 12px 10px 24px;
-      color: var(--text);
-      font-size: .95rem;
-      font-weight: 600;
-      font-family: inherit;
-      outline: none;
-      transition: border-color .15s;
+      width: 100%; background: var(--bg-input);
+      border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 10px 12px 10px 24px; color: var(--text);
+      font-size: .95rem; font-weight: 600; font-family: inherit;
+      outline: none; transition: border-color .15s;
     }
     .stake-input:focus { border-color: var(--green); }
-
     .summary-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 9px 0;
-      border-top: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 9px 0; border-top: 1px solid var(--border);
     }
     .sum-label { font-size: .78rem; color: var(--text-muted); }
     .sum-value { font-size: .9rem; font-weight: 700; }
     .sum-value.green { color: var(--green); }
-
-    /* ── Slip states ─────────────────────────── */
-    .slip-empty {
-      text-align: center;
-      padding: 36px 16px;
-      color: var(--text-muted);
-      font-size: .82rem;
-      line-height: 1.6;
-    }
+    .slip-empty { text-align: center; padding: 36px 16px; color: var(--text-muted); font-size: .82rem; line-height: 1.6; }
     .slip-empty-icon { font-size: 2rem; margin-bottom: 10px; }
     .slip-msg {
-      font-size: .75rem;
-      text-align: center;
-      margin-top: 10px;
-      padding: 8px;
-      border-radius: 6px;
-      line-height: 1.4;
+      font-size: .75rem; text-align: center; margin-top: 10px;
+      padding: 8px; border-radius: 6px; line-height: 1.4;
     }
-    .slip-msg.success { color: var(--green);  background: rgba(0,200,90,.08);  border: 1px solid rgba(0,200,90,.2);  }
+    .slip-msg.success { color: var(--green);  background: rgba(0,200,90,.08);  border: 1px solid rgba(0,200,90,.2); }
     .slip-msg.error   { color: var(--danger); background: rgba(239,68,68,.08); border: 1px solid rgba(239,68,68,.2); }
 
-    .loading-msg {
-      text-align: center;
-      padding: 48px;
-      color: var(--text-muted);
-      font-size: .85rem;
+    /* ── Bet history ─────────────────────────── */
+    .bet-history-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      transition: border-color .2s;
     }
+    .bet-history-card:hover { border-color: rgba(59,130,246,.35); }
+    .bhc-main { flex: 1; min-width: 0; }
+    .bhc-meta { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+    .bhc-teams { font-size: 1rem; font-weight: 600; margin-bottom: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .vs-mini { font-size: .75rem; color: var(--text-muted); margin: 0 4px; }
+    .bhc-details { display: flex; gap: 20px; flex-wrap: wrap; }
+    .bhc-detail  { display: flex; flex-direction: column; gap: 2px; }
+    .bhc-label   { font-size: .6rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); }
+    .bhc-value   { font-size: .88rem; font-weight: 600; }
+    .bhc-right   { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; flex-shrink: 0; }
+    .bhc-date    { font-size: .68rem; color: var(--text-muted); }
+
+    .status-badge {
+      padding: 3px 10px; border-radius: 20px;
+      font-size: .65rem; font-weight: 700;
+      letter-spacing: 1px; text-transform: uppercase; border: 1px solid;
+    }
+    .status-pending { color: var(--amber);  border-color: rgba(245,158,11,.3); background: rgba(245,158,11,.08); }
+    .status-won     { color: var(--green);  border-color: rgba(0,200,90,.3);   background: rgba(0,200,90,.08); }
+    .status-lost    { color: var(--danger); border-color: rgba(239,68,68,.3);  background: rgba(239,68,68,.08); }
+
+    .bets-empty { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+    .bets-empty-icon { font-size: 2.5rem; margin-bottom: 14px; }
+    .text-link { color: var(--blue); cursor: pointer; }
+    .text-link:hover { text-decoration: underline; }
+
+    /* ── Misc ────────────────────────────────── */
+    .loading-msg { text-align: center; padding: 48px; color: var(--text-muted); font-size: .85rem; }
+
+    @keyframes pulse-border { 0%,100%{box-shadow:none} 50%{box-shadow:0 0 0 2px var(--blue)} }
+    aside.pulse-border .sidebar-panel { animation: pulse-border .5s ease; }
   </style>
 </head>
 <body>
 
 <header id="site-header"></header>
-
-<div class="container">
-  <main>
-    <div class="section-title">⚽ &nbsp;Super League Greece &nbsp;·&nbsp; Upcoming</div>
-    <div id="matches-list"><div class="loading-msg">Loading matches…</div></div>
-  </main>
-  <aside id="sidebar"></aside>
-</div>
+<div id="page-content"></div>
 
 <script>
 // ─── State ───────────────────────────────────────────────────────────────────
@@ -432,17 +348,20 @@ const state = {
   token:     localStorage.getItem('bet_token'),
   user:      null,
   matches:   [],
-  betSlip:   [],   // [{ matchId, home, away, betType, odds }]
+  betSlip:   [],
   stake:     '10',
   authTab:   'login',
-  msg:       null, // { type: 'success'|'error', text }
+  msg:       null,
   authError: null,
   placing:   false,
+  view:      'matches',  // 'matches' | 'my-bets'
+  myBets:    [],
+  myBetsLoading: false,
 };
 
 // ─── Utilities ───────────────────────────────────────────────────────────────
-const $  = id => document.getElementById(id);
-const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const $   = id => document.getElementById(id);
+const esc = s  => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 const fmt = n  => '€' + parseFloat(n).toFixed(2);
 
 function formatDate(iso) {
@@ -452,7 +371,7 @@ function formatDate(iso) {
     + d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
 }
 
-// ─── API helper ──────────────────────────────────────────────────────────────
+// ─── API ─────────────────────────────────────────────────────────────────────
 async function api(path, opts = {}) {
   const headers = { 'Content-Type': 'application/json', ...(opts.headers || {}) };
   if (state.token) headers['Authorization'] = `Bearer ${state.token}`;
@@ -493,10 +412,9 @@ function applyAuthSuccess(data) {
 }
 
 function logout() {
-  state.token   = null;
-  state.user    = null;
-  state.betSlip = [];
-  state.msg     = null;
+  state.token = null; state.user = null;
+  state.betSlip = []; state.msg = null;
+  state.view = 'matches'; state.myBets = [];
   localStorage.removeItem('bet_token');
   render();
 }
@@ -516,8 +434,26 @@ async function loadMatches() {
   try {
     state.matches = await api('/api/matches');
   } catch (err) {
-    $('matches-list').innerHTML = `<div class="loading-msg">Error: ${esc(err.message)}</div>`;
+    const el = $('matches-list');
+    if (el) el.innerHTML = `<div class="loading-msg">Error: ${esc(err.message)}</div>`;
   }
+}
+
+async function loadMyBets() {
+  state.myBetsLoading = true;
+  const el = $('bets-list');
+  if (el) el.innerHTML = '<div class="loading-msg">Loading your bets…</div>';
+  try {
+    state.myBets = await api('/api/my-bets');
+  } catch (err) {
+    state.myBets = [];
+    const el2 = $('bets-list');
+    if (el2) el2.innerHTML = `<div class="loading-msg">Error: ${esc(err.message)}</div>`;
+    state.myBetsLoading = false;
+    return;
+  }
+  state.myBetsLoading = false;
+  renderBetsList();
 }
 
 // ─── Bet slip ────────────────────────────────────────────────────────────────
@@ -527,8 +463,8 @@ function isSelected(matchId, betType) {
 
 function toggleBet(matchId, betType, odds) {
   if (!state.token) {
-    $('sidebar').classList.add('pulse-border');
-    setTimeout(() => $('sidebar').classList.remove('pulse-border'), 600);
+    const s = $('sidebar');
+    if (s) { s.classList.add('pulse-border'); setTimeout(() => s.classList.remove('pulse-border'), 600); }
     $('auth-username')?.focus();
     return;
   }
@@ -552,17 +488,12 @@ function removeBet(matchId) {
 async function placeAllBets() {
   const stake = parseFloat($('stake-input')?.value);
   if (!stake || stake <= 0) { state.msg = { type: 'error', text: 'Enter a valid stake amount.' }; renderSidebar(); return; }
-
   const totalStake = stake * state.betSlip.length;
   if (totalStake > parseFloat(state.user.balance)) {
     state.msg = { type: 'error', text: `Need ${fmt(totalStake)}, balance is ${fmt(state.user.balance)}.` };
-    renderSidebar();
-    return;
+    renderSidebar(); return;
   }
-
-  state.placing = true;
-  renderSidebar();
-
+  state.placing = true; renderSidebar();
   let placed = 0, failed = 0, newBalance = null;
   for (const bet of [...state.betSlip]) {
     try {
@@ -570,16 +501,14 @@ async function placeAllBets() {
         method: 'POST',
         body: JSON.stringify({ match_id: parseInt(bet.matchId), bet_type: bet.betType, amount: stake }),
       });
-      placed++;
-      newBalance = res.new_balance;
+      placed++; newBalance = res.new_balance;
     } catch { failed++; }
   }
-
   if (newBalance !== null) state.user = { ...state.user, balance: newBalance };
   state.placing = false;
-
   if (placed > 0) {
     state.betSlip = [];
+    state.myBets = []; // invalidate cache so My Bets reloads fresh
     state.msg = {
       type: 'success',
       text: failed === 0
@@ -594,10 +523,16 @@ async function placeAllBets() {
 
 // ─── Rendering ───────────────────────────────────────────────────────────────
 function renderHeader() {
+  const myBetsTab = state.user
+    ? `<span class="nav-item ${state.view === 'my-bets' ? 'active' : ''}"
+         data-action="view-my-bets">🎯 My Bets</span>`
+    : '';
   $('site-header').innerHTML = `
     <div class="logo">Bet<span>Engine</span></div>
     <nav class="header-nav">
-      <span class="nav-item active">⚽ Football</span>
+      <span class="nav-item ${state.view === 'matches' ? 'active' : ''}"
+        data-action="view-matches">⚽ Football</span>
+      ${myBetsTab}
       <span class="nav-item">🏀 Basketball</span>
       <span class="nav-item">🎾 Tennis</span>
     </nav>
@@ -614,8 +549,36 @@ function renderHeader() {
   `;
 }
 
+function renderPage() {
+  const el = $('page-content');
+  if (state.view === 'my-bets') {
+    el.innerHTML = `
+      <div class="container single">
+        <div>
+          <div class="section-title">🎯 &nbsp;My Bets &nbsp;·&nbsp; History</div>
+          <div id="bets-list"><div class="loading-msg">Loading your bets…</div></div>
+        </div>
+      </div>
+    `;
+    renderBetsList();
+  } else {
+    el.innerHTML = `
+      <div class="container">
+        <main>
+          <div class="section-title">⚽ &nbsp;Super League Greece &nbsp;·&nbsp; Upcoming</div>
+          <div id="matches-list"><div class="loading-msg">Loading matches…</div></div>
+        </main>
+        <aside id="sidebar"></aside>
+      </div>
+    `;
+    renderMatchList();
+    renderSidebar();
+  }
+}
+
 function renderMatchList() {
   const el = $('matches-list');
+  if (!el) return;
   if (!state.matches.length) { el.innerHTML = '<div class="loading-msg">No matches available.</div>'; return; }
   el.innerHTML = state.matches.map(m => `
     <div class="match-card">
@@ -649,16 +612,73 @@ function renderMatchList() {
   `).join('');
 }
 
+function renderBetsList() {
+  const el = $('bets-list');
+  if (!el) return;
+  if (!state.myBets.length) {
+    el.innerHTML = `
+      <div class="bets-empty">
+        <div class="bets-empty-icon">🎯</div>
+        <div style="font-size:1rem;font-weight:600;margin-bottom:8px;color:var(--text)">No bets placed yet</div>
+        <div style="font-size:.82rem">
+          Go to <span class="text-link" data-action="view-matches">Football</span> and place your first bet.
+        </div>
+      </div>
+    `;
+    return;
+  }
+  el.innerHTML = state.myBets.map(b => {
+    const pickLabel = b.bet_type === 'home' ? '1 Home Win' : b.bet_type === 'away' ? '2 Away Win' : 'X Draw';
+    const potential = (parseFloat(b.amount) * parseFloat(b.odds)).toFixed(2);
+    return `
+      <div class="bet-history-card">
+        <div class="bhc-main">
+          <div class="bhc-meta">
+            <span class="league-tag">⚽ Super League</span>
+            <span class="match-time">${formatDate(b.match_date)}</span>
+          </div>
+          <div class="bhc-teams">
+            ${esc(b.home_team)} <span class="vs-mini">vs</span> ${esc(b.away_team)}
+          </div>
+          <div class="bhc-details">
+            <div class="bhc-detail">
+              <span class="bhc-label">Pick</span>
+              <span class="bhc-value">${pickLabel}</span>
+            </div>
+            <div class="bhc-detail">
+              <span class="bhc-label">Odds</span>
+              <span class="bhc-value">${parseFloat(b.odds).toFixed(2)}</span>
+            </div>
+            <div class="bhc-detail">
+              <span class="bhc-label">Stake</span>
+              <span class="bhc-value">${fmt(b.amount)}</span>
+            </div>
+            <div class="bhc-detail">
+              <span class="bhc-label">Potential</span>
+              <span class="bhc-value" style="color:var(--green)">${fmt(potential)}</span>
+            </div>
+          </div>
+        </div>
+        <div class="bhc-right">
+          <span class="status-badge status-${esc(b.status)}">${esc(b.status)}</span>
+          <div class="bhc-date">${formatDate(b.created_at)}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
 function renderSidebar() {
-  $('sidebar').innerHTML = state.user ? renderBetSlip() : renderAuthForm();
+  const el = $('sidebar');
+  if (!el) return;
+  el.innerHTML = state.user ? renderBetSlip() : renderAuthForm();
 }
 
 function renderBetSlip() {
   const slip  = state.betSlip;
   const stake = parseFloat(state.stake) || 0;
-  const totalStake    = stake * slip.length;
+  const totalStake     = stake * slip.length;
   const totalPotential = slip.reduce((s, b) => s + stake * b.odds, 0);
-
   return `
     <div class="sidebar-panel">
       <div class="panel-header">
@@ -683,7 +703,6 @@ function renderBetSlip() {
               </div>
             </div>
           `).join('')}
-
           <div class="stake-section">
             <div class="stake-label">Stake per bet</div>
             <div class="quick-stakes">
@@ -697,7 +716,6 @@ function renderBetSlip() {
                 value="${esc(state.stake)}" placeholder="0.00">
             </div>
           </div>
-
           <div class="summary-row">
             <span class="sum-label">Total stake &nbsp;·&nbsp; ${slip.length} bet${slip.length > 1 ? 's' : ''}</span>
             <span class="sum-value">${fmt(totalStake)}</span>
@@ -706,9 +724,7 @@ function renderBetSlip() {
             <span class="sum-label">Potential winnings</span>
             <span class="sum-value green">${fmt(totalPotential)}</span>
           </div>
-
-          <button class="btn btn-green btn-block"
-            data-action="place-bets" ${state.placing ? 'disabled' : ''}>
+          <button class="btn btn-green btn-block" data-action="place-bets" ${state.placing ? 'disabled' : ''}>
             ${state.placing ? 'Placing bets…' : 'Place All Bets'}
           </button>
         `}
@@ -728,20 +744,17 @@ function renderAuthForm() {
       <div class="panel-body">
         <div class="form-group">
           <label class="form-label" for="auth-username">Username</label>
-          <input id="auth-username" class="form-input" type="text"
-            placeholder="your username" autocomplete="username">
+          <input id="auth-username" class="form-input" type="text" placeholder="your username" autocomplete="username">
         </div>
         ${state.authTab === 'register' ? `
           <div class="form-group">
             <label class="form-label" for="auth-email">Email</label>
-            <input id="auth-email" class="form-input" type="email"
-              placeholder="your@email.com" autocomplete="email">
+            <input id="auth-email" class="form-input" type="email" placeholder="your@email.com" autocomplete="email">
           </div>
         ` : ''}
         <div class="form-group">
           <label class="form-label" for="auth-password">Password</label>
-          <input id="auth-password" class="form-input" type="password"
-            placeholder="••••••••"
+          <input id="auth-password" class="form-input" type="password" placeholder="••••••••"
             autocomplete="${state.authTab === 'register' ? 'new-password' : 'current-password'}">
         </div>
         <button class="btn btn-green btn-block" data-action="${state.authTab}">
@@ -760,8 +773,7 @@ function renderAuthForm() {
 
 function render() {
   renderHeader();
-  renderMatchList();
-  renderSidebar();
+  renderPage();
 }
 
 // ─── Event delegation ────────────────────────────────────────────────────────
@@ -778,6 +790,14 @@ document.addEventListener('click', e => {
       state.authTab = 'login';    state.authError = null; renderSidebar(); break;
     case 'tab-register':
       state.authTab = 'register'; state.authError = null; renderSidebar(); break;
+    case 'view-matches':
+      state.view = 'matches'; render(); break;
+    case 'view-my-bets':
+      if (!state.token) { $('auth-username')?.focus(); return; }
+      state.view = 'my-bets';
+      render();
+      loadMyBets();
+      break;
     case 'bet':
       toggleBet(el.dataset.match, el.dataset.type, el.dataset.odds); break;
     case 'remove-bet':
@@ -792,31 +812,21 @@ document.addEventListener('click', e => {
 document.addEventListener('input', e => {
   if (e.target.id !== 'stake-input') return;
   state.stake = e.target.value;
-  const stake    = parseFloat(e.target.value) || 0;
-  const totalS   = stake * state.betSlip.length;
-  const totalP   = state.betSlip.reduce((s, b) => s + stake * b.odds, 0);
-  const rows     = document.querySelectorAll('.sum-value');
-  if (rows[0]) rows[0].textContent = fmt(totalS);
-  if (rows[1]) rows[1].textContent = fmt(totalP);
+  const stake = parseFloat(e.target.value) || 0;
+  const rows  = document.querySelectorAll('.sum-value');
+  if (rows[0]) rows[0].textContent = fmt(stake * state.betSlip.length);
+  if (rows[1]) rows[1].textContent = fmt(state.betSlip.reduce((s, b) => s + stake * b.odds, 0));
 });
 
 document.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && e.target.classList.contains('form-input')) {
+  if (e.key === 'Enter' && e.target.classList.contains('form-input'))
     state.authTab === 'login' ? login() : register();
-  }
 });
-</script>
 
-<style>
-  @keyframes pulse-border { 0%,100%{box-shadow:none} 50%{box-shadow:0 0 0 2px var(--blue)} }
-  aside.pulse-border .sidebar-panel { animation: pulse-border .5s ease; }
-</style>
-
-<script>
 // ─── Init ────────────────────────────────────────────────────────────────────
 (async function init() {
   renderHeader();
-  renderSidebar();
+  renderPage();
   await Promise.all([loadUser(), loadMatches()]);
   render();
 })();

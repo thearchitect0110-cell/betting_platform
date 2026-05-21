@@ -141,4 +141,22 @@ app.post('/api/place-bet', auth, async (req, res) => {
   }
 });
 
+app.get('/api/my-bets', auth, async (req, res) => {
+  try {
+    const { rows } = await pool.query(`
+      SELECT
+        b.id, b.bet_type, b.amount, b.odds, b.status, b.created_at,
+        (b.amount * b.odds) AS potential_winnings,
+        m.home_team, m.away_team, m.match_date
+      FROM bets b
+      JOIN matches m ON b.match_id = m.id
+      WHERE b.user_id = $1
+      ORDER BY b.created_at DESC
+    `, [req.user.id]);
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.listen(3000, () => console.log('Betting engine running on port 3000'));
