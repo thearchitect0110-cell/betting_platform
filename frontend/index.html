@@ -19,7 +19,6 @@
       --green:       #00c85a;
       --green-dark:  #00a347;
       --blue:        #3b82f6;
-      --blue-dark:   #2563eb;
       --odds-bg:     #1a2e42;
       --odds-sel-bg: #1e3a8a;
       --odds-sel-bd: #3b82f6;
@@ -31,65 +30,35 @@
       --radius:      8px;
     }
 
-    body {
-      font-family: 'Inter', system-ui, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      font-size: 14px;
-    }
+    body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; }
 
-    /* ── Header ─────────────────────────────── */
+    /* ── Header ── */
     #site-header {
-      position: sticky;
-      top: 0;
-      z-index: 200;
-      background: var(--bg-header);
-      border-bottom: 1px solid var(--border);
-      height: 62px;
-      display: flex;
-      align-items: center;
-      padding: 0 20px;
-      gap: 20px;
+      position: sticky; top: 0; z-index: 200;
+      background: var(--bg-header); border-bottom: 1px solid var(--border);
+      height: 62px; display: flex; align-items: center; padding: 0 20px; gap: 20px;
     }
     .logo { font-size: 1.25rem; font-weight: 700; letter-spacing: -.5px; flex-shrink: 0; }
     .logo span { color: var(--green); }
     .header-nav { display: flex; gap: 2px; flex: 1; }
     .nav-item {
-      padding: 6px 12px;
-      border-radius: 6px;
-      font-size: .82rem;
-      font-weight: 500;
-      color: var(--text-muted);
-      cursor: pointer;
-      transition: color .15s, background .15s;
-      user-select: none;
+      padding: 6px 12px; border-radius: 6px; font-size: .82rem; font-weight: 500;
+      color: var(--text-muted); cursor: pointer; transition: color .15s, background .15s; user-select: none;
     }
     .nav-item:hover  { color: var(--text-sec); }
     .nav-item.active { color: var(--text); background: rgba(255,255,255,.06); }
+    .nav-item.admin-tab { color: var(--amber); }
+    .nav-item.admin-tab.active { background: rgba(245,158,11,.1); }
     .header-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
     .balance-badge {
-      background: rgba(0,200,90,.12);
-      border: 1px solid rgba(0,200,90,.3);
-      color: var(--green);
-      font-weight: 700;
-      font-size: .85rem;
-      padding: 5px 12px;
-      border-radius: 20px;
+      background: rgba(0,200,90,.12); border: 1px solid rgba(0,200,90,.3);
+      color: var(--green); font-weight: 700; font-size: .85rem; padding: 5px 12px; border-radius: 20px;
     }
     .username-tag { font-size: .82rem; color: var(--text-sec); font-weight: 500; }
 
-    /* ── Buttons ─────────────────────────────── */
-    .btn {
-      padding: 7px 16px;
-      border-radius: var(--radius);
-      font-size: .82rem;
-      font-weight: 600;
-      cursor: pointer;
-      border: none;
-      transition: all .15s;
-      font-family: inherit;
-    }
+    /* ── Buttons ── */
+    .btn { padding: 7px 16px; border-radius: var(--radius); font-size: .82rem; font-weight: 600; cursor: pointer; border: none; transition: all .15s; font-family: inherit; }
+    .btn-sm { padding: 5px 11px; font-size: .75rem; }
     .btn-green   { background: var(--green); color: #000; }
     .btn-green:hover   { background: var(--green-dark); }
     .btn-green:disabled { opacity: .5; cursor: not-allowed; }
@@ -97,217 +66,97 @@
     .btn-outline:hover { border-color: var(--blue); color: var(--text); }
     .btn-ghost   { background: transparent; color: var(--text-muted); border: 1px solid var(--border); }
     .btn-ghost:hover { border-color: var(--danger); color: var(--danger); }
-    .btn-block   { width: 100%; padding: 11px; font-size: .9rem; }
+    .btn-amber { background: rgba(245,158,11,.12); color: var(--amber); border: 1px solid rgba(245,158,11,.3); }
+    .btn-amber:hover { background: rgba(245,158,11,.22); }
+    .btn-red   { background: rgba(239,68,68,.10); color: var(--danger); border: 1px solid rgba(239,68,68,.3); }
+    .btn-red:hover   { background: rgba(239,68,68,.20); }
+    .btn-block { width: 100%; padding: 11px; font-size: .9rem; }
 
-    /* ── Layout ──────────────────────────────── */
-    .container {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 20px;
-      display: grid;
-      grid-template-columns: 1fr 330px;
-      gap: 20px;
-      align-items: start;
-    }
+    /* ── Layout ── */
+    .container { max-width: 1280px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 330px; gap: 20px; align-items: start; }
     .container.single { grid-template-columns: 1fr; }
-    @media (max-width: 800px) {
-      .container { grid-template-columns: 1fr; }
-      aside { position: static !important; }
-    }
+    @media (max-width: 800px) { .container { grid-template-columns: 1fr; } aside { position: static !important; } }
 
-    /* ── Section heading ─────────────────────── */
     .section-title {
-      font-size: .7rem;
-      font-weight: 600;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      font-size: .7rem; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--text-muted); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
     }
     .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-    /* ── Match card ──────────────────────────── */
-    .match-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 14px 16px;
-      margin-bottom: 8px;
-      transition: border-color .2s;
-    }
+    /* ── Match card (public) ── */
+    .match-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin-bottom: 8px; transition: border-color .2s; }
     .match-card:hover { border-color: rgba(59,130,246,.35); }
-    .match-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-    }
+    .match-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
     .league-tag { font-size: .68rem; font-weight: 600; letter-spacing: .8px; text-transform: uppercase; color: var(--blue); }
     .match-time { font-size: .72rem; color: var(--text-muted); }
-    .match-teams {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 14px;
-    }
+    .match-teams { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; margin-bottom: 14px; }
     .team-name { font-size: 1rem; font-weight: 600; }
     .team-name.away { text-align: right; }
-    .vs-badge {
-      font-size: .68rem; font-weight: 700; color: var(--text-muted);
-      background: rgba(255,255,255,.05); padding: 3px 7px; border-radius: 4px;
-    }
+    .vs-badge { font-size: .68rem; font-weight: 700; color: var(--text-muted); background: rgba(255,255,255,.05); padding: 3px 7px; border-radius: 4px; }
     .odds-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
-    .odd-btn {
-      background: var(--odds-bg);
-      border: 1px solid transparent;
-      border-radius: var(--radius);
-      padding: 9px 4px;
-      text-align: center;
-      cursor: pointer;
-      transition: all .15s;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 3px;
-      font-family: inherit;
-    }
+    .odd-btn { background: var(--odds-bg); border: 1px solid transparent; border-radius: var(--radius); padding: 9px 4px; text-align: center; cursor: pointer; transition: all .15s; display: flex; flex-direction: column; align-items: center; gap: 3px; font-family: inherit; }
     .odd-btn:hover { background: rgba(59,130,246,.15); border-color: var(--blue); }
-    .odd-btn.selected {
-      background: var(--odds-sel-bg);
-      border-color: var(--odds-sel-bd);
-      box-shadow: 0 0 0 1px var(--odds-sel-bd);
-    }
+    .odd-btn.selected { background: var(--odds-sel-bg); border-color: var(--odds-sel-bd); box-shadow: 0 0 0 1px var(--odds-sel-bd); }
     .odd-label { font-size: .62rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); }
     .odd-value { font-size: .95rem; font-weight: 700; color: var(--text); }
     .odd-btn.selected .odd-value { color: #93c5fd; }
 
-    /* ── Sidebar ─────────────────────────────── */
+    /* ── Sidebar ── */
     aside { position: sticky; top: 82px; }
     .sidebar-panel { background: var(--sidebar-bg); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
-    .panel-header {
-      background: rgba(255,255,255,.03);
-      padding: 13px 16px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
+    .panel-header { background: rgba(255,255,255,.03); padding: 13px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
     .panel-title { font-size: .75rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; }
-    .slip-count {
-      background: var(--blue); color: #fff;
-      font-size: .68rem; font-weight: 700;
-      min-width: 20px; height: 20px; padding: 0 5px;
-      border-radius: 10px; display: grid; place-items: center;
-    }
-
-    /* ── Auth tabs ───────────────────────────── */
+    .slip-count { background: var(--blue); color: #fff; font-size: .68rem; font-weight: 700; min-width: 20px; height: 20px; padding: 0 5px; border-radius: 10px; display: grid; place-items: center; }
     .auth-tabs { display: grid; grid-template-columns: 1fr 1fr; }
-    .auth-tab {
-      padding: 12px; text-align: center;
-      font-size: .82rem; font-weight: 600;
-      color: var(--text-muted); cursor: pointer;
-      border-bottom: 2px solid transparent;
-      transition: all .15s;
-    }
+    .auth-tab { padding: 12px; text-align: center; font-size: .82rem; font-weight: 600; color: var(--text-muted); cursor: pointer; border-bottom: 2px solid transparent; transition: all .15s; }
     .auth-tab.active { color: var(--text); border-color: var(--blue); }
-
-    /* ── Forms ───────────────────────────────── */
     .panel-body { padding: 16px; }
+
+    /* ── Forms ── */
     .form-group { margin-bottom: 12px; }
     .form-label { display: block; font-size: .72rem; font-weight: 600; color: var(--text-sec); margin-bottom: 5px; }
-    .form-input {
-      width: 100%; background: var(--bg-input);
-      border: 1px solid var(--border); border-radius: var(--radius);
-      padding: 9px 12px; color: var(--text); font-size: .875rem;
-      font-family: inherit; outline: none; transition: border-color .15s;
-    }
+    .form-input { width: 100%; background: var(--bg-input); border: 1px solid var(--border); border-radius: var(--radius); padding: 9px 12px; color: var(--text); font-size: .875rem; font-family: inherit; outline: none; transition: border-color .15s; }
     .form-input:focus { border-color: var(--blue); }
     .form-input::placeholder { color: var(--text-muted); }
     .form-error { color: var(--danger); font-size: .72rem; margin-top: 10px; text-align: center; }
     .register-bonus { font-size: .72rem; color: var(--text-muted); text-align: center; margin-top: 10px; line-height: 1.5; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .form-grid .form-group { margin-bottom: 0; }
+    .form-grid .form-group.full { grid-column: 1 / -1; }
 
-    /* ── Bet slip selections ─────────────────── */
-    .bet-selection {
-      background: rgba(255,255,255,.03);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 10px 12px; margin-bottom: 8px; position: relative;
-    }
+    /* ── Bet slip ── */
+    .bet-selection { background: rgba(255,255,255,.03); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 12px; margin-bottom: 8px; position: relative; }
     .bet-sel-match { font-size: .72rem; color: var(--text-sec); margin-bottom: 5px; }
     .bet-sel-row   { display: flex; align-items: center; justify-content: space-between; }
     .bet-sel-type  { font-size: .8rem; font-weight: 600; }
     .bet-sel-odds  { font-size: .9rem; font-weight: 700; color: var(--blue); }
-    .bet-sel-remove {
-      position: absolute; top: 6px; right: 6px;
-      background: none; border: none; color: var(--text-muted);
-      cursor: pointer; font-size: .8rem; padding: 2px 5px;
-      border-radius: 4px; font-family: inherit;
-    }
+    .bet-sel-remove { position: absolute; top: 6px; right: 6px; background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: .8rem; padding: 2px 5px; border-radius: 4px; font-family: inherit; }
     .bet-sel-remove:hover { color: var(--danger); background: rgba(239,68,68,.1); }
-
-    /* ── Stake ───────────────────────────────── */
     .stake-section { margin-top: 14px; }
     .stake-label { font-size: .68rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 7px; }
     .quick-stakes { display: flex; gap: 5px; margin-bottom: 8px; }
-    .quick-stake {
-      flex: 1; background: rgba(255,255,255,.04);
-      border: 1px solid var(--border); border-radius: 6px;
-      padding: 5px 2px; font-size: .72rem; font-weight: 600;
-      color: var(--text-sec); cursor: pointer; text-align: center;
-      transition: all .15s; font-family: inherit;
-    }
+    .quick-stake { flex: 1; background: rgba(255,255,255,.04); border: 1px solid var(--border); border-radius: 6px; padding: 5px 2px; font-size: .72rem; font-weight: 600; color: var(--text-sec); cursor: pointer; text-align: center; transition: all .15s; font-family: inherit; }
     .quick-stake:hover { border-color: var(--blue); color: var(--text); }
     .stake-wrap { position: relative; margin-bottom: 12px; }
-    .stake-sym {
-      position: absolute; left: 11px; top: 50%;
-      transform: translateY(-50%); color: var(--text-muted);
-      font-weight: 600; pointer-events: none;
-    }
-    .stake-input {
-      width: 100%; background: var(--bg-input);
-      border: 1px solid var(--border); border-radius: var(--radius);
-      padding: 10px 12px 10px 24px; color: var(--text);
-      font-size: .95rem; font-weight: 600; font-family: inherit;
-      outline: none; transition: border-color .15s;
-    }
+    .stake-sym { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-weight: 600; pointer-events: none; }
+    .stake-input { width: 100%; background: var(--bg-input); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 12px 10px 24px; color: var(--text); font-size: .95rem; font-weight: 600; font-family: inherit; outline: none; transition: border-color .15s; }
     .stake-input:focus { border-color: var(--green); }
-    .summary-row {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 9px 0; border-top: 1px solid var(--border);
-    }
+    .summary-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-top: 1px solid var(--border); }
     .sum-label { font-size: .78rem; color: var(--text-muted); }
     .sum-value { font-size: .9rem; font-weight: 700; }
     .sum-value.green { color: var(--green); }
     .slip-empty { text-align: center; padding: 36px 16px; color: var(--text-muted); font-size: .82rem; line-height: 1.6; }
     .slip-empty-icon { font-size: 2rem; margin-bottom: 10px; }
-    .slip-msg {
-      font-size: .75rem; text-align: center; margin-top: 10px;
-      padding: 8px; border-radius: 6px; line-height: 1.4;
-    }
+    .slip-msg { font-size: .75rem; text-align: center; margin-top: 10px; padding: 8px; border-radius: 6px; line-height: 1.4; }
     .slip-msg.success { color: var(--green);  background: rgba(0,200,90,.08);  border: 1px solid rgba(0,200,90,.2); }
     .slip-msg.error   { color: var(--danger); background: rgba(239,68,68,.08); border: 1px solid rgba(239,68,68,.2); }
 
-    /* ── Bet history ─────────────────────────── */
-    .bet-history-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 14px 18px;
-      margin-bottom: 8px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-      transition: border-color .2s;
-    }
+    /* ── Bet history ── */
+    .bet-history-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; gap: 16px; transition: border-color .2s; }
     .bet-history-card:hover { border-color: rgba(59,130,246,.35); }
     .bhc-main { flex: 1; min-width: 0; }
     .bhc-meta { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
-    .bhc-teams { font-size: 1rem; font-weight: 600; margin-bottom: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .bhc-teams { font-size: 1rem; font-weight: 600; margin-bottom: 10px; }
     .vs-mini { font-size: .75rem; color: var(--text-muted); margin: 0 4px; }
     .bhc-details { display: flex; gap: 20px; flex-wrap: wrap; }
     .bhc-detail  { display: flex; flex-direction: column; gap: 2px; }
@@ -316,22 +165,47 @@
     .bhc-right   { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; flex-shrink: 0; }
     .bhc-date    { font-size: .68rem; color: var(--text-muted); }
 
-    .status-badge {
-      padding: 3px 10px; border-radius: 20px;
-      font-size: .65rem; font-weight: 700;
-      letter-spacing: 1px; text-transform: uppercase; border: 1px solid;
-    }
-    .status-pending { color: var(--amber);  border-color: rgba(245,158,11,.3); background: rgba(245,158,11,.08); }
-    .status-won     { color: var(--green);  border-color: rgba(0,200,90,.3);   background: rgba(0,200,90,.08); }
-    .status-lost    { color: var(--danger); border-color: rgba(239,68,68,.3);  background: rgba(239,68,68,.08); }
+    /* ── Status badges ── */
+    .status-badge { padding: 3px 10px; border-radius: 20px; font-size: .65rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; border: 1px solid; }
+    .status-pending   { color: var(--amber);  border-color: rgba(245,158,11,.3); background: rgba(245,158,11,.08); }
+    .status-won       { color: var(--green);  border-color: rgba(0,200,90,.3);   background: rgba(0,200,90,.08); }
+    .status-lost      { color: var(--danger); border-color: rgba(239,68,68,.3);  background: rgba(239,68,68,.08); }
+    .status-scheduled { color: var(--blue);   border-color: rgba(59,130,246,.3); background: rgba(59,130,246,.06); }
+    .status-finished  { color: var(--text-muted); border-color: var(--border); background: transparent; }
 
-    .bets-empty { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+    /* ── Admin panel ── */
+    .admin-top-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .admin-msg { padding: 10px 14px; border-radius: var(--radius); font-size: .8rem; margin-bottom: 16px; line-height: 1.4; }
+    .admin-msg.success { color: var(--green);  background: rgba(0,200,90,.08);  border: 1px solid rgba(0,200,90,.2); }
+    .admin-msg.error   { color: var(--danger); background: rgba(239,68,68,.08); border: 1px solid rgba(239,68,68,.2); }
+
+    .admin-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin-bottom: 8px; transition: border-color .2s; }
+    .admin-card.editing  { border-color: var(--blue); }
+    .admin-card.settling { border-color: var(--amber); }
+    .ac-header  { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+    .ac-teams   { font-size: 1rem; font-weight: 600; margin-bottom: 6px; }
+    .ac-odds    { display: flex; gap: 16px; font-size: .8rem; color: var(--text-sec); margin-bottom: 6px; }
+    .ac-odds b  { color: var(--text); }
+    .ac-stats   { font-size: .72rem; color: var(--text-muted); }
+    .admin-actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+
+    .settle-section { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+    .settle-label   { font-size: .68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 8px; }
+    .settle-options { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 10px; }
+    .settle-btn { padding: 9px 4px; border-radius: var(--radius); background: var(--odds-bg); border: 1px solid transparent; color: var(--text); font-size: .82rem; font-weight: 600; cursor: pointer; text-align: center; transition: all .15s; font-family: inherit; }
+    .settle-btn:hover { background: rgba(59,130,246,.15); border-color: var(--blue); }
+    .settle-btn.selected { background: var(--odds-sel-bg); border-color: var(--blue); color: #93c5fd; }
+
+    .add-match-card { background: rgba(59,130,246,.05); border: 1px dashed rgba(59,130,246,.3); border-radius: 10px; padding: 16px; margin-bottom: 16px; }
+    .add-match-card .section-title { color: var(--blue); }
+    .add-match-card .section-title::after { background: rgba(59,130,246,.2); }
+
+    /* ── Misc ── */
+    .loading-msg { text-align: center; padding: 48px; color: var(--text-muted); font-size: .85rem; }
+    .bets-empty  { text-align: center; padding: 60px 20px; color: var(--text-muted); }
     .bets-empty-icon { font-size: 2.5rem; margin-bottom: 14px; }
     .text-link { color: var(--blue); cursor: pointer; }
     .text-link:hover { text-decoration: underline; }
-
-    /* ── Misc ────────────────────────────────── */
-    .loading-msg { text-align: center; padding: 48px; color: var(--text-muted); font-size: .85rem; }
 
     @keyframes pulse-border { 0%,100%{box-shadow:none} 50%{box-shadow:0 0 0 2px var(--blue)} }
     aside.pulse-border .sidebar-panel { animation: pulse-border .5s ease; }
@@ -354,9 +228,15 @@ const state = {
   msg:       null,
   authError: null,
   placing:   false,
-  view:      'matches',  // 'matches' | 'my-bets'
+  view:      'matches',     // 'matches' | 'my-bets' | 'admin'
   myBets:    [],
-  myBetsLoading: false,
+  // Admin
+  adminMatches:    [],
+  showAddMatch:    false,
+  editingMatchId:  null,
+  settlingMatchId: null,
+  settleResult:    null,
+  adminMsg:        null,
 };
 
 // ─── Utilities ───────────────────────────────────────────────────────────────
@@ -367,9 +247,9 @@ const fmt = n  => '€' + parseFloat(n).toFixed(2);
 function formatDate(iso) {
   const d = new Date(iso);
   return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })
-    + ' · '
-    + d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+    + ' · ' + d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
 }
+function toDatetimeLocal(iso) { return new Date(iso).toISOString().slice(0, 16); }
 
 // ─── API ─────────────────────────────────────────────────────────────────────
 async function api(path, opts = {}) {
@@ -387,8 +267,7 @@ async function login() {
   const password = $('auth-password')?.value?.trim();
   if (!username || !password) { state.authError = 'All fields are required'; renderSidebar(); return; }
   try {
-    const data = await api('/api/login', { method: 'POST', body: JSON.stringify({ username, password }) });
-    applyAuthSuccess(data);
+    applyAuthSuccess(await api('/api/login', { method: 'POST', body: JSON.stringify({ username, password }) }));
   } catch (err) { state.authError = err.message; renderSidebar(); }
 }
 
@@ -398,143 +277,171 @@ async function register() {
   const password = $('auth-password')?.value?.trim();
   if (!username || !email || !password) { state.authError = 'All fields are required'; renderSidebar(); return; }
   try {
-    const data = await api('/api/register', { method: 'POST', body: JSON.stringify({ username, email, password }) });
-    applyAuthSuccess(data);
+    applyAuthSuccess(await api('/api/register', { method: 'POST', body: JSON.stringify({ username, email, password }) }));
   } catch (err) { state.authError = err.message; renderSidebar(); }
 }
 
 function applyAuthSuccess(data) {
-  state.token = data.token;
-  state.user  = data.user;
-  state.authError = null;
+  state.token = data.token; state.user = data.user; state.authError = null;
   localStorage.setItem('bet_token', data.token);
   render();
 }
 
 function logout() {
-  state.token = null; state.user = null;
-  state.betSlip = []; state.msg = null;
-  state.view = 'matches'; state.myBets = [];
+  state.token = null; state.user = null; state.betSlip = []; state.msg = null;
+  state.view = 'matches'; state.myBets = []; state.adminMatches = [];
   localStorage.removeItem('bet_token');
   render();
 }
 
-// ─── Data ────────────────────────────────────────────────────────────────────
+// ─── Data loading ────────────────────────────────────────────────────────────
 async function loadUser() {
   if (!state.token) return;
-  try {
-    state.user = await api('/api/me');
-  } catch {
-    state.token = null;
-    localStorage.removeItem('bet_token');
-  }
+  try { state.user = await api('/api/me'); }
+  catch { state.token = null; localStorage.removeItem('bet_token'); }
 }
 
 async function loadMatches() {
-  try {
-    state.matches = await api('/api/matches');
-  } catch (err) {
-    const el = $('matches-list');
-    if (el) el.innerHTML = `<div class="loading-msg">Error: ${esc(err.message)}</div>`;
-  }
+  try { state.matches = await api('/api/matches'); }
+  catch (err) { const el = $('matches-list'); if (el) el.innerHTML = `<div class="loading-msg">Error: ${esc(err.message)}</div>`; }
 }
 
 async function loadMyBets() {
-  state.myBetsLoading = true;
   const el = $('bets-list');
   if (el) el.innerHTML = '<div class="loading-msg">Loading your bets…</div>';
-  try {
-    state.myBets = await api('/api/my-bets');
-  } catch (err) {
-    state.myBets = [];
-    const el2 = $('bets-list');
-    if (el2) el2.innerHTML = `<div class="loading-msg">Error: ${esc(err.message)}</div>`;
-    state.myBetsLoading = false;
-    return;
-  }
-  state.myBetsLoading = false;
+  try { state.myBets = await api('/api/my-bets'); }
+  catch (err) { if (el) el.innerHTML = `<div class="loading-msg">Error: ${esc(err.message)}</div>`; return; }
   renderBetsList();
 }
 
-// ─── Bet slip ────────────────────────────────────────────────────────────────
-function isSelected(matchId, betType) {
-  return state.betSlip.some(b => b.matchId === String(matchId) && b.betType === betType);
+async function loadAdminMatches() {
+  const el = $('admin-matches-list');
+  if (el) el.innerHTML = '<div class="loading-msg">Loading…</div>';
+  try { state.adminMatches = await api('/api/admin/matches'); }
+  catch (err) { if (el) el.innerHTML = `<div class="loading-msg">Error: ${esc(err.message)}</div>`; return; }
+  renderAdminMatchList();
 }
+
+// ─── Bet slip ────────────────────────────────────────────────────────────────
+function isSelected(matchId, betType) { return state.betSlip.some(b => b.matchId === String(matchId) && b.betType === betType); }
 
 function toggleBet(matchId, betType, odds) {
   if (!state.token) {
     const s = $('sidebar');
     if (s) { s.classList.add('pulse-border'); setTimeout(() => s.classList.remove('pulse-border'), 600); }
-    $('auth-username')?.focus();
-    return;
+    $('auth-username')?.focus(); return;
   }
   const idx = state.betSlip.findIndex(b => b.matchId === String(matchId) && b.betType === betType);
-  if (idx > -1) {
-    state.betSlip.splice(idx, 1);
-  } else {
+  if (idx > -1) { state.betSlip.splice(idx, 1); }
+  else {
     state.betSlip = state.betSlip.filter(b => b.matchId !== String(matchId));
     const m = state.matches.find(m => String(m.id) === String(matchId));
     state.betSlip.push({ matchId: String(matchId), home: m.home_team, away: m.away_team, betType, odds: parseFloat(odds) });
   }
-  state.msg = null;
-  render();
+  state.msg = null; render();
 }
 
-function removeBet(matchId) {
-  state.betSlip = state.betSlip.filter(b => b.matchId !== String(matchId));
-  render();
-}
+function removeBet(matchId) { state.betSlip = state.betSlip.filter(b => b.matchId !== String(matchId)); render(); }
 
 async function placeAllBets() {
   const stake = parseFloat($('stake-input')?.value);
   if (!stake || stake <= 0) { state.msg = { type: 'error', text: 'Enter a valid stake amount.' }; renderSidebar(); return; }
   const totalStake = stake * state.betSlip.length;
   if (totalStake > parseFloat(state.user.balance)) {
-    state.msg = { type: 'error', text: `Need ${fmt(totalStake)}, balance is ${fmt(state.user.balance)}.` };
-    renderSidebar(); return;
+    state.msg = { type: 'error', text: `Need ${fmt(totalStake)}, balance is ${fmt(state.user.balance)}.` }; renderSidebar(); return;
   }
   state.placing = true; renderSidebar();
   let placed = 0, failed = 0, newBalance = null;
   for (const bet of [...state.betSlip]) {
     try {
-      const res = await api('/api/place-bet', {
-        method: 'POST',
-        body: JSON.stringify({ match_id: parseInt(bet.matchId), bet_type: bet.betType, amount: stake }),
-      });
+      const res = await api('/api/place-bet', { method: 'POST', body: JSON.stringify({ match_id: parseInt(bet.matchId), bet_type: bet.betType, amount: stake }) });
       placed++; newBalance = res.new_balance;
     } catch { failed++; }
   }
   if (newBalance !== null) state.user = { ...state.user, balance: newBalance };
   state.placing = false;
   if (placed > 0) {
-    state.betSlip = [];
-    state.myBets = []; // invalidate cache so My Bets reloads fresh
-    state.msg = {
-      type: 'success',
-      text: failed === 0
-        ? `✓ ${placed} bet${placed > 1 ? 's' : ''} placed! New balance: ${fmt(newBalance)}`
-        : `${placed} placed, ${failed} failed. Balance: ${fmt(newBalance)}`,
-    };
+    state.betSlip = []; state.myBets = [];
+    state.msg = { type: 'success', text: failed === 0 ? `✓ ${placed} bet${placed > 1 ? 's' : ''} placed! Balance: ${fmt(newBalance)}` : `${placed} placed, ${failed} failed. Balance: ${fmt(newBalance)}` };
   } else {
     state.msg = { type: 'error', text: 'Could not place bets. Please try again.' };
   }
   render();
 }
 
+// ─── Admin actions ───────────────────────────────────────────────────────────
+async function adminCreateMatch() {
+  const body = {
+    home_team:  $('add-home')?.value?.trim(),
+    away_team:  $('add-away')?.value?.trim(),
+    match_date: $('add-date')?.value,
+    home_odds:  parseFloat($('add-home-odds')?.value),
+    draw_odds:  parseFloat($('add-draw-odds')?.value),
+    away_odds:  parseFloat($('add-away-odds')?.value),
+  };
+  if (!body.home_team || !body.away_team || !body.match_date || isNaN(body.home_odds) || isNaN(body.draw_odds) || isNaN(body.away_odds)) {
+    state.adminMsg = { type: 'error', text: 'All fields are required.' }; renderAdminView(); return;
+  }
+  try {
+    await api('/api/admin/matches', { method: 'POST', body: JSON.stringify(body) });
+    state.showAddMatch = false;
+    state.adminMsg = { type: 'success', text: 'Match created.' };
+    await loadAdminMatches();
+    await loadMatches();
+    renderAdminView();
+  } catch (err) { state.adminMsg = { type: 'error', text: err.message }; renderAdminView(); }
+}
+
+async function adminSaveMatch(id) {
+  const body = {
+    home_team:  $('edit-home')?.value?.trim()  || undefined,
+    away_team:  $('edit-away')?.value?.trim()  || undefined,
+    match_date: $('edit-date')?.value          || undefined,
+    home_odds:  parseFloat($('edit-home-odds')?.value) || undefined,
+    draw_odds:  parseFloat($('edit-draw-odds')?.value) || undefined,
+    away_odds:  parseFloat($('edit-away-odds')?.value) || undefined,
+    status:     $('edit-status')?.value        || undefined,
+  };
+  try {
+    await api(`/api/admin/matches/${id}`, { method: 'PUT', body: JSON.stringify(body) });
+    state.editingMatchId = null;
+    state.adminMsg = { type: 'success', text: 'Match updated.' };
+    await loadAdminMatches();
+    await loadMatches();
+    renderAdminView();
+  } catch (err) { state.adminMsg = { type: 'error', text: err.message }; renderAdminView(); }
+}
+
+async function adminDeleteMatch(id) {
+  try {
+    await api(`/api/admin/matches/${id}`, { method: 'DELETE' });
+    state.adminMsg = { type: 'success', text: 'Match deleted.' };
+    await loadAdminMatches();
+    await loadMatches();
+    renderAdminView();
+  } catch (err) { state.adminMsg = { type: 'error', text: err.message }; renderAdminView(); }
+}
+
+async function adminSettleMatch(id) {
+  if (!state.settleResult) { state.adminMsg = { type: 'error', text: 'Select a result first.' }; renderAdminView(); return; }
+  try {
+    const res = await api(`/api/admin/matches/${id}/settle`, { method: 'POST', body: JSON.stringify({ result: state.settleResult }) });
+    state.settlingMatchId = null; state.settleResult = null;
+    state.adminMsg = { type: 'success', text: `Settled: ${res.won} won, ${res.lost} lost out of ${res.total} bets.` };
+    await loadAdminMatches();
+    await loadMatches();
+    renderAdminView();
+  } catch (err) { state.adminMsg = { type: 'error', text: err.message }; renderAdminView(); }
+}
+
 // ─── Rendering ───────────────────────────────────────────────────────────────
 function renderHeader() {
-  const myBetsTab = state.user
-    ? `<span class="nav-item ${state.view === 'my-bets' ? 'active' : ''}"
-         data-action="view-my-bets">🎯 My Bets</span>`
-    : '';
   $('site-header').innerHTML = `
     <div class="logo">Bet<span>Engine</span></div>
     <nav class="header-nav">
-      <span class="nav-item ${state.view === 'matches' ? 'active' : ''}"
-        data-action="view-matches">⚽ Football</span>
-      ${myBetsTab}
-      <span class="nav-item">🏀 Basketball</span>
-      <span class="nav-item">🎾 Tennis</span>
+      <span class="nav-item ${state.view === 'matches' ? 'active' : ''}" data-action="view-matches">⚽ Football</span>
+      ${state.user ? `<span class="nav-item ${state.view === 'my-bets' ? 'active' : ''}" data-action="view-my-bets">🎯 My Bets</span>` : ''}
+      ${state.user?.is_admin ? `<span class="nav-item admin-tab ${state.view === 'admin' ? 'active' : ''}" data-action="view-admin">⚙ Admin</span>` : ''}
     </nav>
     <div class="header-right">
       ${state.user ? `
@@ -551,34 +458,21 @@ function renderHeader() {
 
 function renderPage() {
   const el = $('page-content');
-  if (state.view === 'my-bets') {
-    el.innerHTML = `
-      <div class="container single">
-        <div>
-          <div class="section-title">🎯 &nbsp;My Bets &nbsp;·&nbsp; History</div>
-          <div id="bets-list"><div class="loading-msg">Loading your bets…</div></div>
-        </div>
-      </div>
-    `;
+  if (state.view === 'admin') {
+    el.innerHTML = `<div class="container single"><div id="admin-panel"></div></div>`;
+    renderAdminView();
+  } else if (state.view === 'my-bets') {
+    el.innerHTML = `<div class="container single"><div><div class="section-title">🎯 &nbsp;My Bets &nbsp;·&nbsp; History</div><div id="bets-list"><div class="loading-msg">Loading…</div></div></div></div>`;
     renderBetsList();
   } else {
-    el.innerHTML = `
-      <div class="container">
-        <main>
-          <div class="section-title">⚽ &nbsp;Super League Greece &nbsp;·&nbsp; Upcoming</div>
-          <div id="matches-list"><div class="loading-msg">Loading matches…</div></div>
-        </main>
-        <aside id="sidebar"></aside>
-      </div>
-    `;
+    el.innerHTML = `<div class="container"><main><div class="section-title">⚽ &nbsp;Super League Greece &nbsp;·&nbsp; Upcoming</div><div id="matches-list"><div class="loading-msg">Loading…</div></div></main><aside id="sidebar"></aside></div>`;
     renderMatchList();
     renderSidebar();
   }
 }
 
 function renderMatchList() {
-  const el = $('matches-list');
-  if (!el) return;
+  const el = $('matches-list'); if (!el) return;
   if (!state.matches.length) { el.innerHTML = '<div class="loading-msg">No matches available.</div>'; return; }
   el.innerHTML = state.matches.map(m => `
     <div class="match-card">
@@ -592,20 +486,14 @@ function renderMatchList() {
         <div class="team-name away">${esc(m.away_team)}</div>
       </div>
       <div class="odds-row">
-        <button class="odd-btn ${isSelected(m.id,'home') ? 'selected' : ''}"
-          data-action="bet" data-match="${m.id}" data-type="home" data-odds="${m.home_odds}">
-          <span class="odd-label">1 Home</span>
-          <span class="odd-value">${parseFloat(m.home_odds).toFixed(2)}</span>
+        <button class="odd-btn ${isSelected(m.id,'home') ? 'selected' : ''}" data-action="bet" data-match="${m.id}" data-type="home" data-odds="${m.home_odds}">
+          <span class="odd-label">1 Home</span><span class="odd-value">${parseFloat(m.home_odds).toFixed(2)}</span>
         </button>
-        <button class="odd-btn ${isSelected(m.id,'draw') ? 'selected' : ''}"
-          data-action="bet" data-match="${m.id}" data-type="draw" data-odds="${m.draw_odds}">
-          <span class="odd-label">X Draw</span>
-          <span class="odd-value">${parseFloat(m.draw_odds).toFixed(2)}</span>
+        <button class="odd-btn ${isSelected(m.id,'draw') ? 'selected' : ''}" data-action="bet" data-match="${m.id}" data-type="draw" data-odds="${m.draw_odds}">
+          <span class="odd-label">X Draw</span><span class="odd-value">${parseFloat(m.draw_odds).toFixed(2)}</span>
         </button>
-        <button class="odd-btn ${isSelected(m.id,'away') ? 'selected' : ''}"
-          data-action="bet" data-match="${m.id}" data-type="away" data-odds="${m.away_odds}">
-          <span class="odd-label">2 Away</span>
-          <span class="odd-value">${parseFloat(m.away_odds).toFixed(2)}</span>
+        <button class="odd-btn ${isSelected(m.id,'away') ? 'selected' : ''}" data-action="bet" data-match="${m.id}" data-type="away" data-odds="${m.away_odds}">
+          <span class="odd-label">2 Away</span><span class="odd-value">${parseFloat(m.away_odds).toFixed(2)}</span>
         </button>
       </div>
     </div>
@@ -613,72 +501,136 @@ function renderMatchList() {
 }
 
 function renderBetsList() {
-  const el = $('bets-list');
-  if (!el) return;
+  const el = $('bets-list'); if (!el) return;
   if (!state.myBets.length) {
-    el.innerHTML = `
-      <div class="bets-empty">
-        <div class="bets-empty-icon">🎯</div>
-        <div style="font-size:1rem;font-weight:600;margin-bottom:8px;color:var(--text)">No bets placed yet</div>
-        <div style="font-size:.82rem">
-          Go to <span class="text-link" data-action="view-matches">Football</span> and place your first bet.
-        </div>
-      </div>
-    `;
-    return;
+    el.innerHTML = `<div class="bets-empty"><div class="bets-empty-icon">🎯</div><div style="font-size:1rem;font-weight:600;margin-bottom:8px;color:var(--text)">No bets placed yet</div><div style="font-size:.82rem">Go to <span class="text-link" data-action="view-matches">Football</span> and place your first bet.</div></div>`; return;
   }
   el.innerHTML = state.myBets.map(b => {
     const pickLabel = b.bet_type === 'home' ? '1 Home Win' : b.bet_type === 'away' ? '2 Away Win' : 'X Draw';
-    const potential = (parseFloat(b.amount) * parseFloat(b.odds)).toFixed(2);
     return `
       <div class="bet-history-card">
         <div class="bhc-main">
-          <div class="bhc-meta">
-            <span class="league-tag">⚽ Super League</span>
-            <span class="match-time">${formatDate(b.match_date)}</span>
-          </div>
-          <div class="bhc-teams">
-            ${esc(b.home_team)} <span class="vs-mini">vs</span> ${esc(b.away_team)}
-          </div>
+          <div class="bhc-meta"><span class="league-tag">⚽ Super League</span><span class="match-time">${formatDate(b.match_date)}</span></div>
+          <div class="bhc-teams">${esc(b.home_team)} <span class="vs-mini">vs</span> ${esc(b.away_team)}</div>
           <div class="bhc-details">
-            <div class="bhc-detail">
-              <span class="bhc-label">Pick</span>
-              <span class="bhc-value">${pickLabel}</span>
-            </div>
-            <div class="bhc-detail">
-              <span class="bhc-label">Odds</span>
-              <span class="bhc-value">${parseFloat(b.odds).toFixed(2)}</span>
-            </div>
-            <div class="bhc-detail">
-              <span class="bhc-label">Stake</span>
-              <span class="bhc-value">${fmt(b.amount)}</span>
-            </div>
-            <div class="bhc-detail">
-              <span class="bhc-label">Potential</span>
-              <span class="bhc-value" style="color:var(--green)">${fmt(potential)}</span>
-            </div>
+            <div class="bhc-detail"><span class="bhc-label">Pick</span><span class="bhc-value">${pickLabel}</span></div>
+            <div class="bhc-detail"><span class="bhc-label">Odds</span><span class="bhc-value">${parseFloat(b.odds).toFixed(2)}</span></div>
+            <div class="bhc-detail"><span class="bhc-label">Stake</span><span class="bhc-value">${fmt(b.amount)}</span></div>
+            <div class="bhc-detail"><span class="bhc-label">Potential</span><span class="bhc-value" style="color:var(--green)">${fmt(parseFloat(b.amount) * parseFloat(b.odds))}</span></div>
           </div>
         </div>
         <div class="bhc-right">
           <span class="status-badge status-${esc(b.status)}">${esc(b.status)}</span>
           <div class="bhc-date">${formatDate(b.created_at)}</div>
         </div>
+      </div>`;
+  }).join('');
+}
+
+function renderAdminView() {
+  const el = $('admin-panel'); if (!el) return;
+  const addForm = state.showAddMatch ? `
+    <div class="add-match-card">
+      <div class="section-title">➕ &nbsp;New Match</div>
+      <div class="form-grid">
+        <div class="form-group"><label class="form-label">Home Team</label><input id="add-home" class="form-input" placeholder="e.g. Panathinaikos"></div>
+        <div class="form-group"><label class="form-label">Away Team</label><input id="add-away" class="form-input" placeholder="e.g. Olympiacos"></div>
+        <div class="form-group full"><label class="form-label">Match Date & Time</label><input id="add-date" class="form-input" type="datetime-local"></div>
+        <div class="form-group"><label class="form-label">Home Odds</label><input id="add-home-odds" class="form-input" type="number" step=".01" placeholder="2.40"></div>
+        <div class="form-group"><label class="form-label">Draw Odds</label><input id="add-draw-odds" class="form-input" type="number" step=".01" placeholder="3.10"></div>
+        <div class="form-group"><label class="form-label">Away Odds</label><input id="add-away-odds" class="form-input" type="number" step=".01" placeholder="2.90"></div>
       </div>
-    `;
+      <div class="admin-actions">
+        <button class="btn btn-green btn-sm" data-action="admin-create">Create Match</button>
+        <button class="btn btn-outline btn-sm" data-action="admin-add-cancel">Cancel</button>
+      </div>
+    </div>
+  ` : '';
+
+  el.innerHTML = `
+    ${state.adminMsg ? `<div class="admin-msg ${state.adminMsg.type}">${esc(state.adminMsg.text)}</div>` : ''}
+    <div class="admin-top-bar">
+      <div class="section-title" style="margin:0;flex:1">⚙ &nbsp;Match Management</div>
+      ${!state.showAddMatch ? `<button class="btn btn-green btn-sm" data-action="admin-add-show">+ Add Match</button>` : ''}
+    </div>
+    ${addForm}
+    <div id="admin-matches-list"></div>
+  `;
+  renderAdminMatchList();
+}
+
+function renderAdminMatchList() {
+  const el = $('admin-matches-list'); if (!el) return;
+  if (!state.adminMatches.length) { el.innerHTML = '<div class="loading-msg">No matches found.</div>'; return; }
+  el.innerHTML = state.adminMatches.map(m => {
+    const isEditing  = state.editingMatchId  === m.id;
+    const isSettling = state.settlingMatchId === m.id;
+
+    if (isEditing) return `
+      <div class="admin-card editing">
+        <div class="form-grid">
+          <div class="form-group"><label class="form-label">Home Team</label><input id="edit-home" class="form-input" value="${esc(m.home_team)}"></div>
+          <div class="form-group"><label class="form-label">Away Team</label><input id="edit-away" class="form-input" value="${esc(m.away_team)}"></div>
+          <div class="form-group full"><label class="form-label">Match Date & Time</label><input id="edit-date" class="form-input" type="datetime-local" value="${toDatetimeLocal(m.match_date)}"></div>
+          <div class="form-group"><label class="form-label">Home Odds</label><input id="edit-home-odds" class="form-input" type="number" step=".01" value="${m.home_odds}"></div>
+          <div class="form-group"><label class="form-label">Draw Odds</label><input id="edit-draw-odds" class="form-input" type="number" step=".01" value="${m.draw_odds}"></div>
+          <div class="form-group"><label class="form-label">Away Odds</label><input id="edit-away-odds" class="form-input" type="number" step=".01" value="${m.away_odds}"></div>
+          <div class="form-group"><label class="form-label">Status</label>
+            <select id="edit-status" class="form-input">
+              ${['scheduled','live','finished'].map(s => `<option value="${s}" ${m.status===s?'selected':''}>${s}</option>`).join('')}
+            </select>
+          </div>
+        </div>
+        <div class="admin-actions">
+          <button class="btn btn-green btn-sm" data-action="admin-save" data-id="${m.id}">Save Changes</button>
+          <button class="btn btn-outline btn-sm" data-action="admin-edit-cancel">Cancel</button>
+        </div>
+      </div>`;
+
+    return `
+      <div class="admin-card ${isSettling ? 'settling' : ''}">
+        <div class="ac-header">
+          <span class="league-tag">⚽ Super League</span>
+          <span class="match-time">${formatDate(m.match_date)}</span>
+          <span class="status-badge status-${esc(m.status)}">${esc(m.status)}</span>
+        </div>
+        <div class="ac-teams">${esc(m.home_team)} <span style="color:var(--text-muted);font-size:.8rem;margin:0 6px">vs</span> ${esc(m.away_team)}</div>
+        <div class="ac-odds">
+          <span>1&nbsp;<b>${parseFloat(m.home_odds).toFixed(2)}</b></span>
+          <span>X&nbsp;<b>${parseFloat(m.draw_odds).toFixed(2)}</b></span>
+          <span>2&nbsp;<b>${parseFloat(m.away_odds).toFixed(2)}</b></span>
+        </div>
+        <div class="ac-stats">${m.pending_bets} pending bet${m.pending_bets != 1 ? 's' : ''} &nbsp;·&nbsp; ${fmt(m.total_staked)} staked</div>
+        ${isSettling ? `
+          <div class="settle-section">
+            <div class="settle-label">Select result:</div>
+            <div class="settle-options">
+              <button class="settle-btn ${state.settleResult==='home'?'selected':''}" data-action="settle-pick" data-result="home">1 Home</button>
+              <button class="settle-btn ${state.settleResult==='draw'?'selected':''}" data-action="settle-pick" data-result="draw">X Draw</button>
+              <button class="settle-btn ${state.settleResult==='away'?'selected':''}" data-action="settle-pick" data-result="away">2 Away</button>
+            </div>
+            <div class="admin-actions" style="border:none;padding:0">
+              <button class="btn btn-amber btn-sm" data-action="admin-settle-confirm" data-id="${m.id}">Confirm Result</button>
+              <button class="btn btn-outline btn-sm" data-action="admin-settle-cancel">Cancel</button>
+            </div>
+          </div>
+        ` : ''}
+        <div class="admin-actions">
+          <button class="btn btn-outline btn-sm" data-action="admin-edit" data-id="${m.id}">Edit</button>
+          ${m.status !== 'finished' ? `<button class="btn btn-amber btn-sm" data-action="admin-settle-show" data-id="${m.id}">Settle Result</button>` : ''}
+          <button class="btn btn-red btn-sm" data-action="admin-delete" data-id="${m.id}">Delete</button>
+        </div>
+      </div>`;
   }).join('');
 }
 
 function renderSidebar() {
-  const el = $('sidebar');
-  if (!el) return;
+  const el = $('sidebar'); if (!el) return;
   el.innerHTML = state.user ? renderBetSlip() : renderAuthForm();
 }
 
 function renderBetSlip() {
-  const slip  = state.betSlip;
-  const stake = parseFloat(state.stake) || 0;
-  const totalStake     = stake * slip.length;
-  const totalPotential = slip.reduce((s, b) => s + stake * b.odds, 0);
+  const slip = state.betSlip, stake = parseFloat(state.stake) || 0;
   return `
     <div class="sidebar-panel">
       <div class="panel-header">
@@ -687,98 +639,56 @@ function renderBetSlip() {
       </div>
       <div class="panel-body">
         ${slip.length === 0 ? `
-          <div class="slip-empty">
-            <div class="slip-empty-icon">🎯</div>
-            <div>Your bet slip is empty.</div>
-            <div style="font-size:.72rem;color:var(--text-muted);margin-top:6px">Select any odds to add a pick.</div>
-          </div>
+          <div class="slip-empty"><div class="slip-empty-icon">🎯</div><div>Your bet slip is empty.</div><div style="font-size:.72rem;color:var(--text-muted);margin-top:6px">Select any odds to add a pick.</div></div>
         ` : `
           ${slip.map(b => `
             <div class="bet-selection">
               <button class="bet-sel-remove" data-action="remove-bet" data-match="${b.matchId}">✕</button>
               <div class="bet-sel-match">${esc(b.home)} vs ${esc(b.away)}</div>
               <div class="bet-sel-row">
-                <span class="bet-sel-type">${b.betType === 'home' ? '1 Home Win' : b.betType === 'away' ? '2 Away Win' : 'X Draw'}</span>
+                <span class="bet-sel-type">${b.betType==='home'?'1 Home Win':b.betType==='away'?'2 Away Win':'X Draw'}</span>
                 <span class="bet-sel-odds">${b.odds.toFixed(2)}</span>
               </div>
-            </div>
-          `).join('')}
+            </div>`).join('')}
           <div class="stake-section">
             <div class="stake-label">Stake per bet</div>
-            <div class="quick-stakes">
-              ${[5,10,25,50].map(v =>
-                `<button class="quick-stake" data-action="quick-stake" data-val="${v}">€${v}</button>`
-              ).join('')}
-            </div>
-            <div class="stake-wrap">
-              <span class="stake-sym">€</span>
-              <input id="stake-input" class="stake-input" type="number" min="1" step="1"
-                value="${esc(state.stake)}" placeholder="0.00">
-            </div>
+            <div class="quick-stakes">${[5,10,25,50].map(v=>`<button class="quick-stake" data-action="quick-stake" data-val="${v}">€${v}</button>`).join('')}</div>
+            <div class="stake-wrap"><span class="stake-sym">€</span><input id="stake-input" class="stake-input" type="number" min="1" step="1" value="${esc(state.stake)}" placeholder="0.00"></div>
           </div>
-          <div class="summary-row">
-            <span class="sum-label">Total stake &nbsp;·&nbsp; ${slip.length} bet${slip.length > 1 ? 's' : ''}</span>
-            <span class="sum-value">${fmt(totalStake)}</span>
-          </div>
-          <div class="summary-row" style="border-top:none;padding-top:4px;margin-bottom:14px">
-            <span class="sum-label">Potential winnings</span>
-            <span class="sum-value green">${fmt(totalPotential)}</span>
-          </div>
-          <button class="btn btn-green btn-block" data-action="place-bets" ${state.placing ? 'disabled' : ''}>
+          <div class="summary-row"><span class="sum-label">Total stake &nbsp;·&nbsp; ${slip.length} bet${slip.length>1?'s':''}</span><span class="sum-value">${fmt(stake*slip.length)}</span></div>
+          <div class="summary-row" style="border-top:none;padding-top:4px;margin-bottom:14px"><span class="sum-label">Potential winnings</span><span class="sum-value green">${fmt(slip.reduce((s,b)=>s+stake*b.odds,0))}</span></div>
+          <button class="btn btn-green btn-block" data-action="place-bets" ${state.placing?'disabled':''}>
             ${state.placing ? 'Placing bets…' : 'Place All Bets'}
           </button>
         `}
         ${state.msg ? `<div class="slip-msg ${state.msg.type}">${esc(state.msg.text)}</div>` : ''}
       </div>
-    </div>
-  `;
+    </div>`;
 }
 
 function renderAuthForm() {
   return `
     <div class="sidebar-panel">
       <div class="auth-tabs">
-        <div class="auth-tab ${state.authTab === 'login'    ? 'active' : ''}" data-action="tab-login">Login</div>
-        <div class="auth-tab ${state.authTab === 'register' ? 'active' : ''}" data-action="tab-register">Register</div>
+        <div class="auth-tab ${state.authTab==='login'?'active':''}" data-action="tab-login">Login</div>
+        <div class="auth-tab ${state.authTab==='register'?'active':''}" data-action="tab-register">Register</div>
       </div>
       <div class="panel-body">
-        <div class="form-group">
-          <label class="form-label" for="auth-username">Username</label>
-          <input id="auth-username" class="form-input" type="text" placeholder="your username" autocomplete="username">
-        </div>
-        ${state.authTab === 'register' ? `
-          <div class="form-group">
-            <label class="form-label" for="auth-email">Email</label>
-            <input id="auth-email" class="form-input" type="email" placeholder="your@email.com" autocomplete="email">
-          </div>
-        ` : ''}
-        <div class="form-group">
-          <label class="form-label" for="auth-password">Password</label>
-          <input id="auth-password" class="form-input" type="password" placeholder="••••••••"
-            autocomplete="${state.authTab === 'register' ? 'new-password' : 'current-password'}">
-        </div>
-        <button class="btn btn-green btn-block" data-action="${state.authTab}">
-          ${state.authTab === 'login' ? 'Login' : 'Create Account'}
-        </button>
-        ${state.authTab === 'register' ? `
-          <div class="register-bonus">
-            New accounts start with <strong style="color:var(--green)">€1,000.00</strong> balance.
-          </div>
-        ` : ''}
-        ${state.authError ? `<div class="form-error">${esc(state.authError)}</div>` : ''}
+        <div class="form-group"><label class="form-label" for="auth-username">Username</label><input id="auth-username" class="form-input" type="text" placeholder="your username" autocomplete="username"></div>
+        ${state.authTab==='register'?`<div class="form-group"><label class="form-label" for="auth-email">Email</label><input id="auth-email" class="form-input" type="email" placeholder="your@email.com" autocomplete="email"></div>`:''}
+        <div class="form-group"><label class="form-label" for="auth-password">Password</label><input id="auth-password" class="form-input" type="password" placeholder="••••••••" autocomplete="${state.authTab==='register'?'new-password':'current-password'}"></div>
+        <button class="btn btn-green btn-block" data-action="${state.authTab}">${state.authTab==='login'?'Login':'Create Account'}</button>
+        ${state.authTab==='register'?`<div class="register-bonus">New accounts start with <strong style="color:var(--green)">€1,000.00</strong> balance.</div>`:''}
+        ${state.authError?`<div class="form-error">${esc(state.authError)}</div>`:''}
       </div>
-    </div>
-  `;
+    </div>`;
 }
 
-function render() {
-  renderHeader();
-  renderPage();
-}
+function render() { renderHeader(); renderPage(); }
 
-// ─── Event delegation ────────────────────────────────────────────────────────
+// ─── Events ──────────────────────────────────────────────────────────────────
 document.addEventListener('click', e => {
-  const el     = e.target.closest('[data-action]');
+  const el = e.target.closest('[data-action]');
   const action = el?.dataset?.action;
   if (!action) return;
 
@@ -786,26 +696,33 @@ document.addEventListener('click', e => {
     case 'login':    login();    break;
     case 'register': register(); break;
     case 'logout':   logout();   break;
-    case 'tab-login':
-      state.authTab = 'login';    state.authError = null; renderSidebar(); break;
-    case 'tab-register':
-      state.authTab = 'register'; state.authError = null; renderSidebar(); break;
-    case 'view-matches':
-      state.view = 'matches'; render(); break;
+    case 'tab-login':    state.authTab = 'login';    state.authError = null; renderSidebar(); break;
+    case 'tab-register': state.authTab = 'register'; state.authError = null; renderSidebar(); break;
+    case 'view-matches': state.view = 'matches'; render(); break;
     case 'view-my-bets':
       if (!state.token) { $('auth-username')?.focus(); return; }
-      state.view = 'my-bets';
-      render();
-      loadMyBets();
-      break;
-    case 'bet':
-      toggleBet(el.dataset.match, el.dataset.type, el.dataset.odds); break;
-    case 'remove-bet':
-      removeBet(el.dataset.match); break;
-    case 'place-bets':
-      placeAllBets(); break;
-    case 'quick-stake':
-      state.stake = el.dataset.val; render(); break;
+      state.view = 'my-bets'; render(); loadMyBets(); break;
+    case 'view-admin':
+      if (!state.user?.is_admin) return;
+      state.view = 'admin'; state.adminMsg = null; render(); loadAdminMatches(); break;
+    case 'bet':        toggleBet(el.dataset.match, el.dataset.type, el.dataset.odds); break;
+    case 'remove-bet': removeBet(el.dataset.match); break;
+    case 'place-bets': placeAllBets(); break;
+    case 'quick-stake': state.stake = el.dataset.val; render(); break;
+    // Admin
+    case 'admin-add-show':   state.showAddMatch = true;  state.adminMsg = null; renderAdminView(); break;
+    case 'admin-add-cancel': state.showAddMatch = false; renderAdminView(); break;
+    case 'admin-create':     adminCreateMatch(); break;
+    case 'admin-edit':       state.editingMatchId = parseInt(el.dataset.id); state.settlingMatchId = null; renderAdminMatchList(); break;
+    case 'admin-edit-cancel': state.editingMatchId = null; renderAdminMatchList(); break;
+    case 'admin-save':       adminSaveMatch(parseInt(el.dataset.id)); break;
+    case 'admin-delete':     adminDeleteMatch(parseInt(el.dataset.id)); break;
+    case 'admin-settle-show':
+      state.settlingMatchId = parseInt(el.dataset.id); state.editingMatchId = null;
+      state.settleResult = null; renderAdminMatchList(); break;
+    case 'admin-settle-cancel': state.settlingMatchId = null; state.settleResult = null; renderAdminMatchList(); break;
+    case 'settle-pick':       state.settleResult = el.dataset.result; renderAdminMatchList(); break;
+    case 'admin-settle-confirm': adminSettleMatch(parseInt(el.dataset.id)); break;
   }
 });
 
@@ -813,7 +730,7 @@ document.addEventListener('input', e => {
   if (e.target.id !== 'stake-input') return;
   state.stake = e.target.value;
   const stake = parseFloat(e.target.value) || 0;
-  const rows  = document.querySelectorAll('.sum-value');
+  const rows = document.querySelectorAll('.sum-value');
   if (rows[0]) rows[0].textContent = fmt(stake * state.betSlip.length);
   if (rows[1]) rows[1].textContent = fmt(state.betSlip.reduce((s, b) => s + stake * b.odds, 0));
 });
@@ -825,12 +742,10 @@ document.addEventListener('keydown', e => {
 
 // ─── Init ────────────────────────────────────────────────────────────────────
 (async function init() {
-  renderHeader();
-  renderPage();
+  renderHeader(); renderPage();
   await Promise.all([loadUser(), loadMatches()]);
   render();
 })();
 </script>
-
 </body>
 </html>
