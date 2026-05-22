@@ -13,7 +13,7 @@
       --bg:            #eef2f7;
       --bg-card:       #ffffff;
       --bg-input:      #f8fafc;
-      --bg-header:     #ffffff;
+      --bg-header:     #1e3a8a;
       --sidebar-bg:    #ffffff;
       --border:        rgba(0,0,0,.09);
       --border-strong: rgba(0,0,0,.14);
@@ -45,47 +45,63 @@
     #site-header {
       position: sticky; top: 0; z-index: 200;
       background: var(--bg-header);
-      border-bottom: 1px solid rgba(0,0,0,.07);
-      box-shadow: 0 1px 0 rgba(0,0,0,.07), 0 4px 12px rgba(0,0,0,.06);
-      height: 68px; display: flex; align-items: center; padding: 0 24px; gap: 20px;
+      border-bottom: none;
+      box-shadow: 0 2px 16px rgba(0,0,0,.28);
+      height: 84px; display: flex; align-items: center; padding: 0 36px; gap: 28px;
     }
-    .logo { flex-shrink: 0; display: flex; flex-direction: column; gap: 2px; text-decoration: none; }
-    .logo-name { font-size: 1.1rem; font-weight: 800; letter-spacing: .5px; line-height: 1; color: var(--text); }
-    .logo-name span { color: var(--orange); }
-    .logo-tag { font-size: .52rem; font-weight: 600; letter-spacing: 2.5px; text-transform: uppercase; color: var(--text-muted); line-height: 1; }
-    .search-wrap { position: relative; flex: 0 1 260px; }
-    .search-wrap .search-icon { position:absolute; left:10px; top:50%; transform:translateY(-50%); color:var(--text-muted); font-size:.85rem; pointer-events:none; }
+    .logo { flex-shrink: 0; display: flex; flex-direction: column; gap: 3px; text-decoration: none; }
+    .logo-name { font-size: 1.25rem; font-weight: 800; letter-spacing: .5px; line-height: 1; color: #ffffff; }
+    .logo-name span { color: #93c5fd; }
+    .logo-tag { font-size: .52rem; font-weight: 600; letter-spacing: 2.5px; text-transform: uppercase; color: rgba(255,255,255,.45); line-height: 1; }
+    .search-wrap { position: relative; flex: 0 1 280px; }
+    .search-wrap .search-icon { position:absolute; left:10px; top:50%; transform:translateY(-50%); color:rgba(255,255,255,.4); font-size:.85rem; pointer-events:none; }
     .search-input {
-      width:100%; padding:8px 12px 8px 34px; border-radius:8px;
-      background:var(--bg-input); border:1px solid rgba(0,0,0,.08);
-      color:var(--text); font-size:.82rem; outline:none; transition:var(--transition);
+      width:100%; padding:9px 12px 9px 34px; border-radius:8px;
+      background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.15);
+      color:#fff; font-size:.82rem; outline:none; transition:var(--transition);
     }
-    .search-input:focus { border-color:var(--blue); box-shadow: 0 0 0 3px rgba(59,130,246,.12); }
-    .search-input::placeholder { color:var(--text-muted); }
+    .search-input:focus { border-color:#93c5fd; box-shadow: 0 0 0 3px rgba(147,197,253,.18); background:rgba(255,255,255,.14); }
+    .search-input::placeholder { color:rgba(255,255,255,.35); }
     .search-clear {
       position:absolute; right:8px; top:50%; transform:translateY(-50%);
-      color:var(--text-muted); cursor:pointer; font-size:.9rem; line-height:1;
+      color:rgba(255,255,255,.45); cursor:pointer; font-size:.9rem; line-height:1;
       background:none; border:none; padding:2px 4px; transition:var(--transition);
     }
-    .search-clear:hover { color:var(--text); }
+    .search-clear:hover { color:#fff; }
     .search-results-note { font-size:.75rem; color:var(--text-muted); margin-bottom:12px; }
-    .header-nav { display: flex; gap: 2px; flex: 1; align-items: center; }
+    .header-nav { display: flex; gap: 4px; flex: 1; align-items: center; justify-content: center; }
     .nav-item {
-      position: relative; padding: 7px 14px; border-radius: 7px; font-size: .82rem; font-weight: 500;
-      color: var(--text-muted); cursor: pointer; transition: var(--transition); user-select: none;
+      position: relative; padding: 9px 18px; border-radius: 8px; font-size: .85rem; font-weight: 500;
+      color: rgba(255,255,255,.65); cursor: pointer; transition: var(--transition); user-select: none;
     }
-    .nav-item:hover  { color: var(--text-sec); background: rgba(0,0,0,.05); }
-    .nav-item.active { color: var(--text); background: rgba(37,99,235,.10); font-weight: 600; }
-    .nav-item.active::after { content:''; position:absolute; bottom:-1px; left:50%; transform:translateX(-50%); width:28px; height:2px; background:var(--orange); border-radius:2px 2px 0 0; }
-    .nav-item.admin-tab { color: var(--amber); }
-    .nav-item.admin-tab.active { background: rgba(245,158,11,.1); }
-    .header-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .nav-item:hover  { color: rgba(255,255,255,.95); background: rgba(255,255,255,.09); }
+    .nav-item.active { color: #ffffff; background: rgba(255,255,255,.14); font-weight: 700; }
+    .nav-item.active::after { content:''; position:absolute; bottom:-1px; left:50%; transform:translateX(-50%); width:32px; height:2px; background:#93c5fd; border-radius:2px 2px 0 0; }
+    .nav-item.admin-tab { color: #fbbf24; }
+    .nav-item.admin-tab.active { background: rgba(251,191,36,.14); }
+    .header-right { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
     .balance-badge {
-      background: rgba(0,200,90,.08); border: 1px solid rgba(0,200,90,.2);
-      color: var(--green); font-weight: 700; font-size: .82rem; padding: 6px 14px; border-radius: 20px;
-      box-shadow: 0 0 12px rgba(0,200,90,.08);
+      background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.22);
+      color: #ffffff; font-weight: 700; font-size: .84rem; padding: 7px 16px; border-radius: 20px;
     }
-    .username-tag { font-size: .82rem; color: var(--text-sec); font-weight: 500; }
+    .username-tag { font-size: .84rem; color: rgba(255,255,255,.7); font-weight: 500; }
+    /* Header button overrides for dark background */
+    #site-header .btn-outline {
+      color: rgba(255,255,255,.85); border-color: rgba(255,255,255,.25);
+      background: rgba(255,255,255,.08);
+    }
+    #site-header .btn-outline:hover { color: #fff; border-color: rgba(255,255,255,.5); background: rgba(255,255,255,.14); }
+    #site-header .btn-ghost {
+      color: rgba(255,255,255,.65); border-color: rgba(255,255,255,.2);
+      background: rgba(255,255,255,.06);
+    }
+    #site-header .btn-ghost:hover { color: #fca5a5; border-color: rgba(239,68,68,.5); background: rgba(239,68,68,.12); }
+    #site-header .btn-green { background: #ffffff; color: #1e3a8a; box-shadow: 0 2px 10px rgba(0,0,0,.2); }
+    #site-header .btn-green:hover { background: #e0e7ff; box-shadow: 0 4px 16px rgba(0,0,0,.25); }
+    .lang-toggle { display:flex; align-items:center; gap:2px; background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.18); border-radius:6px; padding:2px; flex-shrink:0; }
+    .lang-opt { padding:4px 9px; border-radius:5px; font-size:.68rem; font-weight:700; letter-spacing:.5px; cursor:pointer; color:rgba(255,255,255,.6); transition:var(--transition); border:none; background:none; font-family:inherit; }
+    .lang-opt:hover { color:rgba(255,255,255,.95); }
+    .lang-opt.active { background:#ffffff; color:#1e3a8a; }
 
     /* ── Buttons ── */
     .btn { padding: 8px 18px; border-radius: var(--radius); font-size: .8rem; font-weight: 600; cursor: pointer; border: none; transition: var(--transition); font-family: inherit; letter-spacing: .3px; }
@@ -336,6 +352,17 @@
     .text-link { color: var(--blue); cursor: pointer; }
     .text-link:hover { text-decoration: underline; }
 
+    /* ── Load More ── */
+    .load-more-wrap { text-align: center; padding: 24px 0 8px; }
+    .load-more-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 12px 32px; border-radius: 8px; border: 1.5px solid var(--orange);
+      background: transparent; color: var(--orange); font-size: .85rem; font-weight: 700;
+      cursor: pointer; font-family: inherit; letter-spacing: .4px; transition: var(--transition);
+    }
+    .load-more-btn:hover { background: var(--orange); color: #fff; box-shadow: 0 4px 14px rgba(37,99,235,.35); transform: translateY(-1px); }
+    .load-more-count { font-size: .72rem; font-weight: 500; color: var(--text-muted); margin-top: 8px; }
+
     /* ── Accumulator / bet slip mode tabs ── */
     .slip-mode-tabs { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--border); }
     .slip-mode-tab  { padding: 10px; text-align: center; font-size: .78rem; font-weight: 600; color: var(--text-muted); cursor: pointer; transition: var(--transition); border-bottom: 2px solid transparent; user-select: none; }
@@ -376,14 +403,14 @@
       #mobile-slip-fab { display: flex; }
     }
     @media (max-width: 680px) {
-      #site-header { padding: 0 12px; gap: 8px; height: 54px; }
-      .logo { font-size: 1.05rem; }
+      #site-header { padding: 0 14px; gap: 10px; height: 62px; }
+      .logo-name { font-size: 1.05rem; }
       .search-wrap { flex: 0 1 140px; }
       .search-input { font-size: .75rem; padding: 6px 10px 6px 28px; }
-      .header-nav .nav-item { padding: 5px 8px; font-size: .75rem; }
-      .balance-badge { padding: 4px 9px; font-size: .75rem; }
+      .header-nav .nav-item { padding: 6px 10px; font-size: .78rem; }
+      .balance-badge { padding: 5px 10px; font-size: .75rem; }
       .username-tag { display: none; }
-      .header-right .btn { padding: 5px 10px; font-size: .75rem; }
+      .header-right .btn { padding: 6px 12px; font-size: .75rem; }
       .match-card { padding: 12px; }
       .team-name { font-size: .9rem; }
       .odd-value { font-size: .88rem; }
@@ -929,6 +956,8 @@ const state = {
   sessionStart:    null,
   // i18n
   lang: localStorage.getItem('bet_lang') || 'el',
+  // Match list pagination
+  matchPage: 20,
 };
 
 // ─── Casino data ─────────────────────────────────────────────────────────────
@@ -1712,16 +1741,32 @@ function renderMatchList() {
     return;
   }
 
+  const total   = visible.length;
+  const sliced  = visible.slice(0, state.matchPage);
+  const hasMore = total > state.matchPage;
+  const remaining = total - state.matchPage;
+
   const resultsNote = q
-    ? `<div class="search-results-note">${state.lang==='el'?`${visible.length} αγώνες για "<strong>${esc(q)}</strong>"`:visible.length+' match'+(visible.length!==1?'es':'')+' for "<strong>'+esc(q)+'</strong>"'}</div>`
+    ? `<div class="search-results-note">${state.lang==='el'?`${total} αγώνες για "<strong>${esc(q)}</strong>"`:total+' match'+(total!==1?'es':'')+' for "<strong>'+esc(q)+'</strong>"'}</div>`
     : '';
 
-  // When searching, skip grouping and show flat list across all leagues
+  const loadMoreHtml = hasMore
+    ? `<div class="load-more-wrap">
+        <button class="load-more-btn" data-action="load-more-matches">
+          ${state.lang==='el' ? 'Φόρτωση Περισσότερων' : 'Load More'}
+          <span style="opacity:.6;font-size:.72rem">(+${remaining})</span>
+        </button>
+        <div class="load-more-count">${state.lang==='el' ? `Εμφανίζονται ${sliced.length} από ${total} αγώνες` : `Showing ${sliced.length} of ${total} matches`}</div>
+      </div>`
+    : '';
+
+  // When searching or filtering by league, show flat list
   if (q || state.activeLeague) {
-    el.innerHTML = resultsNote + visible.map(renderMatchCard).join('');
+    el.innerHTML = resultsNote + sliced.map(renderMatchCard).join('') + loadMoreHtml;
   } else {
+    // Group by league, honouring the page limit across groups
     const groups = new Map();
-    for (const m of visible) {
+    for (const m of sliced) {
       const key = m.league_name || 'Other';
       if (!groups.has(key)) groups.set(key, []);
       groups.get(key).push(m);
@@ -1731,7 +1776,7 @@ function renderMatchList() {
         <div class="league-group-hdr">⚽ ${esc(leagueShortName(name))}</div>
         ${ms.map(renderMatchCard).join('')}
       </div>`
-    ).join('');
+    ).join('') + loadMoreHtml;
   }
 }
 
@@ -2705,7 +2750,12 @@ document.addEventListener('click', e => {
       break;
     case 'filter-league':
       state.activeLeague = el.dataset.key || null;
+      state.matchPage = 20;
       renderLeagueNav(); renderMatchList(); break;
+    case 'load-more-matches':
+      state.matchPage += 20;
+      renderMatchList();
+      break;
     case 'view-my-bets':
       if (!state.token) { $('auth-username')?.focus(); return; }
       state.view = 'my-bets'; render(); loadMyBets(); break;
@@ -2796,6 +2846,7 @@ document.addEventListener('click', e => {
 document.addEventListener('input', e => {
   if (e.target.id === 'match-search') {
     state.searchQuery = e.target.value;
+    state.matchPage = 20;
     if (state.view === 'matches') renderMatchList();
     // re-render header to show/hide the clear button
     renderHeader();
