@@ -69,7 +69,8 @@
     }
     .search-clear:hover { color:#fff; }
     .search-results-note { font-size:.75rem; color:var(--text-muted); margin-bottom:12px; }
-    .header-nav { display: flex; gap: 1px; flex: 1; align-items: center; min-width: 0; }
+    .header-nav { display: flex; gap: 1px; align-items: center; flex-shrink: 0; }
+    .header-spacer { flex: 1; min-width: 12px; }
     .nav-item {
       position: relative; padding: 7px 11px; border-radius: 7px; font-size: .8rem; font-weight: 500;
       color: rgba(255,255,255,.65); cursor: pointer; transition: var(--transition); user-select: none;
@@ -1618,6 +1619,7 @@ function renderHeader() {
       ${state.user ? `<span class="nav-item ${state.view === 'wallet' ? 'active' : ''}" data-action="view-wallet">${t('nav_wallet')}</span>` : ''}
       ${state.user?.is_admin ? `<span class="nav-item admin-tab ${state.view === 'admin' ? 'active' : ''}" data-action="view-admin">${t('nav_admin')}</span>` : ''}
     </nav>
+    <div class="header-spacer"></div>
     <div class="search-wrap">
       <span class="search-icon">⌕</span>
       <input
