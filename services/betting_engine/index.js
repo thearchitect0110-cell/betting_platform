@@ -174,6 +174,8 @@ app.post('/api/login', authLimiter, async (req, res) => {
     const user = rows[0];
     if (!user || !(await bcrypt.compare(password, user.password_hash)))
       return res.status(401).json({ error: 'Invalid credentials' });
+    if (user.is_banned)
+      return res.status(403).json({ error: `Ο λογαριασμός σας έχει ανασταλεί.${user.ban_reason ? ' Λόγος: ' + user.ban_reason : ''} Επικοινωνήστε με την υποστήριξη.` });
     if (user.self_excluded_until && new Date(user.self_excluded_until) > new Date())
       return res.status(403).json({ error: `Account self-excluded until ${new Date(user.self_excluded_until).toISOString().slice(0,10)}` });
     const tokens = issueTokens(user);
@@ -802,7 +804,7 @@ app.get('/api/admin/users', adminAuth, async (req, res) => {
   try {
     const { rows } = await pool.query(`
       SELECT
-        u.id, u.username, u.email, u.balance, u.is_admin, u.created_at,
+        u.id, u.username, u.email, u.balance, u.is_admin, u.is_banned, u.ban_reason, u.created_at,
         COUNT(DISTINCT b.id)                                          AS total_bets,
         COALESCE(SUM(b.amount) FILTER (WHERE b.status = 'won'),  0)  AS total_won,
         COALESCE(SUM(t.amount) FILTER (WHERE t.type = 'deposit'),    0) AS total_deposited,
@@ -933,6 +935,33 @@ app.post('/api/admin/matches/:id/settle', adminAuth, async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+});
+
+app.post('/api/admin/users/:id/ban', adminAuth, async (req, res) => {
+  const targetId = parseInt(req.params.id);
+  if (targetId === req.user.id)
+    return res.status(400).json({ error: 'Cannot ban yourself' });
+  const reason = req.body.reason?.trim() || null;
+  try {
+    const { rows } = await pool.query(
+      'UPDATE users SET is_banned = true, ban_reason = $1 WHERE id = $2 AND is_admin = false RETURNING id, username, is_banned',
+      [reason, targetId]
+    );
+    if (!rows[0]) return res.status(404).json({ error: 'User not found or is admin' });
+    res.json(rows[0]);
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+app.post('/api/admin/users/:id/unban', adminAuth, async (req, res) => {
+  const targetId = parseInt(req.params.id);
+  try {
+    const { rows } = await pool.query(
+      'UPDATE users SET is_banned = false, ban_reason = null WHERE id = $1 RETURNING id, username, is_banned',
+      [targetId]
+    );
+    if (!rows[0]) return res.status(404).json({ error: 'User not found' });
+    res.json(rows[0]);
+  } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
 app.post('/api/admin/users/:id/toggle-admin', adminAuth, async (req, res) => {
