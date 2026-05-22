@@ -965,6 +965,8 @@ const state = {
   lang: localStorage.getItem('bet_lang') || 'el',
   // Match list pagination
   matchPage: 20,
+  // Admin user search
+  adminUserSearch: '',
 };
 
 // ─── Casino data ─────────────────────────────────────────────────────────────
@@ -2102,21 +2104,43 @@ function renderWalletView() {
 
 function renderAdminUsers() {
   const el = $('admin-users-wrap'); if (!el) return;
-  const users = state.adminUsers;
-  if (!users.length) { el.innerHTML = '<div class="loading-msg">No users found.</div>'; return; }
+  const allUsers = state.adminUsers;
+  if (!allUsers.length) { el.innerHTML = '<div class="loading-msg">No users found.</div>'; return; }
 
-  const totalBalance   = users.reduce((s, u) => s + parseFloat(u.balance), 0);
-  const totalDeposited = users.reduce((s, u) => s + parseFloat(u.total_deposited), 0);
-  const totalWithdrawn = users.reduce((s, u) => s + parseFloat(u.total_withdrawn), 0);
+  const q = (state.adminUserSearch || '').toLowerCase();
+  const users = q
+    ? allUsers.filter(u =>
+        u.username.toLowerCase().includes(q) ||
+        u.email.toLowerCase().includes(q)
+      )
+    : allUsers;
+
+  const totalBalance   = allUsers.reduce((s, u) => s + parseFloat(u.balance), 0);
+  const totalDeposited = allUsers.reduce((s, u) => s + parseFloat(u.total_deposited), 0);
+  const totalWithdrawn = allUsers.reduce((s, u) => s + parseFloat(u.total_withdrawn), 0);
 
   el.innerHTML = `
     <div class="stats-grid">
-      <div class="stat-card"><div class="stat-label">Total Users</div><div class="stat-value blue">${users.length}</div></div>
-      <div class="stat-card"><div class="stat-label">Platform Balance</div><div class="stat-value green">${fmt(totalBalance)}</div></div>
-      <div class="stat-card"><div class="stat-label">Total Deposited</div><div class="stat-value green">${fmt(totalDeposited)}</div></div>
-      <div class="stat-card"><div class="stat-label">Total Withdrawn</div><div class="stat-value red">${fmt(totalWithdrawn)}</div></div>
+      <div class="stat-card"><div class="stat-label">Σύνολο Χρηστών</div><div class="stat-value blue">${allUsers.length}</div></div>
+      <div class="stat-card"><div class="stat-label">Συνολικό Υπόλοιπο</div><div class="stat-value green">${fmt(totalBalance)}</div></div>
+      <div class="stat-card"><div class="stat-label">Συνολικές Καταθέσεις</div><div class="stat-value green">${fmt(totalDeposited)}</div></div>
+      <div class="stat-card"><div class="stat-label">Συνολικές Αναλήψεις</div><div class="stat-value red">${fmt(totalWithdrawn)}</div></div>
     </div>
-    <div class="data-table-wrap">
+    <div style="margin-bottom:14px;position:relative;max-width:340px">
+      <span style="position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:.85rem;pointer-events:none">⌕</span>
+      <input
+        id="admin-user-search"
+        class="form-input"
+        style="padding-left:34px;font-size:.82rem"
+        type="text"
+        placeholder="Αναζήτηση username ή email…"
+        value="${esc(state.adminUserSearch || '')}"
+        autocomplete="off"
+      />
+      ${q ? `<button data-action="admin-user-search-clear" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:.9rem;padding:2px 4px">✕</button>` : ''}
+    </div>
+    ${users.length === 0 ? `<div class="loading-msg">Δεν βρέθηκαν χρήστες για "<strong>${esc(q)}</strong>".</div>` : ''}
+    ${users.length > 0 ? `<div class="data-table-wrap">
       <table class="data-table">
         <thead><tr>
           <th>User</th><th>Email</th><th>Balance</th>
@@ -2175,7 +2199,13 @@ function renderAdminUsers() {
           }).join('')}
         </tbody>
       </table>
-    </div>`;
+    </div>` : ''}`;
+
+  // restore focus & cursor on search input after re-render
+  const inp = $('admin-user-search');
+  if (inp && document.activeElement !== inp) {
+    inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length);
+  }
 }
 
 function renderAdminTxs() {
@@ -2856,6 +2886,8 @@ document.addEventListener('click', e => {
     case 'admin-toggle-admin': adminToggleAdmin(parseInt(el.dataset.id)); break;
     case 'admin-ban': adminBanUser(parseInt(el.dataset.id)); break;
     case 'admin-unban': adminUnbanUser(parseInt(el.dataset.id)); break;
+    case 'admin-user-search-clear':
+      state.adminUserSearch = ''; renderAdminUsers(); break;
     case 'admin-adjust-show':
       state.adjustingUserId = parseInt(el.dataset.id); state.adjustMsg = null;
       renderAdminUsers(); break;
@@ -2895,6 +2927,11 @@ document.addEventListener('click', e => {
 });
 
 document.addEventListener('input', e => {
+  if (e.target.id === 'admin-user-search') {
+    state.adminUserSearch = e.target.value;
+    renderAdminUsers();
+    return;
+  }
   if (e.target.id === 'match-search') {
     state.searchQuery = e.target.value;
     state.matchPage = 20;
