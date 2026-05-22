@@ -47,18 +47,18 @@
       background: var(--bg-header);
       border-bottom: none;
       box-shadow: 0 2px 16px rgba(0,0,0,.28);
-      height: 84px; display: flex; align-items: center; padding: 0 36px; gap: 28px;
+      height: 76px; display: flex; align-items: center; padding: 0 24px; gap: 16px;
     }
     .logo { flex-shrink: 0; display: flex; flex-direction: column; gap: 3px; text-decoration: none; }
-    .logo-name { font-size: 1.25rem; font-weight: 800; letter-spacing: .5px; line-height: 1; color: #ffffff; }
+    .logo-name { font-size: 1.15rem; font-weight: 800; letter-spacing: .5px; line-height: 1; color: #ffffff; }
     .logo-name span { color: #93c5fd; }
-    .logo-tag { font-size: .52rem; font-weight: 600; letter-spacing: 2.5px; text-transform: uppercase; color: rgba(255,255,255,.45); line-height: 1; }
-    .search-wrap { position: relative; flex: 0 1 280px; }
+    .logo-tag { font-size: .5rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,.4); line-height: 1; }
+    .search-wrap { position: relative; flex: 0 1 220px; min-width: 80px; }
     .search-wrap .search-icon { position:absolute; left:10px; top:50%; transform:translateY(-50%); color:rgba(255,255,255,.4); font-size:.85rem; pointer-events:none; }
     .search-input {
-      width:100%; padding:9px 12px 9px 34px; border-radius:8px;
+      width:100%; padding:8px 12px 8px 34px; border-radius:8px;
       background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.15);
-      color:#fff; font-size:.82rem; outline:none; transition:var(--transition);
+      color:#fff; font-size:.8rem; outline:none; transition:var(--transition);
     }
     .search-input:focus { border-color:#93c5fd; box-shadow: 0 0 0 3px rgba(147,197,253,.18); background:rgba(255,255,255,.14); }
     .search-input::placeholder { color:rgba(255,255,255,.35); }
@@ -69,23 +69,26 @@
     }
     .search-clear:hover { color:#fff; }
     .search-results-note { font-size:.75rem; color:var(--text-muted); margin-bottom:12px; }
-    .header-nav { display: flex; gap: 4px; flex: 1; align-items: center; justify-content: center; }
+    .header-nav { display: flex; gap: 1px; flex: 1; align-items: center; overflow: hidden; }
     .nav-item {
-      position: relative; padding: 9px 18px; border-radius: 8px; font-size: .85rem; font-weight: 500;
+      position: relative; padding: 7px 11px; border-radius: 7px; font-size: .8rem; font-weight: 500;
       color: rgba(255,255,255,.65); cursor: pointer; transition: var(--transition); user-select: none;
+      white-space: nowrap; flex-shrink: 0;
     }
     .nav-item:hover  { color: rgba(255,255,255,.95); background: rgba(255,255,255,.09); }
     .nav-item.active { color: #ffffff; background: rgba(255,255,255,.14); font-weight: 700; }
-    .nav-item.active::after { content:''; position:absolute; bottom:-1px; left:50%; transform:translateX(-50%); width:32px; height:2px; background:#93c5fd; border-radius:2px 2px 0 0; }
+    .nav-item.active::after { content:''; position:absolute; bottom:-1px; left:50%; transform:translateX(-50%); width:28px; height:2px; background:#93c5fd; border-radius:2px 2px 0 0; }
     .nav-item.admin-tab { color: #fbbf24; }
     .nav-item.admin-tab.active { background: rgba(251,191,36,.14); }
-    .header-right { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+    .header-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
     .balance-badge {
       background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.22);
-      color: #ffffff; font-weight: 700; font-size: .84rem; padding: 7px 16px; border-radius: 20px;
+      color: #ffffff; font-weight: 700; font-size: .8rem; padding: 6px 12px; border-radius: 20px;
+      white-space: nowrap;
     }
-    .username-tag { font-size: .84rem; color: rgba(255,255,255,.7); font-weight: 500; }
+    .username-tag { display: none; }
     /* Header button overrides for dark background */
+    #site-header .btn { padding: 6px 14px; font-size: .78rem; }
     #site-header .btn-outline {
       color: rgba(255,255,255,.85); border-color: rgba(255,255,255,.25);
       background: rgba(255,255,255,.08);
@@ -99,9 +102,12 @@
     #site-header .btn-green { background: #ffffff; color: #1e3a8a; box-shadow: 0 2px 10px rgba(0,0,0,.2); }
     #site-header .btn-green:hover { background: #e0e7ff; box-shadow: 0 4px 16px rgba(0,0,0,.25); }
     .lang-toggle { display:flex; align-items:center; gap:2px; background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.18); border-radius:6px; padding:2px; flex-shrink:0; }
-    .lang-opt { padding:4px 9px; border-radius:5px; font-size:.68rem; font-weight:700; letter-spacing:.5px; cursor:pointer; color:rgba(255,255,255,.6); transition:var(--transition); border:none; background:none; font-family:inherit; }
+    .lang-opt { padding:3px 8px; border-radius:4px; font-size:.65rem; font-weight:700; letter-spacing:.5px; cursor:pointer; color:rgba(255,255,255,.6); transition:var(--transition); border:none; background:none; font-family:inherit; }
     .lang-opt:hover { color:rgba(255,255,255,.95); }
     .lang-opt.active { background:#ffffff; color:#1e3a8a; }
+    /* Compact verify banner in header */
+    #site-header .verify-banner { font-size:.65rem; padding:4px 8px; white-space:nowrap; }
+    #site-header .verify-banner button { font-size:.62rem; padding:2px 7px; }
 
     /* ── Buttons ── */
     .btn { padding: 8px 18px; border-radius: var(--radius); font-size: .8rem; font-weight: 600; cursor: pointer; border: none; transition: var(--transition); font-family: inherit; letter-spacing: .3px; }
@@ -403,14 +409,14 @@
       #mobile-slip-fab { display: flex; }
     }
     @media (max-width: 680px) {
-      #site-header { padding: 0 14px; gap: 10px; height: 62px; }
-      .logo-name { font-size: 1.05rem; }
-      .search-wrap { flex: 0 1 140px; }
-      .search-input { font-size: .75rem; padding: 6px 10px 6px 28px; }
-      .header-nav .nav-item { padding: 6px 10px; font-size: .78rem; }
-      .balance-badge { padding: 5px 10px; font-size: .75rem; }
-      .username-tag { display: none; }
-      .header-right .btn { padding: 6px 12px; font-size: .75rem; }
+      #site-header { padding: 0 12px; gap: 8px; height: 58px; }
+      .logo-name { font-size: 1rem; }
+      .logo-tag { display: none; }
+      .search-wrap { flex: 0 1 120px; }
+      .search-input { font-size: .75rem; padding: 6px 8px 6px 26px; }
+      .header-nav .nav-item { padding: 5px 8px; font-size: .75rem; }
+      .balance-badge { padding: 4px 9px; font-size: .74rem; }
+      .header-right .btn { padding: 5px 10px; font-size: .74rem; }
       .match-card { padding: 12px; }
       .team-name { font-size: .9rem; }
       .odd-value { font-size: .88rem; }
